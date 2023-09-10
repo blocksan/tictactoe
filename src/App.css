@@ -1,0 +1,144 @@
+.app {
+  text-align: center;
+}
+@keyframes slideInDown {
+  0% {
+    transform: translateY(-50px);
+    opacity: 0;
+  }
+  100% {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+@keyframes rotateIn {
+  0% {
+    transform: translate(-50%, -50%) rotate(-90deg);
+    opacity: 0;
+  }
+  100% {
+    transform: translate(-50%, -50%) rotate(0deg);
+    opacity: 1;
+  }
+}
+.logo {
+  width: 320px; /* Adjust the width as needed */
+  height: 95px; /* Adjust the height as needed */
+  background-image: url('white-trrader-logo.png'); /*Replace with your logo image URL*/
+  background-size: cover;
+  background-position: center;
+  position: absolute;
+  top: 35%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  animation: rotateIn 1s ease-in-out; 
+}
+
+/* Style for the input box and "Join Waitlist" button */
+.waitlist-container {
+  text-align: center;
+}
+
+.waitlist-input {
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  width: 320px; /* Adjust the width as needed */
+  height: 38px;
+  margin-right: 10px;
+  font-size: 1.2em;
+}
+
+.join-button {
+  background-color: #00ffb0; /* Button background color */
+  color: #000000; /* Button text color */
+  padding: 19px 28px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  font-size: 1.2em;
+}
+
+.join-button:hover {
+  background-color: #034a34; /* Hover background color */
+  color: white;
+}
+
+.coming-soon {
+  position: absolute;
+  bottom: 20px;
+  left: 80%;
+  transform: translate(-50%, -50%);
+  text-align: center;
+  font-size: 3em; /* Adjust the font size as needed */
+  font-weight: 400;
+  margin-bottom: 20px;
+  color:white; /* Text color */
+  width: 100%;
+}
+
+@keyframes slideInDown {
+  0% {
+    transform: translateY(-50px);
+    opacity: 0;
+  }
+  100% {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.footer{
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 40px;   /* Height of the footer */
+  background: rgb(3 255 176 / 28%);
+    text-align: center;
+    color: #ffffff;
+  font-size: 1.2em;
+  padding-top: 20px;
+}
+
+@media (max-width: 768px) {
+  /* Adjust styles for smaller screens here */
+  .app{
+    display: flex;
+    overflow: hidden;
+  }
+  body{
+    overflow: hidden;
+  }
+  /* body {
+    background-size: contain; /* Change background size for smaller screens */
+   
+
+  .coming-soon {
+    font-size: 24px; /* Decrease font size for smaller screens */
+  }
+
+  .logo {
+    display: flex;
+    max-width: 320px; /* Decrease logo size for smaller screens */
+    height: 100px;
+    margin-top: -30px;
+  }
+
+  .waitlist-container {
+    margin-top: 50px;
+  }
+
+  .waitlist-input {
+    height: 30px;
+    width: 80%; /* Adjust input width for smaller screens */
+  }
+  .join-button{
+    padding: 15px 20px;
+    margin-top: 20px;
+  }
+  .coming-soon {
+    bottom: 30px;
+  }
+}
