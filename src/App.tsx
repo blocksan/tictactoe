@@ -72,7 +72,7 @@ function App() {
       <div className="waitlist-container">
       <input
           type="email"
-          placeholder="Please, your email"
+          placeholder="Please enter your email"
           className="waitlist-input"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
