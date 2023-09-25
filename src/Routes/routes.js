@@ -10,6 +10,7 @@ import ForgetPasswordPage from "../Pages/Authentication/ForgetPassword";
 import Logout from "../Pages/Authentication/Logout";
 import Register from "../Pages/Authentication/Register";
 import UserProfile from "../Pages/Authentication/user-profile";
+import RiskCalculator from "../Pages/Calculator";
 
 const authProtectedRoutes = [
   //dashboard
@@ -18,6 +19,7 @@ const authProtectedRoutes = [
   
   // Profile
   { path: "/userprofile", component: <UserProfile /> },
+  { path: "/riskcalculator", component: <RiskCalculator /> },
 
   // this route should be at the end of all other routes
   // eslint-disable-next-line react/display-name

@@ -1,17 +1,17 @@
 const SidebarData = [
-    {
-        label: "Menu",
-        isMainMenu: true,
-    },
-    {
-        label: "Dashboard",
-        icon: "mdi mdi-home-variant-outline",
-        url: "/dashboard",
-        isHasArrow: true,
-        // issubMenubadge: true,
-        // bgcolor: "bg-primary",
-        // badgeValue: "3"
-    },
+    // {
+    //     label: "Menu",
+    //     isMainMenu: true,
+    // },
+    // {
+    //     label: "Dashboard",
+    //     icon: "mdi mdi-home-variant-outline",
+    //     url: "/dashboard",
+    //     isHasArrow: true,
+    //     // issubMenubadge: true,
+    //     // bgcolor: "bg-primary",
+    //     // badgeValue: "3"
+    // },
     // {
     //     label: "Calendar",
     //     icon: "mdi mdi-calendar-outline",
@@ -27,33 +27,44 @@ const SidebarData = [
     //     ],
     // },
     {
-        label: "Backtest Algos",
+        label: "Calculator",
         isMainMenu: true,
+        
     },
     {
-        label: "Price Action",
-        icon: "mdi mdi-email-outline",
-        subItem: [
-            { sublabel: "Hammer", link: "/#" },
-            { sublabel: "Shooting Star", link: "/#" },
-        ],
+        label: "Risk Calculator",
+        icon: "mdi mdi-calculator-variant",
+        url: "/riskcalculator",
+        isHasArrow: true,
     },
-    {
-        label: "Technical Indicators",
-        icon: "mdi mdi-email-outline",
-        subItem: [
-            { sublabel: "RSI", link: "/#" },
-            { sublabel: "MACD", link: "/#" },
-        ],
-    },
-    {
-        label: "Chart Patterns",
-        icon: "ri-bar-chart-line",
-        subItem:[
-            { sublabel: "Head and Shoulders", link: "/#" },
-            { sublabel: "Double Bottom", link: "/#" }
-        ]
-    },
+    // {
+    //     label: "Backtest Algos",
+    //     isMainMenu: true,
+    // },
+    // {
+    //     label: "Price Action",
+    //     icon: "mdi mdi-email-outline",
+    //     subItem: [
+    //         { sublabel: "Hammer", link: "/#" },
+    //         { sublabel: "Shooting Star", link: "/#" },
+    //     ],
+    // },
+    // {
+    //     label: "Technical Indicators",
+    //     icon: "mdi mdi-email-outline",
+    //     subItem: [
+    //         { sublabel: "RSI", link: "/#" },
+    //         { sublabel: "MACD", link: "/#" },
+    //     ],
+    // },
+    // {
+    //     label: "Chart Patterns",
+    //     icon: "ri-bar-chart-line",
+    //     subItem:[
+    //         { sublabel: "Head and Shoulders", link: "/#" },
+    //         { sublabel: "Double Bottom", link: "/#" }
+    //     ]
+    // },
 
     // {
     //     label: "Authentication",
