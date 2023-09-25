@@ -519,7 +519,10 @@ const RiskCalculator = () => {
                                             <Row>
                                                 <Col md="3">
                                                     <div className="mb-3">
-                                                        <Label className="form-label">Option Premium</Label>
+                                                        <span>Change the <strong>Option Premium Price</strong>, to find the best Target Combination</span>
+                                                        <br />
+                                                        <br/>
+                                                        <Label className="form-label">Option Premium Price</Label>
                                                         <Input
                                                             name="optionPremium"
                                                             label="optionPremium"
@@ -697,7 +700,7 @@ const RiskCalculator = () => {
                                                         </Col>
                                                         <Col md="3">
                                                             <Card color="info" className="card-info" md="2">
-                                                                <h6 className="card-header">SL in One Option Premium</h6>
+                                                                <h6 className="card-header">SL in Option Premium</h6>
 
                                                                 <CardBody>
 
@@ -712,7 +715,7 @@ const RiskCalculator = () => {
                                                         </Col>
                                                         <Col md="3">
                                                             <Card color="info" className="card-info" md="2">
-                                                                <h6 className="card-header">Option Premium Target Price</h6>
+                                                                <h6 className="card-header">Target in Option Premium</h6>
 
                                                                 <CardBody>
 
