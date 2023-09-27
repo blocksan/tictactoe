@@ -16,20 +16,20 @@ import Referral from "../Pages/Settings/Referral";
 
 const authProtectedRoutes = [
   //dashboard
-  { path: "/dashboard", component: <Dashboard /> },
+  // { path: "/dashboard", component: <Dashboard /> },
 
   // Profile
-  { path: "/userprofile", component: <UserProfile /> },
+  // { path: "/userprofile", component: <UserProfile /> },
   { path: "/referrallink", component: <Referral /> },
   { path: "/riskcalculator", component: <RiskCalculator /> },
 
   // this route should be at the end of all other routes
   // eslint-disable-next-line react/display-name
-  {
-    path: "/dashboard",
-    exact: true,
-    component: <Navigate to="/dashboard" />,
-  },
+  // {
+  //   path: "/dashboard",
+  //   exact: true,
+  //   component: <Navigate to="/dashboard" />,
+  // },
 ];
 
 const publicRoutes = [
