@@ -37,6 +37,17 @@ const SidebarData = [
         url: "/riskcalculator",
         isHasArrow: true,
     },
+    {
+        label: "Settings",
+        isMainMenu: true,
+    }
+    ,
+    {
+        label: "Referral Link",
+        icon: "mdi mdi-link-variant",
+        url: "/referrallink",
+        isHasArrow: true,
+    },
     // {
     //     label: "Backtest Algos",
     //     isMainMenu: true,

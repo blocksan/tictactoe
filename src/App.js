@@ -7,8 +7,7 @@ import './assets/scss/theme.scss';
 // Fake Backend 
 import fakeBackend from "./helpers/AuthType/fakeBackend";
 
-// Activating fake backend
-fakeBackend();
+
 
 // Firebase
 // Import Firebase Configuration file
@@ -25,9 +24,10 @@ fakeBackend();
 //   measurementId: process.env.REACT_APP_MEASUREMENTID,
 // }
 
-// init firebase backend
+// // init firebase backend
 // initFirebaseBackend(firebaseConfig)
-
+// Activating fake backend
+fakeBackend();
 
 function App() {
   return (

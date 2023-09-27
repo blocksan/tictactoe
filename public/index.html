@@ -11,7 +11,6 @@
 
   <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
   <link href='https://unpkg.com/boxicons@2.0.7/css/boxicons.min.css' rel='stylesheet'>
-
   <title>Trrader.in - Backtest to trade</title>
 </head>
 
@@ -20,5 +19,46 @@
   <div id="root"></div>
 
 </body>
+<script>
+  'use strict';
+
+// Remove preload class once page is fully loaded
+
+window.addEventListener('load', function() {
+  Array.from(document.getElementsByTagName('body')).forEach(function(el) {
+    el.classList.remove('preload');
+  });
+});
+
+// Add class to navigation when scrolling down
+
+document.addEventListener('scroll', function() {
+  const header = document.querySelector('.landing-header-main');
+  if (window.scrollY >= 20) {
+    header.classList.add('fade-in');
+  } else {
+    header.classList.remove('fade-in');
+  }
+});
+
+// Add class when mobile navigation icon is clicked
+
+Array.from(document.getElementsByClassName('nav-toggle')).forEach(function(el) {
+  el.addEventListener('click', function() {
+    Array.from(document.getElementsByTagName('body')).forEach(function(el) {
+      el.classList.toggle('no-scroll');
+    });
+    Array.from(document.getElementsByClassName('landing-header-main')).forEach(function(el) {
+      el.classList.toggle('active');
+    });
+  });
+});
+
+// Prevent background from scrolling on mobile when navigation is toggled
+
+document.addEventListener('touchmove', function(evt) {
+  evt.preventDefault();
+});
+</script>
 
 </html>

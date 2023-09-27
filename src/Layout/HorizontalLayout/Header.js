@@ -165,7 +165,7 @@ const Header = (props) => {
 
             <ProfileMenu />
 
-            <div
+            {/* <div
               className="dropdown d-inline-block"
               onClick={() => {
                 props.showRightSidebarAction(!props.showRightSidebar);
@@ -177,7 +177,7 @@ const Header = (props) => {
               >
                 <i className="mdi mdi-cog"></i>
               </button>
-            </div>
+            </div> */}
           </div>
         </div>
       </header>

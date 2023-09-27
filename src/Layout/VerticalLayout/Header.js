@@ -13,7 +13,7 @@ import { withTranslation } from "react-i18next";
 import logoSm from "../../assets/images/logo-sm.png";
 import logoDark from "../../assets/images/logo-dark.png";
 import logoLight from "../../assets/images/logo-light.png";
-
+import logoVoiled from "../../assets/images/OnlyLogoVoiled.png";
 // Redux Store
 import {
   showRightSidebarAction,
@@ -68,22 +68,23 @@ const Header = (props) => {
       <header id="page-topbar">
         <div className="navbar-header">
           <div className="d-flex">
-            <div className="navbar-brand-box text-center">
+            <div className="navbar-brand-box text-left">
               <Link to="/" className="logo logo-dark">
                 <span className="logo-sm">
-                  <img src={logoSm} alt="logo-sm-dark" height="22" />
+                  <img src={logoVoiled} alt="logo-sm-dark" height="22" />
                 </span>
                 <span className="logo-lg">
-                  <img src={logoDark} alt="logo-dark" height="24" />
+                  <img src={logoVoiled} alt="logo-dark" height="24" />
                 </span>
               </Link>
 
-              <Link to="/" className="logo logo-light">
+              <Link to="/" className="logo logo-light text-left">
                 <span className="logo-sm">
-                  <img src={logoSm} alt="logo-sm-light" height="22" />
+                  <img src={logoVoiled} alt="logo-sm-light" width={40} />
                 </span>
-                <span className="logo-lg">
-                  <img src={logoLight} alt="logo-light" height="24" />
+                <span className="logo-lg text-left">
+                  <img src={logoVoiled} alt="logo-light" width={40}  />
+                  <strong style={{color:"white"}}>Trrader.in</strong>
                 </span>
               </Link>
             </div>
@@ -171,7 +172,7 @@ const Header = (props) => {
 
             <ProfileMenu />
 
-            <div
+            {/* <div
               className="dropdown d-inline-block"
               onClick={() => {
                 props.showRightSidebarAction(!props.showRightSidebar);
@@ -183,7 +184,7 @@ const Header = (props) => {
               >
                 <i className="mdi mdi-cog"></i>
               </button>
-            </div>
+            </div> */}
           </div>
         </div>
       </header>

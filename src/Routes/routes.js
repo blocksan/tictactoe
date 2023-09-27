@@ -10,21 +10,23 @@ import ForgetPasswordPage from "../Pages/Authentication/ForgetPassword";
 import Logout from "../Pages/Authentication/Logout";
 import Register from "../Pages/Authentication/Register";
 import UserProfile from "../Pages/Authentication/user-profile";
-import RiskCalculator from "../Pages/Calculator";
+import RiskCalculator from "../Pages/Calculator/RiskCalculator";
+import Landing from './../Pages/Landing/landing'
+import Referral from "../Pages/Settings/Referral";
 
 const authProtectedRoutes = [
   //dashboard
   { path: "/dashboard", component: <Dashboard /> },
 
-  
   // Profile
   { path: "/userprofile", component: <UserProfile /> },
+  { path: "/referrallink", component: <Referral /> },
   { path: "/riskcalculator", component: <RiskCalculator /> },
 
   // this route should be at the end of all other routes
   // eslint-disable-next-line react/display-name
   {
-    path: "/",
+    path: "/dashboard",
     exact: true,
     component: <Navigate to="/dashboard" />,
   },
@@ -33,10 +35,15 @@ const authProtectedRoutes = [
 const publicRoutes = [
 
   // Authentication Page
+  {
+    path: "/",
+    exact: true,
+    component: <Landing></Landing>,
+  },
   { path: "/logout", component: <Logout /> },
-  { path: "/login", component: <Login /> },
-  { path: "/forgot-password", component: <ForgetPasswordPage /> },
-  { path: "/register", component: <Register /> },
+  // { path: "/login", component: <Login /> },
+  // { path: "/forgot-password", component: <ForgetPasswordPage /> },
+  // { path: "/register", component: <Register /> },
 ];
 
 export { authProtectedRoutes, publicRoutes };

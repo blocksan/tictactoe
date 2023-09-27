@@ -67,3 +67,77 @@ File: Main Css File
 @import "custom/pages/coming-soon";
 @import "custom/pages/timeline";
 @import "custom/pages/extras-pages";
+
+$white: #fff;
+$google-blue: #4285f4;
+$button-active-blue: #1669F2;
+.create-resume-button-div{
+  align-items: center;
+  display: flex;
+  justify-content: center;
+  .create-resume-button{
+    padding: 20px;
+    max-width: 320px;
+  }
+  
+}
+
+
+.google-btn {
+  width: 184px;
+  height: 42px;
+  background-color: $google-blue;
+  border-radius: 2px;
+  box-shadow: 0 3px 4px 0 rgba(0,0,0,.25);
+  .google-icon-wrapper {
+    position: absolute;
+    margin-top: 1px;
+    margin-left: 1px;
+    width: 40px;
+    height: 40px;
+    border-radius: 2px;
+    background-color: $white;
+  }
+  .google-icon {
+    position: absolute;
+    margin-top: 11px;
+    margin-left: 11px;
+    width: 18px;
+    height: 18px;
+  }
+  .btn-text {
+    float: right;
+    margin: 11px 11px 0 0;
+    color: $white;
+    font-size: 14px;
+    letter-spacing: 0.2px;
+    font-family: "Roboto";
+  }
+  &:hover {
+    box-shadow: 0 0 6px $google-blue;
+  }
+  &:active {
+    background: $button-active-blue;
+  }
+  
+}
+
+.calculated-risk-card{
+  .card-body{
+    text-align: center;
+  }
+  .card-text{
+    font-size: 1.3em;
+    font-weight: bold;
+  }
+}
+.chart-bottom-card-danger{
+  background: #fc4b4b;
+  padding-top: 10px;
+  font-weight: bold;
+  color: white;
+  .chart-bottom-card-danger-text{
+    color: white;
+  }
+}
+@import url(https://fonts.googleapis.com/css?family=Roboto:500);

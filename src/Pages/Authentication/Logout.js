@@ -20,7 +20,7 @@ const Logout = () => {
   }, [dispatch]);
 
   if (isUserLogout) {
-    return <Navigate to="/login" />;
+    return <Navigate to="/" />;
   }
 
   return <></>;
