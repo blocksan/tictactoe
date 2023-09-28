@@ -38,9 +38,15 @@ const SidebarData = [
         isHasArrow: true,
     },
     {
-        label: "Settings",
-        isMainMenu: true,
-    }
+        label: "Target Calculator",
+        icon: "mdi mdi-trending-up",
+        url: "/targetcalculator",
+        isHasArrow: true,
+    },
+    // {
+    //     label: "Settings",
+    //     isMainMenu: true,
+    // }
     ,
     // {
     //     label: "Referral Link",

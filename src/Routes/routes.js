@@ -11,6 +11,7 @@ import Logout from "../Pages/Authentication/Logout";
 import Register from "../Pages/Authentication/Register";
 import UserProfile from "../Pages/Authentication/user-profile";
 import RiskCalculator from "../Pages/Calculator/RiskCalculator";
+import TargetCalculator from "../Pages/Calculator/TargetCalculator";
 import Landing from './../Pages/Landing/landing'
 import Referral from "../Pages/Settings/Referral";
 
@@ -21,6 +22,7 @@ const authProtectedRoutes = [
   // Profile
   // { path: "/userprofile", component: <UserProfile /> },
   { path: "/referrallink", component: <Referral /> },
+  { path: "/targetcalculator", component: <TargetCalculator /> },
   { path: "/riskcalculator", component: <RiskCalculator /> },
 
   // this route should be at the end of all other routes

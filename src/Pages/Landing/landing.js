@@ -162,10 +162,10 @@ const Landing = (props) => {
                 <section className="padding">
                     <div className="max-width-l">
                         <div className="center">
-                            <h2>Timeline</h2>
+                            {/* <h2>Timeline</h2> */}
                             <p className="paragraph">A successful trader can vary significantly from person to person and depends on various factors, including your starting point, Goals, <strong>Risk Management</strong> and the Trading Strategies you choose.</p>
                         </div>
-                        <div className="row margin-top timeline">
+                        {/* <div className="row margin-top timeline">
                             <div className="col-one-fourth">
                                 <h5>Research</h5>
                                 <p>Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo.</p>
@@ -182,7 +182,7 @@ const Landing = (props) => {
                                 <h5>Launch</h5>
                                 <p>Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium.</p>
                             </div>
-                        </div>
+                        </div> */}
                     </div>
                 </section>
 
@@ -201,12 +201,12 @@ const Landing = (props) => {
                     </div>
                 </section>
 
-                <section className="bg-gradient-light padding">
+                <section className="bg-gradient-light">
                     <div className="center max-width-l">
-                        <h2>How to use the Risk Management Calculator ?</h2>
+                        {/* <h2>How to use the Risk Management Calculator ?</h2> */}
                         {/* <p className="paragraph">It is as simple as </p> */}
                     </div>
-                    <div className="row margin-top max-width-l">
+                    {/* <div className="row margin-top max-width-l">
                         <div className="col-one-fourth card card-content">
                             <p className="muted">Step 1</p>
                             <h4>Download</h4>
@@ -227,7 +227,7 @@ const Landing = (props) => {
                             <h4>Done!</h4>
                             <p className="paragraph">Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium.</p>
                         </div>
-                    </div>
+                    </div> */}
                     {/* <div className="center margin-top max-width-l">
                         <span className="muted">If you need any help, make sure to </span><a href="signup.html">book a demo</a><span className="muted">.</span>
                     </div> */}
