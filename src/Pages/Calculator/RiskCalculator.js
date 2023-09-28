@@ -448,7 +448,7 @@ const RiskCalculator = () => {
                                                 </Col>
                                             </Row>
                                         </Col>
-                                        <Col md="4" className="offset-md-2">
+                                        <Col md="5" className="offset-md-1">
                                             <Row>
                                                 <Col md="6">
                                                     <Card md="2">

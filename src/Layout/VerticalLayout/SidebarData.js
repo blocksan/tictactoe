@@ -42,12 +42,12 @@ const SidebarData = [
         isMainMenu: true,
     }
     ,
-    {
-        label: "Referral Link",
-        icon: "mdi mdi-link-variant",
-        url: "/referrallink",
-        isHasArrow: true,
-    },
+    // {
+    //     label: "Referral Link",
+    //     icon: "mdi mdi-link-variant",
+    //     url: "/referrallink",
+    //     isHasArrow: true,
+    // },
     // {
     //     label: "Backtest Algos",
     //     isMainMenu: true,
