@@ -1,157 +1,178 @@
-import firebase from 'firebase/compat/app';
+import { initializeApp } from "firebase/app";
+import { getFirestore,collection, addDoc, updateDoc, query, where, getDocs } from "firebase/firestore";
+// import { getAuth, signInWithPopup, GoogleAuthProvider } from "firebase/auth";
+import {ref} from 'firebase/database';
+// import { getAnalytics } from "firebase/analytics";
 
-// Add the Firebase products that you want to use
-import "firebase/compat/auth";
-import "firebase/compat/firestore";
-
+let firebaseApp=null;
+let _fireBaseBackend = null;
 class FirebaseAuthBackend {
   constructor(firebaseConfig) {
-    if (firebaseConfig) {
+    if (firebaseConfig && !firebaseApp) {
       // Initialize Firebase
-      firebase.initializeApp(firebaseConfig);
-      firebase.auth().onAuthStateChanged(user => {
-        if (user) {
-          localStorage.setItem("authUser", JSON.stringify(user));
-        } else {
-          localStorage.removeItem("authUser");
-        }
-      });
+      firebaseApp = initializeApp(firebaseConfig);
+      // firebase.auth().onAuthStateChanged(user => {
+      //   if (user) {
+      //     localStorage.setItem("authUser", JSON.stringify(user));
+      //   } else {
+      //     localStorage.removeItem("authUser");
+      //   }
+      // });
     }
   }
 
-  /**
-   * Registers the user with given details
-   */
-  registerUser = (email, password) => {
-    return new Promise((resolve, reject) => {
-      firebase
-        .auth()
-        .createUserWithEmailAndPassword(email, password)
-        .then(
-          user => {
-            resolve(firebase.auth().currentUser);
-          },
-          error => {
-            reject(this._handleError(error));
-          }
-        );
-    });
-  };
 
   /**
    * Registers the user with given details
    */
-  editProfileAPI = (email, password) => {
-    return new Promise((resolve, reject) => {
-      firebase
-        .auth()
-        .createUserWithEmailAndPassword(email, password)
-        .then(
-          user => {
-            resolve(firebase.auth().currentUser);
-          },
-          error => {
-            reject(this._handleError(error));
-          }
-        );
-    });
-  };
+  // registerUser = (email, password) => {
+  //   return new Promise((resolve, reject) => {
+  //     firebase
+  //       .auth()
+  //       .createUserWithEmailAndPassword(email, password)
+  //       .then(
+  //         user => {
+  //           resolve(firebase.auth().currentUser);
+  //         },
+  //         error => {
+  //           reject(this._handleError(error));
+  //         }
+  //       );
+  //   });
+  // };
+
+  /**
+   * Registers the user with given details
+   */
+  // editProfileAPI = (email, password) => {
+  //   return new Promise((resolve, reject) => {
+  //     firebase
+  //       .auth()
+  //       .createUserWithEmailAndPassword(email, password)
+  //       .then(
+  //         user => {
+  //           resolve(firebase.auth().currentUser);
+  //         },
+  //         error => {
+  //           reject(this._handleError(error));
+  //         }
+  //       );
+  //   });
+  // };
 
   /**
    * Login user with given details
    */
-  loginUser = (email, password) => {
-    return new Promise((resolve, reject) => {
-      firebase
-        .auth()
-        .signInWithEmailAndPassword(email, password)
-        .then(
-          user => {
-            resolve(firebase.auth().currentUser);
-          },
-          error => {
-            reject(this._handleError(error));
-          }
-        );
-    });
-  };
+  // loginUser = (email, password) => {
+  //   return new Promise((resolve, reject) => {
+  //     firebase
+  //       .auth()
+  //       .signInWithEmailAndPassword(email, password)
+  //       .then(
+  //         user => {
+  //           resolve(firebase.auth().currentUser);
+  //         },
+  //         error => {
+  //           reject(this._handleError(error));
+  //         }
+  //       );
+  //   });
+  // };
 
   /**
    * forget Password user with given details
    */
-  forgetPassword = email => {
-    return new Promise((resolve, reject) => {
-      firebase
-        .auth()
-        .sendPasswordResetEmail(email, {
-          url:
-            window.location.protocol + "//" + window.location.host + "/login",
-        })
-        .then(() => {
-          resolve(true);
-        })
-        .catch(error => {
-          reject(this._handleError(error));
-        });
-    });
-  };
+  // forgetPassword = email => {
+  //   return new Promise((resolve, reject) => {
+  //     firebase
+  //       .auth()
+  //       .sendPasswordResetEmail(email, {
+  //         url:
+  //           window.location.protocol + "//" + window.location.host + "/login",
+  //       })
+  //       .then(() => {
+  //         resolve(true);
+  //       })
+  //       .catch(error => {
+  //         reject(this._handleError(error));
+  //       });
+  //   });
+  // };
 
   /**
    * Logout the user
    */
   logout = () => {
-    return new Promise((resolve, reject) => {
-      firebase
-        .auth()
-        .signOut()
-        .then(() => {
-          resolve(true);
-        })
-        .catch(error => {
-          reject(this._handleError(error));
-        });
-    });
+    return true;
   };
 
   /**
    * Social Login user with given details
    */
-  socialLoginUser = (data, type) => {
-    let credential = {};
-    if (type === "google") {
-      credential = firebase.auth.GoogleAuthProvider.credential(data.idToken, data.token);
-    } else if (type === "facebook") {
-      credential = firebase.auth.FacebookAuthProvider.credential(data.token);
-    }
+  socialLoginUser =  (data, type) => {
     return new Promise((resolve, reject) => {
-      if (!!credential) {
-        firebase.auth().signInWithCredential(credential)
-          .then(user => {
-            resolve(this.addNewUserToFirestore(user));
-          })
-          .catch(error => {
-            reject(this._handleError(error));
-          });
-      } else {
-        // reject(this._handleError(error));
-      }
+            try{
+              resolve(this.addNewUserToFirestore(data));
+            }catch(err){
+              reject(this._handleError(err));
+            }
     });
+    // console.log('---data---',data);
+    // console.log('---type---',type)
+    // if (type === "google") {
+    //   credential = firebase.auth.GoogleAuthProvider.credential(data.token);
+    // } else if (type === "facebook") {
+    //   credential = firebase.auth.FacebookAuthProvider.credential(data.token);
+    // }
+    // console.log('---credential---',credential)
+    // return new Promise((resolve, reject) => {
+    //   if (!!credential) {
+    //     firebase.auth().signInWithCredential(credential)
+    //       .then(user => {
+    //         console.log('---user---',user)
+    //         resolve(this.addNewUserToFirestore(user));
+    //       })
+    //       .catch(error => {
+    //         console.log(error,'---error--')
+    //         reject(this._handleError(error));
+    //       });
+    //   } else {
+    //     // console.log(error)
+    //     // reject(this._handleError(error));
+    //   }
+    // });
   };
 
-  addNewUserToFirestore = (user) => {
-    const collection = firebase.firestore().collection("users");
-    const { profile } = user.additionalUserInfo;
-    const details = {
-      firstName: profile.given_name ? profile.given_name : profile.first_name,
-      lastName: profile.family_name ? profile.family_name : profile.last_name,
-      fullName: profile.name,
-      email: profile.email,
-      picture: profile.picture,
-      createdDtm: firebase.firestore.FieldValue.serverTimestamp(),
-      lastLoginTime: firebase.firestore.FieldValue.serverTimestamp()
-    };
-    collection.doc(firebase.auth().currentUser.uid).set(details);
-    return { user, details };
+  addNewUserToFirestore = async (user) => {
+    try{
+      const db = getFirestore(firebaseApp);
+      const dbUser = {
+        name: user.name,
+        email: user.email,
+        avatarUrl: user.picture,
+        createdOn: new Date(),
+        lastAccessedOn: new Date(),
+        viaGooleSignIn: true,
+      };
+
+      // await collection(db, "users").id(user.uid).set(dbUser);
+      const userQuery = query(collection(db, "users"), where("email", "==", dbUser.email));
+      const querySnapshot = await getDocs(userQuery);
+      if(!querySnapshot.empty){
+        await updateDoc(querySnapshot.docs[0].ref, {
+          lastAccessedOn: new Date(),
+        });
+      }else{
+        await addDoc(collection(db, "users"), {
+          ...dbUser
+        });
+      }
+      return {user:dbUser};
+      // const collection = firebaseApp.firestore().collection("users");
+    }catch(err){
+      console.log(err,'---err--')
+      throw err;
+    }
   };
 
   setLoggeedInUser = user => {
@@ -177,7 +198,6 @@ class FirebaseAuthBackend {
   }
 }
 
-let _fireBaseBackend = null;
 
 /**
  * Initilize the backend

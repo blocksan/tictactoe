@@ -15,19 +15,21 @@ import { Link } from "react-router-dom";
 import withRouter from "../withRouter";
 
 // users
-import user1 from "../../../assets/images/users/avatar-1.jpg";
+// import user1 from "../../../assets/images/users/avatar-1.jpg";
 
 const ProfileMenu = props => {
   // Declare a new state variable, which we'll call "menu"
   const [menu, setMenu] = useState(false);
 
   const [username, setusername] = useState("Admin");
+  const [avatarUrl, setAvatarUrl] = useState();
 
   useEffect(() => {
     if (localStorage.getItem("authUser")) {
       if (process.env.REACT_APP_DEFAULTAUTH === "firebase") {
         const obj = JSON.parse(localStorage.getItem("authUser"));
-        setusername(obj.displayName);
+        setusername(obj.user.name);
+        setAvatarUrl(obj.user.avatarUrl);
       } else if (
         process.env.REACT_APP_DEFAULTAUTH === "fake" ||
         process.env.REACT_APP_DEFAULTAUTH === "jwt"
@@ -52,7 +54,7 @@ const ProfileMenu = props => {
         >
           <img
             className="rounded-circle header-profile-user"
-            src={user1}
+            src={avatarUrl}
             alt="Header Avatar"
           />
           <span className="d-none d-xl-inline-block ms-2 me-2">{username}</span>

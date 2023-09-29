@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import PropTypes from "prop-types";
 import logoVoiled from "../../assets/images/OnlyLogoVoiled.png";
 import withRouter from "../../components/Common/withRouter";
@@ -21,8 +21,7 @@ const Landing = (props) => {
             const postData = {
                 name: res.name,
                 email: res.email,
-                token: res.token,
-                idToken: res.tokenId,
+                picture: res.picture,
             };
             dispatch(socialLogin(postData, props.router.navigate, type));
         } else if (type === "facebook" && res) {
@@ -40,10 +39,9 @@ const Landing = (props) => {
     const googleResponse = response => {
         let user = jwt_decode(response.credential);
         const formattedResponse = {
-            ...user,
-            token: response.credential,
-
+            ...user
         }
+        // console.log(formattedResponse,'--formattedResponse--')
         signIn(formattedResponse, "google");
     };
     return (
@@ -68,6 +66,9 @@ const Landing = (props) => {
                                     render={renderProps => (
                                         <i className="mdi mdi-google" onClick={renderProps.onClick} />
                                     )}
+                                    theme="filled_blue"
+                                    shape="circle"
+                                    useOneTap
                                     onSuccess={googleResponse}
                                     onFailure={() => { }}
                                 />
@@ -92,6 +93,8 @@ const Landing = (props) => {
                                         render={renderProps => (
                                             <i className="mdi mdi-google" onClick={renderProps.onClick} />
                                         )}
+                                        theme="filled_blue"
+                                        shape="circle"
                                         onSuccess={googleResponse}
                                         onFailure={() => { }}
                                     />
@@ -272,6 +275,8 @@ const Landing = (props) => {
                                         render={renderProps => (
                                             <i className="mdi mdi-google" onClick={renderProps.onClick} />
                                         )}
+                                        theme="filled_blue"
+                                        shape="circle"
                                         onSuccess={googleResponse}
                                         onFailure={() => { }}
                                     />
