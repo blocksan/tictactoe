@@ -87,9 +87,9 @@ const Landing = (props) => {
                         <div className="row max-width-l">
                             <div className="col-one-half middle">
                                 <div>
-                                    <h1 className="hero text-white" >Manage your risk today, to trade tomorrow.</h1>
+                                    <h1 className="hero text-white" >Manage your Risk today, to Trade tomorrow.</h1>
                                     {/* <p className="lead"></p> */}
-                                    <p className="lead">A lightweight tool suite which can you help you to minimise your loss and keeping you longer in the market</p>
+                                    <p className="lead">A lightweight tool suite which can you help you to minimise your loss and can keep you longer in the market.</p>
                                     <GoogleLogin
                                         className="button button-primary space-top" role="button" style={{ "maxWidth": "120px" }}
                                         clientId={google.CLIENT_ID}
@@ -244,7 +244,7 @@ const Landing = (props) => {
                     <div className="padding">
                         <div className="center margin-bottom max-width-m">
                             <h3 className="text-white">Trade with skills, knowledge and better risk management</h3>
-                            <p className="paragraph"> suite which can you help you to minimise your loss and can help you to be longer in the market.</p>
+                            <p className="paragraph"> suite which can you help you to minimise your loss and can keep you longer in the market.</p>
                         </div>
                         <div className="center margin-bottom max-width-l">
                             {/* <div className="row margin-bottom min-two-columns">
