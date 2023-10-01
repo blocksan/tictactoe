@@ -394,7 +394,7 @@ const RiskCalculator = () => {
                                                 </Col>
                                                 <Col md="6">
                                                     <div className="mb-3">
-                                                        <Label className="form-label">Maximum SL(Drawdown) Percentage %</Label>
+                                                        <Label className="form-label">Maximum SL(Drawdown) Percentage of Trade %</Label>
                                                         <Input
                                                             name="maxDrawDownPercentage"
                                                             label="maxDrawDownPercentage"
@@ -452,7 +452,7 @@ const RiskCalculator = () => {
                                             <Row>
                                                 <Col md="6">
                                                     <Card md="2">
-                                                        <h6 className="card-header">BANKNIFTY - Lot Size </h6>
+                                                        <h6 className="card-header">BANKNIFTY - 1 Lot Size </h6>
 
                                                         <CardBody className="text-center">
 
@@ -464,7 +464,7 @@ const RiskCalculator = () => {
                                                 </Col>
                                                 <Col md="6">
                                                     <Card md="2">
-                                                        <h6 className="card-header">FINNIFTY - Lot Size</h6>
+                                                        <h6 className="card-header">FINNIFTY - 1 Lot Size</h6>
 
                                                         <CardBody className="text-center">
 
@@ -478,7 +478,7 @@ const RiskCalculator = () => {
                                             <Row>
                                                 <Col md="6" className="offset-md-2">
                                                     <Card color="gray" className="" md="2">
-                                                        <h6 className="card-header">NIFTY 50 - Lot Size</h6>
+                                                        <h6 className="card-header">NIFTY 50 - 1 Lot Size</h6>
 
                                                         <CardBody className="text-center">
 
@@ -609,7 +609,7 @@ const RiskCalculator = () => {
                                             {
                                                 title: "Daily Max SL Capacity",
                                                 count: calculateMetadata.maxSLCapacityDaily,
-                                                percentage: riskCalculatorForm.values.maxDrawDownPercentage,
+                                                percentage: (calculateMetadata.maxSLCapacityDaily/riskCalculatorForm.values.tradingCapital*100).toFixed(2),
                                                 color: "danger",
                                             },
                                             {
