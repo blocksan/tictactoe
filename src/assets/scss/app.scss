@@ -123,8 +123,12 @@ $button-active-blue: #1669F2;
 }
 
 .calculated-risk-card{
+  .card-header{
+    min-height: 54px
+  }
   .card-body{
-    text-align: center;
+    // text-align: center;
+    min-height: 85px;
   }
   .card-text{
     font-size: 1.3em;

@@ -45,6 +45,7 @@
     "react-facebook-login": "^4.1.1",
     "react-flatpickr": "^3.10.7",
     "react-google-login": "^5.2.2",
+    "react-html-parser": "^2.0.2",
     "react-i18next": "^11.14.3",
     "react-image-lightbox": "^5.1.4",
     "react-input-mask": "^2.0.4",

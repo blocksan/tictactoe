@@ -54,7 +54,10 @@ const Landing = (props) => {
                         <ul className="inline left">
                             <div style={{ display: "flex", alignItems: "center", color: "white" }}>
                                 <img src={logoVoiled} alt="" style={{ width: 60 }} />
-                                <h4 style={{ color: "white" }}>Trrader.in</h4>
+                                <div>
+                                <h4 style={{ color: "white", marginBottom:0 }}>Trrader.in</h4>
+                                <h6 style={{ color: "white", fontSize:"0.9em", fontWeight:"normal" }}>Built by Trader, for Trader</h6>
+                                </div>
                             </div>
                         </ul>
                         <ul className="inline right">
@@ -84,9 +87,9 @@ const Landing = (props) => {
                         <div className="row max-width-l">
                             <div className="col-one-half middle">
                                 <div>
-                                    <h1 className="hero text-white" >Risk Management Calculator</h1>
-                                    <p className="lead">Manage your risk today, to trade tomorrow.</p>
-                                    {/* <p className="lead">A lightweight tool which can you help you to minimise your loss and keeping you longer in the market</p> */}
+                                    <h1 className="hero text-white" >Manage your risk today, to trade tomorrow.</h1>
+                                    {/* <p className="lead"></p> */}
+                                    <p className="lead">A lightweight tool suite which can you help you to minimise your loss and keeping you longer in the market</p>
                                     <GoogleLogin
                                         className="button button-primary space-top" role="button" style={{ "maxWidth": "120px" }}
                                         clientId={google.CLIENT_ID}
@@ -109,7 +112,7 @@ const Landing = (props) => {
                     <div className="padding">
                         <div className="row margin-bottom max-width-l">
                             <div className="col-one-half middle">
-                                <h3 style={{ color: "white" }}>Helping Traders Today for Tomorrow</h3>
+                                <h3 style={{ color: "white" }}>Risk Calculator</h3>
                                 <p className="paragraph">You just need to feed the inputs like Trading Capital, Trading Sessions, Max SL count, Target Ratio, etc... </p>
                             </div>
                             <div className="col-one-half">
@@ -122,7 +125,7 @@ const Landing = (props) => {
                             </div>
                             <div className="col-one-half middle">
                                 <h3 style={{ color: "white" }}>Capital Drawdown graph</h3>
-                                <p className="paragraph">100% of this HTML template, including all modules and components have been designed in Sketch.</p>
+                                <p className="paragraph">Gives you insight on your trading capital. Information like how many days you can survive, what maximum SL you should take, and many other useful metrics to improve you as a trader.</p>
                             </div>
                         </div>
                     </div>
@@ -193,8 +196,8 @@ const Landing = (props) => {
                     <div className="row no-gutter">
                         <div className="col-one-half middle padding">
                             <div className="max-width-m">
-                                <p className="paragraph">Danielle Mayer, business owner, says:</p>
-                                <h3>"Support is fantastic. Nothing but great results!"</h3>
+                                <p className="paragraph">Marty Schwartz:</p>
+                                <h3>"Learn to take losses. The most important thing in making money is not letting your losses get out of hand!"</h3>
                             </div>
                         </div>
                         <div className="col-one-half middle padding">
@@ -241,7 +244,7 @@ const Landing = (props) => {
                     <div className="padding">
                         <div className="center margin-bottom max-width-m">
                             <h3 className="text-white">Trade with skills, knowledge and better risk management</h3>
-                            <p className="paragraph">A lightweight tool which can you help you to minimise your loss and can help you to be longer in the market.</p>
+                            <p className="paragraph"> suite which can you help you to minimise your loss and can help you to be longer in the market.</p>
                         </div>
                         <div className="center margin-bottom max-width-l">
                             {/* <div className="row margin-bottom min-two-columns">
@@ -265,9 +268,16 @@ const Landing = (props) => {
                         </div>
                         <div className="card card-content dark margin-bottom max-width-l">
                             <form className="row reduce-spacing">
-                                <div className="col-two-thirds center-tablet middle">
-                                    <h3 className="space-none text-white">Ready to get started?</h3>
-                                    <p className="paragraph">Manage your risk today, to trade tomorrow.</p>
+                            <div className="col-two-thirds center-tablet middle">
+                                    <div style={{ display: "flex", alignItems: "center", color: "white"}}>
+                                    <img src={logoVoiled} alt="" style={{ width: 60 }} />
+                                    <div>
+                                    </div>
+                                           <div style={{marginLeft:"10px"}}>
+                                                <h3 className="space-none text-white">Ready to get started?</h3>
+                                                <p className="paragraph">Manage your risk today, to trade tomorrow.</p>
+                                            </div>
+                                </div>
                                 </div>
                                 <div className="col-one-third middle">
                                     <GoogleLogin
@@ -286,8 +296,9 @@ const Landing = (props) => {
                         </div>
                         <div className="row center-desktop max-width-l">
                             <div className="col-two-fifths">
-                                <h6>Trrader ®</h6>
-                                <p>Product by Trrader, for Trrader.</p>
+                            
+                                {/* <h6>Trrader ®</h6> */}
+                                {/* <p>Product by Trrader, for Trrader.</p> */}
                             </div>
                             <div className="col-one-fifth">
                                 {/* <h6>Info</h6>
@@ -299,7 +310,7 @@ const Landing = (props) => {
                                     <li><a href="#">Pricing</a></li>
                                 </ul> */}
                             </div>
-                            <div className="col-one-fifth">
+                            {/* <div className="col-one-fifth">
                                 <h6>Support</h6>
                                 <ul className="blank">
                                     <li><a href="#">Documentation</a></li>
@@ -308,7 +319,7 @@ const Landing = (props) => {
                                     <li><a href="#">Updates</a></li>
                                     <li><a href="#">Contact</a></li>
                                 </ul>
-                            </div>
+                            </div> */}
                             <div className="col-one-fifth">
                                 {/* <h6>Connect</h6>
                                 <ul className="blank">

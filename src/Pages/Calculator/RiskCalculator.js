@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-
+import ReactHtmlParser from 'react-html-parser';
 import {
     Row,
     Col,
@@ -295,7 +295,7 @@ const RiskCalculator = () => {
                 <Row>
                     <Col lg={12}>
                         <Card>
-                            <CardBody style={{background:"rgb(241 241 241 / 41%)"}}>
+                            <CardBody style={{background:"rgb(241 241 241 / 7%)"}}>
                                 {/* <CardTitle>Risk Calculator</CardTitle> */}
                                 <br />
                                 <CardSubtitle className="mb-3">
@@ -594,27 +594,32 @@ const RiskCalculator = () => {
                                     </Row>
                                     <Row>
                                         <Col md="12">
-                                        {selectedIndexCalculatedRisk.drawDownMetrics && <DayWiseCapitalDrawDown drawDownMetrics = {selectedIndexCalculatedRisk.drawDownMetrics} calculatedMetadata={[
+                                        {selectedIndexCalculatedRisk.drawDownMetrics && <DayWiseCapitalDrawDown drawDownMetrics = {selectedIndexCalculatedRisk.drawDownMetrics} title={`Day Wise Capital Drawdown at <strong>&#8377; ${selectedIndexCalculatedRisk.optionPremium}</strong>  Option Premium`} calculatedMetadata={[
+                                            {
+                                                title: `Starting Trading Capital`,
+                                                count: `&#8377; ${riskCalculatorForm.values.tradingCapital} `,
+                                                color: "info",
+                                            },
                                             {
                                                 title: `Capital left after ${riskCalculatorForm.values.numberOfTradingSessions} Trading Sessions`,
-                                                count: `${selectedIndexCalculatedRisk.capitalLeftAfterTradingSessions}`,
+                                                count: `&#8377; ${selectedIndexCalculatedRisk.capitalLeftAfterTradingSessions}`,
                                                 color: "primary",
                                             },
                                             {
-                                                title: "Tradable Lots in One Trade",
-                                                count: selectedIndexCalculatedRisk.totalTradableLots,
+                                                title: "Tradable Lots in 1 Trade",
+                                                count: `${selectedIndexCalculatedRisk.totalTradableLots}`,
                                                 color: `${selectedIndexCalculatedRisk.totalTradableLots > 0 ?'primary':''}`,
                                                 makeDanger:`${selectedIndexCalculatedRisk.totalTradableLots > 0 ?false:true}`,
                                             },
                                             {
                                                 title: "Daily Max SL Capacity",
-                                                count: calculateMetadata.maxSLCapacityDaily,
+                                                count: `&#8377; ${calculateMetadata.maxSLCapacityDaily}`,
                                                 percentage: (calculateMetadata.maxSLCapacityDaily/riskCalculatorForm.values.tradingCapital*100).toFixed(2),
                                                 color: "danger",
                                             },
                                             {
                                                 title: "Max SL in One Trade",
-                                                count: calculateMetadata.maxSLCapacityInOneTrade,
+                                                count: `&#8377; ${calculateMetadata.maxSLCapacityInOneTrade}`,
                                                 color: "warning",
                                             }
                                             
@@ -763,6 +768,51 @@ const RiskCalculator = () => {
                                                     </Col>
                                                     <Col md="9">
                                                         <Row>
+                                                        <Col md="3">
+                                                                <Card color="" className={`${selectedIndexCalculatedRisk.totalTradableLots > 0? 'card-primary':'card-danger'} calculated-risk-card` } md="2">
+                                                                    <h6 className="card-header">Tradable Lots in 1 Trade</h6>
+
+                                                                    <CardBody>
+
+                                                                        <CardText>
+                                                                            {selectedIndexCalculatedRisk.totalTradableLots}
+
+                                                                        </CardText>
+                                                                    </CardBody>
+                                                                </Card>
+                                                            </Col>
+                                                        <Col md="3">
+                                                            
+                                                                <Card color="" className="card calculated-risk-card" md="2">
+                                                                    <h6 className="card-header">SL of 1 Trade</h6>
+
+                                                                    <CardBody>
+
+                                                                        <CardText>
+                                                                            <i className="mdi mdi-trending-down" style={{fontSize: "32px", color:"red"}}></i> &nbsp;
+                                                                            <h4 style={{    marginTop: "-37px",marginRight: "0px",textAlign:"center"}}>
+                                                                            &#8377; {selectedIndexCalculatedRisk.totalSLofTrade}</h4>
+
+                                                                        </CardText>
+                                                                    </CardBody>
+                                                                </Card>
+                                                            </Col>
+                                                            <Col md="3">
+                                                                <Card color="" className="card calculated-risk-card" md="2">
+                                                                    <h6 className="card-header">Target in 1 Trade</h6>
+
+                                                                    <CardBody>
+                                                                        <CardText>
+                                                                            
+                                                                        <i className="mdi mdi-target lg" style={{fontSize: "32px", color:"#0bb197"}}></i> &nbsp;
+                                                                            
+                                                                           <h4 style={{    marginTop: "-37px",
+    marginRight: "0px",textAlign:"center"}}>&#8377; {selectedIndexCalculatedRisk.totalTargetofTrade}</h4>
+
+                                                                        </CardText>
+                                                                    </CardBody>
+                                                                </Card>
+                                                            </Col>
                                                             <Col md="3">
                                                                 <Card color="" className="card calculated-risk-card" md="2">
                                                                     <h6 className="card-header">Lot Size</h6>
@@ -783,7 +833,7 @@ const RiskCalculator = () => {
                                                                     <CardBody>
 
                                                                         <CardText>
-                                                                            {selectedIndexCalculatedRisk.optionPremium}
+                                                                        &#8377; {selectedIndexCalculatedRisk.optionPremium}
 
                                                                         </CardText>
                                                                     </CardBody>
@@ -796,7 +846,7 @@ const RiskCalculator = () => {
                                                                     <CardBody>
 
                                                                         <CardText>
-                                                                            {selectedIndexCalculatedRisk.SLAmountInOptionPremium}
+                                                                        &#8377; {selectedIndexCalculatedRisk.SLAmountInOptionPremium}
 
                                                                         </CardText>
                                                                     </CardBody>
@@ -811,7 +861,7 @@ const RiskCalculator = () => {
                                                                     <CardBody>
 
                                                                         <CardText>
-                                                                            {selectedIndexCalculatedRisk.optionPremiumTargetPrice}
+                                                                        &#8377; {selectedIndexCalculatedRisk.optionPremiumTargetPrice}
 
                                                                         </CardText>
                                                                     </CardBody>
@@ -826,25 +876,13 @@ const RiskCalculator = () => {
                                                                     <CardBody>
 
                                                                         <CardText>
-                                                                            {selectedIndexCalculatedRisk.optionPremiumExitPrice}
+                                                                        &#8377; {selectedIndexCalculatedRisk.optionPremiumExitPrice}
 
                                                                         </CardText>
                                                                     </CardBody>
                                                                 </Card>
                                                             </Col>
-                                                            <Col md="3">
-                                                                <Card color="" className={`${selectedIndexCalculatedRisk.totalTradableLots > 0? 'card-primary':'card-danger'} calculated-risk-card` } md="2">
-                                                                    <h6 className="card-header">Tradable Lots in One Trade</h6>
-
-                                                                    <CardBody>
-
-                                                                        <CardText>
-                                                                            {selectedIndexCalculatedRisk.totalTradableLots}
-
-                                                                        </CardText>
-                                                                    </CardBody>
-                                                                </Card>
-                                                            </Col>
+                                                            
                                                             <Col md="3">
                                                                 <Card color="" className="card calculated-risk-card" md="2">
                                                                     <h6 className="card-header">Total Tradable Quantity</h6>
@@ -865,44 +903,13 @@ const RiskCalculator = () => {
                                                                     <CardBody>
 
                                                                         <CardText>
-                                                                            {selectedIndexCalculatedRisk.totalTradeCapital}
+                                                                        &#8377; {selectedIndexCalculatedRisk.totalTradeCapital}
 
                                                                         </CardText>
                                                                     </CardBody>
                                                                 </Card>
                                                             </Col>
-                                                            <Col md="3">
-                                                                <Card color="" className="card calculated-risk-card" md="2">
-                                                                    <h6 className="card-header">Total SL of Trade</h6>
-
-                                                                    <CardBody>
-
-                                                                        <CardText>
-                                                                            <i className="mdi mdi-trending-down" style={{fontSize: "32px", color:"red"}}></i> &nbsp;
-                                                                            <h4 style={{    marginTop: "-37px",
-    marginRight: "-80px"}}>
-                                                                            {selectedIndexCalculatedRisk.totalSLofTrade}</h4>
-
-                                                                        </CardText>
-                                                                    </CardBody>
-                                                                </Card>
-                                                            </Col>
-                                                            <Col md="3">
-                                                                <Card color="" className="card calculated-risk-card" md="2">
-                                                                    <h6 className="card-header">Target in One Trade</h6>
-
-                                                                    <CardBody>
-                                                                        <CardText>
-                                                                            
-                                                                        <i className="mdi mdi-target lg" style={{fontSize: "32px", color:"#0bb197"}}></i> &nbsp;
-                                                                            
-                                                                           <h4 style={{    marginTop: "-37px",
-    marginRight: "-80px"}}> {selectedIndexCalculatedRisk.totalTargetofTrade}</h4>
-
-                                                                        </CardText>
-                                                                    </CardBody>
-                                                                </Card>
-                                                            </Col>
+                                                            
                                                             {/* <Col md="3">
                                                                 <Card color="" className="card calculated-risk-card" md="2">
                                                                     <h6 className="card-header">Capital Left After Trading Sessions</h6>
