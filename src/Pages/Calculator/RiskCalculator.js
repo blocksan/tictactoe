@@ -26,14 +26,8 @@ import * as Yup from "yup";
 import { useFormik } from "formik";
 import calculator from "../../assets/images/calculator.gif";
 import DayWiseCapitalDrawDown from "./DayWiseCapitalDrawDown";
-const IndexType = {
-    BANKNIFTY: "BANKNIFTY",
-    FINNIFTY: "FINNIFTY",
-    NIFTY50: "NIFTY50",
-}
-const BANKNIFTY_LOT_SIZE = 15;
-const FINNIFTY_LOT_SIZE = 40;
-const NIFTY50_LOT_SIZE = 50;
+import { IndexType, BANKNIFTY_LOT_SIZE, FINNIFTY_LOT_SIZE, NIFTY50_LOT_SIZE } from "../../constants/NSE_index";
+
 const RiskCalculator = () => {
     document.title = "Risk Calculator";
 

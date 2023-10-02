@@ -1,0 +1,15 @@
+const IndexType = {
+    BANKNIFTY: "BANKNIFTY",
+    FINNIFTY: "FINNIFTY",
+    NIFTY50: "NIFTY50",
+}
+const BANKNIFTY_LOT_SIZE = 15;
+const FINNIFTY_LOT_SIZE = 40;
+const NIFTY50_LOT_SIZE = 50;
+
+export {
+    IndexType,
+    BANKNIFTY_LOT_SIZE,
+    FINNIFTY_LOT_SIZE,
+    NIFTY50_LOT_SIZE
+}
