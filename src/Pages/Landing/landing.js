@@ -133,8 +133,8 @@ const Landing = (props) => {
 
                 <section className="bg-gradient-light -margin-bottom-2 overlay padding">
                     <div className="center max-width-m">
-                        <h2>Present Your Product</h2>
-                        <p className="paragraph">At Trrader, we're on a mission to ensure that traders like you not only survive but thrive in the dynamic world of financial markets. Trading isn't just about today's wins; it's about building a lasting presence in the market, securing your financial future, and achieving long-term success. Our exceptional Risk Management Tool is your key to this journey. It's not just about risk mitigation; it's about <strong>maintaining your position in the market for years</strong> to come.</p>
+                        <h2>Trrader.in</h2>
+                        <p className="paragraph">At Trrader.in, we're on a mission to ensure that traders like you not only survive but thrive in the dynamic world of financial markets. Trading isn't just about today's wins; it's about building a lasting presence in the market, securing your financial future, and achieving long-term success. Our exceptional Risk Management Tool is your key to this journey. It's not just about risk mitigation; it's about <strong>maintaining your position in the market for years</strong> to come.</p>
                     </div>
                     <div className="margin-top max-width-l">
                         <img className="rounded shadow-l" src={productOverview} alt="Opalin Dashboard" />
@@ -198,6 +198,9 @@ const Landing = (props) => {
                             <div className="max-width-m">
                                 <p className="paragraph">Marty Schwartz:</p>
                                 <h3>"Learn to take losses. The most important thing in making money is not letting your losses get out of hand!"</h3>
+                                <br />
+                                <br />
+                                <img src={logoVoiled} alt="" />
                             </div>
                         </div>
                         <div className="col-one-half middle padding">
