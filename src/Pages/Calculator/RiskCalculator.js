@@ -55,6 +55,7 @@ const RiskCalculator = () => {
     const [calculateMetadata, setCalculateMetadata] = useState({
         maxSLCapacityDaily: 0,
         maxSLCapacityInOneTrade: 0,
+        maxTradeAmountInOneDay: 0
     });
 
     const [calculatedRiskRows, setCalculatedRiskRows] = useState([]);
@@ -105,8 +106,8 @@ const RiskCalculator = () => {
 
     const calculateRisk = (riskCalculatorFormValues) => {
         // Calculate Risk Metadata
-        const { maxSLCapacityDaily, maxSLCapacityInOneTrade } = calculateRiskMetadata(riskCalculatorFormValues);
-        setCalculateMetadata({ maxSLCapacityDaily, maxSLCapacityInOneTrade });
+        const { maxSLCapacityDaily, maxSLCapacityInOneTrade, maxTradeAmountInOneDay } = calculateRiskMetadata(riskCalculatorFormValues);
+        setCalculateMetadata({ maxSLCapacityDaily, maxSLCapacityInOneTrade, maxTradeAmountInOneDay });
         let calculatedRiskRows = [];
         tradeIndexes.forEach((tradeIndex) => {
             const { lotSize, optionPremium, indexName } = tradeIndex;
@@ -128,9 +129,9 @@ const RiskCalculator = () => {
         let optionPremiumExitPrice = calculateOptionPremiumExitPrice(riskCalculatorFormValues, SLAmountInOptionPremium);
         let totalTradableLots = calculateTotalTradableLots(riskCalculatorFormValues, maxSLCapacityInOneTrade, calculatedLotSize);
         let totalTradableQuantity = calculateTotalTradableQuantity(totalTradableLots, calculatedLotSize);
-        let totalTradeCapital = calculateTotalTradeCapital(riskCalculatorFormValues, totalTradableQuantity);
+        let singleTradeAmount = calculateTotalTradeCapital(riskCalculatorFormValues, totalTradableQuantity);
         let totalSLofTrade = calculateTotalSLofTrade(totalTradableQuantity, SLAmountInOptionPremium);
-        let totalTargetofTrade = calculateTotalTargetofTrade(optionPremiumTargetPrice, totalTradableQuantity, totalTradeCapital);
+        let totalTargetofTrade = calculateTotalTargetofTrade(optionPremiumTargetPrice, totalTradableQuantity, singleTradeAmount);
         let capitalLeftAfterTradingSessions = calculateCapitalLeftAfterTradingSessions(riskCalculatorFormValues, totalSLofTrade);
         // let drawDownMetricsResult = calculateDrawDownMetrics(riskCalculatorFormValues)
        
@@ -164,7 +165,7 @@ const RiskCalculator = () => {
             optionPremiumExitPrice,
             totalTradableLots,
             totalTradableQuantity,
-            totalTradeCapital,
+            singleTradeAmount,
             totalSLofTrade,
             totalTargetofTrade,
             capitalLeftAfterTradingSessions,
@@ -181,9 +182,11 @@ const RiskCalculator = () => {
     const calculateRiskMetadata = (riskCalculatorFormValues) => {
         const maxSLCapacityDaily = Math.floor(riskCalculatorFormValues.tradingCapital / riskCalculatorFormValues.numberOfTradingSessions);
         const maxSLCapacityInOneTrade = Math.floor(maxSLCapacityDaily / riskCalculatorFormValues.maxSLCountOneDay);
+        const maxTradeAmountInOneDay = (100 * (maxSLCapacityInOneTrade /riskCalculatorFormValues.maxDrawDownPercentage)).toFixed(2);
         return {
             maxSLCapacityDaily,
-            maxSLCapacityInOneTrade
+            maxSLCapacityInOneTrade,
+            maxTradeAmountInOneDay
         }
     }
     const calculateSLAmountInOptionPremium = (riskCalculatorFormValues,) => {
@@ -209,8 +212,8 @@ const RiskCalculator = () => {
         return totalTradableQuantity * SLAmountInOptionPremium;
 
     }
-    const calculateTotalTargetofTrade = (optionPremiumTargetPrice, totalTradableQuantity, totalTradeCapital) => {
-        return (optionPremiumTargetPrice * totalTradableQuantity) - totalTradeCapital;
+    const calculateTotalTargetofTrade = (optionPremiumTargetPrice, totalTradableQuantity, singleTradeAmount) => {
+        return (optionPremiumTargetPrice * totalTradableQuantity) - singleTradeAmount;
     }
     const calculateCapitalLeftAfterTradingSessions = (riskCalculatorFormValues, totalSLofTrade) => {
         return riskCalculatorFormValues.tradingCapital - (totalSLofTrade * riskCalculatorFormValues.numberOfTradingSessions * riskCalculatorFormValues.maxSLCountOneDay);
@@ -284,7 +287,7 @@ const RiskCalculator = () => {
         <React.Fragment>
             <div className="page-content landing-header-main">
                 <Container fluid={true}>
-                    <Breadcrumbs title="Calculator" breadcrumbItem="Risk Calculator" />
+                    <Breadcrumbs title="F&O Calculator" breadcrumbItem="Risk Calculator" />
                 </Container>
                 <Row>
                     <Col lg={12}>
@@ -293,7 +296,7 @@ const RiskCalculator = () => {
                                 {/* <CardTitle>Risk Calculator</CardTitle> */}
                                 <br />
                                 <CardSubtitle className="mb-3">
-                                    This tool will help you calculate the approximate amount of money you can risk in a trade based on your account size, percentage risk per trade, and stop loss.
+                                    This tool will help you calculate the approximate amount you can risk in a trade based on your capital, stop loss per trade, and money management.
                                 </CardSubtitle>
                                 <br />
                                         <Form
@@ -516,7 +519,7 @@ const RiskCalculator = () => {
                 }
                 {!loading && calculatedRiskRows && calculatedRiskRows.length > 0 && (
                         <Row>
-                            <Col md={12} style={{boxShadow:"rgb(179 179 184 / 78%) -3px -3px 5px", padding:"0",    width: "100%"}} >
+                            <Col md={12} className="result-container" >
                                 <Card color="" className="card" md="2">
 
                                     <div className="text-left" style={{
@@ -615,7 +618,12 @@ const RiskCalculator = () => {
                                                 title: "Max SL in One Trade",
                                                 count: `&#8377; ${calculateMetadata.maxSLCapacityInOneTrade}`,
                                                 color: "warning",
-                                            }
+                                            },
+                                            {
+                                                title: "Max Daily Trade Amount",
+                                                count: `&#8377; ${calculateMetadata.maxTradeAmountInOneDay}`,
+                                                color: "warning",
+                                              }
                                             
                                         ]} />}
                                         </Col>
@@ -892,12 +900,12 @@ const RiskCalculator = () => {
                                                             </Col>
                                                             <Col md="3">
                                                                 <Card color="" className="card calculated-risk-card" md="2">
-                                                                    <h6 className="card-header">Total Trade Capital</h6>
+                                                                    <h6 className="card-header">Single Trade Amount</h6>
 
                                                                     <CardBody>
 
                                                                         <CardText>
-                                                                        &#8377; {selectedIndexCalculatedRisk.totalTradeCapital}
+                                                                        &#8377; {selectedIndexCalculatedRisk.singleTradeAmount}
 
                                                                         </CardText>
                                                                     </CardBody>

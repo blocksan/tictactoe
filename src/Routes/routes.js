@@ -12,6 +12,7 @@ import Register from "../Pages/Authentication/Register";
 import UserProfile from "../Pages/Authentication/user-profile";
 import RiskCalculator from "../Pages/Calculator/RiskCalculator";
 import TargetCalculator from "../Pages/Calculator/TargetCalculator";
+import CapitalCalculator from "../Pages/Calculator/CapitalCalculator";
 import Landing from './../Pages/Landing/landing'
 import Referral from "../Pages/Settings/Referral";
 
@@ -24,6 +25,7 @@ const authProtectedRoutes = [
   { path: "/referrallink", component: <Referral /> },
   { path: "/targetcalculator", component: <TargetCalculator /> },
   { path: "/riskcalculator", component: <RiskCalculator /> },
+  { path: "/capitalcalculator", component: <CapitalCalculator /> },
 
   // this route should be at the end of all other routes
   // eslint-disable-next-line react/display-name

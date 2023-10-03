@@ -1,5 +1,4 @@
-import React, { useEffect, useState } from "react";
-import ReactHtmlParser from 'react-html-parser';
+import React, { useEffect,useRef, useState } from "react";
 import {
   Row,
   Col,
@@ -29,6 +28,13 @@ import DayWiseCapitalDrawDown from "./DayWiseCapitalDrawDown";
 import { IndexType, BANKNIFTY_LOT_SIZE, FINNIFTY_LOT_SIZE, NIFTY50_LOT_SIZE } from "../../constants/NSE_index";
 const TargetCalculator = () => {
   document.title = "Target Calculator";
+  const resultContainerRef = useRef(null);
+
+  const bringResultContainerToTop = () => {
+    console.log("I called")
+    resultContainerRef.current.scrollTop = -500;
+    console.log('--resultContainerRef--',resultContainerRef.current)
+  };
 
   const [loading, setLoading] = useState(false);
   const [selectedIndex, setSelectedIndex] = useState(IndexType.BANKNIFTY);
@@ -54,6 +60,7 @@ const TargetCalculator = () => {
   const [calculateMetadata, setCalculateMetadata] = useState({
     maxSLCapacityDaily: 0,
     maxSLCapacityInOneTrade: 0,
+    maxTradeAmountInOneDay:0
   });
 
   const [calculatedRiskRows, setCalculatedRiskRows] = useState([]);
@@ -103,12 +110,15 @@ const TargetCalculator = () => {
         .max(30, "Maximum Target ratio can be at most 30 "),
       averageTargetHitTradeInOneDay: Yup.number().required("Please provide Average Target Hit Trade In One Day"),
       averageSLHitTradeInOneDay: Yup.number().required("Please provide Average SL Hit Trade In One Day"),
-      zeroSLHitTradeInOneDay: Yup.number().required("Please provide Zero SL Hit Trade In One Day")
-        .min(0, "Zero SL Hit Trade In One Day should be at least 0")
-        .max(20, "Zero SL Hit Trade In One Day can be at most 20 "),
+      zeroSLHitTradeInOneDay: Yup.number()
+      .required("Please provide Zero SL Hit Trade In One Day")
+      .min(0, "Zero SL Hit Trade In One Day should be at least 0")
+      .max(20, "Zero SL Hit Trade In One Day can be at most 20 ")
+      .default(0),
       zeroTargetHitTradeInOneDay: Yup.number().required("Please provide Zero Target Hit Trade In One Day")
-        .min(0, "Zero Target Hit Trade In One Day should be at least 0")
-        .max(4, "Zero Target Hit Trade In One Day can be at most 4"),
+      .min(0, "Zero Target Hit Trade In One Day should be at least 0")
+      .max(4, "Zero Target Hit Trade In One Day can be at most 4")
+      .default(0),
       averageTradingChargesPerTrade: Yup.number().required("Please provide Average Trading Charges Per Trade (Buy & Sell)")
         .default(50),
 
@@ -123,18 +133,23 @@ const TargetCalculator = () => {
 
   const calculateRisk = (targetCalculatorFormValues) => {
     // Calculate Risk Metadata
-    const { maxSLCapacityDaily, maxSLCapacityInOneTrade } = calculateRiskMetadata(targetCalculatorFormValues);
-    setCalculateMetadata({ maxSLCapacityDaily, maxSLCapacityInOneTrade });
+    const { maxSLCapacityDaily, maxSLCapacityInOneTrade, maxTradeAmountInOneDay } = calculateRiskMetadata(targetCalculatorFormValues);
+    setCalculateMetadata({ maxSLCapacityDaily, maxSLCapacityInOneTrade, maxTradeAmountInOneDay });
     let calculatedRiskRows = [];
     tradeIndexes.forEach((tradeIndex) => {
       const { lotSize, optionPremium, indexName } = tradeIndex;
       let calculatedRiskOfIndexResult = calculateRiskofIndex(targetCalculatorFormValues, lotSize, optionPremium, indexName, maxSLCapacityInOneTrade);
+      console.log("calculatedRiskOfIndexResult", calculatedRiskOfIndexResult)
       calculatedRiskRows.push(calculatedRiskOfIndexResult);
     });
 
     setCalculatedRiskRows(calculatedRiskRows);
     setSelectedIndex(IndexType.BANKNIFTY);
     setLoading(false)
+    bringResultContainerToTop()
+    // const section = document.getElementById('scrollView');
+    // console.log(section,'---section---')
+    // section.scrollIntoView( { behavior: 'smooth', block: 'start' } );
 
   }
 
@@ -146,42 +161,51 @@ const TargetCalculator = () => {
     let optionPremiumExitPrice = calculateOptionPremiumExitPrice(targetCalculatorFormValues, SLAmountInOptionPremium);
     let totalTradableLots = calculateTotalTradableLots(targetCalculatorFormValues, maxSLCapacityInOneTrade, calculatedLotSize);
     let totalTradableQuantity = calculateTotalTradableQuantity(totalTradableLots, calculatedLotSize);
-    let totalTradeCapital = calculateTotalTradeCapital(targetCalculatorFormValues, totalTradableQuantity);
+    let singleTradeAmount = calculateTotalTradeCapital(targetCalculatorFormValues, totalTradableQuantity);
     let totalSLofTrade = calculateTotalSLofTrade(totalTradableQuantity, SLAmountInOptionPremium);
-    let totalTargetofTrade = calculateTotalTargetofTrade(optionPremiumTargetPrice, totalTradableQuantity, totalTradeCapital);
+    let totalTargetofTrade = calculateTotalTargetofTrade(optionPremiumTargetPrice, totalTradableQuantity, singleTradeAmount);
     let capitalLeftAfterTradingSessions = calculateCapitalLeftAfterTradingSessions(targetCalculatorFormValues, totalSLofTrade);
     // let drawDownMetricsResult = calculateDrawDownMetrics(targetCalculatorFormValues)
 
 
-    let remainingCapitalDayWise = []
+    
+    // console.log("capitalDayWiseLabels", capitalDayWiseLabels);
+    // console.log("remainingCapitalDayWise", remainingCapitalDayWise);
+    const profitInSuccessfulDays = targetCalculatorFormValues.averageTargetHitTradeInOneDay*targetCalculatorFormValues.zeroSLHitTradeInOneDay*totalTargetofTrade;
+    const lossInUnsuccessfulDays =  targetCalculatorFormValues.averageSLHitTradeInOneDay*targetCalculatorFormValues.zeroTargetHitTradeInOneDay*totalSLofTrade;
+    const totalTradesInOneDay =  targetCalculatorFormValues.averageTargetHitTradeInOneDay+targetCalculatorFormValues.averageSLHitTradeInOneDay;
+    const normalTradingDays = targetCalculatorFormValues.numberOfTradingSessions-(targetCalculatorFormValues.zeroSLHitTradeInOneDay+targetCalculatorFormValues.zeroTargetHitTradeInOneDay);
+    let totalTradingCharges = 0;
+    if (totalTradableQuantity > 0) {
+      totalTradingCharges = targetCalculatorFormValues.averageTradingChargesPerTrade * totalTradesInOneDay*targetCalculatorFormValues.numberOfTradingSessions;
+    }
+    // console.log(totalTargetofTrade*targetCalculatorFormValues.averageTargetHitTradeInOneDay);
+    // console.log(totalSLofTrade*targetCalculatorFormValues.averageSLHitTradeInOneDay);
+    // console.log(profitInSuccessfulDays-lossInUnsuccessfulDays)
+    const profitAfterAllTradingSessions = (((totalTargetofTrade*targetCalculatorFormValues.averageTargetHitTradeInOneDay)-totalSLofTrade*targetCalculatorFormValues.averageSLHitTradeInOneDay)*normalTradingDays)+(profitInSuccessfulDays-lossInUnsuccessfulDays)
+    const targetAfterTradingCharges = profitAfterAllTradingSessions-totalTradingCharges;
+    const finalTargetCapitalAfterTradingCharges = targetCalculatorFormValues.tradingCapital+targetAfterTradingCharges;
+    const finalCapitalAfterTradingChargesIfMaxSLHit =  capitalLeftAfterTradingSessions-totalTradingCharges;
+
+    let targetCapitalDayWise = []
     let capitalDayWiseLabels = []
+    let averageProfitInOneDay = (totalTargetofTrade*targetCalculatorFormValues.averageTargetHitTradeInOneDay)-(totalSLofTrade*targetCalculatorFormValues.averageSLHitTradeInOneDay);
+
     let currentCapital = targetCalculatorFormValues.tradingCapital;
     let maxTradingSessions = targetCalculatorFormValues.numberOfTradingSessions;
     for (let i = 1; i <= maxTradingSessions; i++) {
       capitalDayWiseLabels.push(`Day ${i}`);
-      remainingCapitalDayWise.push(currentCapital - (totalSLofTrade * targetCalculatorFormValues.maxSLCountOneDay));
-      currentCapital = remainingCapitalDayWise[remainingCapitalDayWise.length - 1];
+      targetCapitalDayWise.push(currentCapital + averageProfitInOneDay);
+      currentCapital = targetCapitalDayWise[targetCapitalDayWise.length - 1];
     }
     let series = [
       {
         name: 'Capital',
         type: 'column',
-        data: [...remainingCapitalDayWise]
+        data: [...targetCapitalDayWise]
       }
     ]
     let labels = [...capitalDayWiseLabels]
-    // console.log("capitalDayWiseLabels", capitalDayWiseLabels);
-    // console.log("remainingCapitalDayWise", remainingCapitalDayWise);
-    const profitInSuccessfulDays = 0 //TODO:
-    const lossInUnsuccessfulDays = 0 //TODO:
-    const profitAfterAllTradingSessions = 0 //TODO:
-    const totalTradingCharges = 0 //TODO:
-    const targetAfterTradingCharges = 0 //TODO:
-    const finalTargetCapitalAfterTradingCharges = 0 //TODO:
-    const finalCapitalAfterTradingChargesIfMaxSLHit = 0 //TODO:
-    const normalTradingDays = 0 //TODO:
-    const totalTradesInOneDay = 0 //TODO:
-    const maxTradeAmountInOneDay = 2 //TODO:
     return {
       lotSize: calculatedLotSize,
       optionPremium: optionPremium,
@@ -191,7 +215,7 @@ const TargetCalculator = () => {
       optionPremiumExitPrice,
       totalTradableLots,
       totalTradableQuantity,
-      totalTradeCapital,
+      singleTradeAmount,
       totalSLofTrade,
       totalTargetofTrade,
       capitalLeftAfterTradingSessions,
@@ -204,7 +228,6 @@ const TargetCalculator = () => {
       finalCapitalAfterTradingChargesIfMaxSLHit,
       normalTradingDays,
       totalTradesInOneDay,
-      maxTradeAmountInOneDay,
       drawDownMetrics: {
         labels,
         series
@@ -218,9 +241,11 @@ const TargetCalculator = () => {
   const calculateRiskMetadata = (targetCalculatorFormValues) => {
     const maxSLCapacityDaily = Math.floor(targetCalculatorFormValues.tradingCapital / targetCalculatorFormValues.numberOfTradingSessions);
     const maxSLCapacityInOneTrade = Math.floor(maxSLCapacityDaily / targetCalculatorFormValues.maxSLCountOneDay);
+    const maxTradeAmountInOneDay = (100 * (maxSLCapacityInOneTrade /targetCalculatorFormValues.maxDrawDownPercentage)).toFixed(2);
     return {
       maxSLCapacityDaily,
-      maxSLCapacityInOneTrade
+      maxSLCapacityInOneTrade,
+      maxTradeAmountInOneDay
     }
   }
   const calculateSLAmountInOptionPremium = (targetCalculatorFormValues,) => {
@@ -246,8 +271,8 @@ const TargetCalculator = () => {
     return totalTradableQuantity * SLAmountInOptionPremium;
 
   }
-  const calculateTotalTargetofTrade = (optionPremiumTargetPrice, totalTradableQuantity, totalTradeCapital) => {
-    return (optionPremiumTargetPrice * totalTradableQuantity) - totalTradeCapital;
+  const calculateTotalTargetofTrade = (optionPremiumTargetPrice, totalTradableQuantity, singleTradeAmount) => {
+    return (optionPremiumTargetPrice * totalTradableQuantity) - singleTradeAmount;
   }
   const calculateCapitalLeftAfterTradingSessions = (targetCalculatorFormValues, totalSLofTrade) => {
     return targetCalculatorFormValues.tradingCapital - (totalSLofTrade * targetCalculatorFormValues.numberOfTradingSessions * targetCalculatorFormValues.maxSLCountOneDay);
@@ -321,7 +346,7 @@ const TargetCalculator = () => {
     <React.Fragment>
       <div className="page-content landing-header-main">
         <Container fluid={true}>
-          <Breadcrumbs title="Calculator" breadcrumbItem="Target Calculator" />
+          <Breadcrumbs title="F&O Calculator" breadcrumbItem="Target Calculator" />
         </Container>
         <Row>
           <Col lg={12}>
@@ -330,7 +355,7 @@ const TargetCalculator = () => {
                 {/* <CardTitle>Risk Calculator</CardTitle> */}
                 <br />
                 <CardSubtitle className="mb-3">
-                  This tool will help you calculate the approximate amount of money you can risk in a trade based on your account size, percentage risk per trade, and stop loss.
+                  This tool will help you calculate the target amount you can make based on your capital, percentage of risk per trade, and target hit ratio.
                 </CardSubtitle>
                 <br />
                 <Form
@@ -345,12 +370,13 @@ const TargetCalculator = () => {
                       <Row>
                         <Col md="6">
                           <div className="mb-3">
-                            <Label className="form-label">Trading Capital</Label>
+                            <Label className="form-label calculator-form-input-label">Trading Capital</Label>
                             <Input
                               name="tradingCapital"
                               label="tradingCapital"
                               placeholder="Please provide your Trading Capital"
                               type="number"
+                              className="calculator-form-input"
                               onChange={targetCalculatorForm.handleChange}
                               onBlur={targetCalculatorForm.handleBlur}
                               value={targetCalculatorForm.values.tradingCapital || ""}
@@ -371,12 +397,13 @@ const TargetCalculator = () => {
                         </Col>
                         <Col md="6">
                           <div className="mb-3">
-                            <Label className="form-label">Trading Sessions(Days)</Label>
+                            <Label className="form-label calculator-form-input-label">Trading Sessions (Days)</Label>
                             <Input
                               name="numberOfTradingSessions"
                               label="numberOfTradingSessions"
                               placeholder="Number of Trading Sessions you want to take"
                               type="number"
+                              className="calculator-form-input"
                               onChange={targetCalculatorForm.handleChange}
                               onBlur={targetCalculatorForm.handleBlur}
                               value={targetCalculatorForm.values.numberOfTradingSessions || ""}
@@ -399,12 +426,13 @@ const TargetCalculator = () => {
                       <Row>
                         <Col md="6">
                           <div className="mb-3">
-                            <Label className="form-label">Max SL Count</Label>
+                            <Label className="form-label calculator-form-input-label">Max SL Count</Label>
                             <Input
                               name="maxSLCountOneDay"
                               label="maxSLCountOneDay"
                               placeholder="Maximum number of Stop Loss you want to take in a day (1-3)"
                               type="number"
+                              className="calculator-form-input"
                               onChange={targetCalculatorForm.handleChange}
                               onBlur={targetCalculatorForm.handleBlur}
                               value={targetCalculatorForm.values.maxSLCountOneDay || ""}
@@ -425,12 +453,13 @@ const TargetCalculator = () => {
                         </Col>
                         <Col md="6">
                           <div className="mb-3">
-                            <Label className="form-label">Maximum SL(Drawdown) Percentage of Trade %</Label>
+                            <Label className="form-label calculator-form-input-label">Maximum SL Percentage of Trade %</Label>
                             <Input
                               name="maxDrawDownPercentage"
                               label="maxDrawDownPercentage"
                               placeholder="Maximum SL(Drawdown) percentage of Used Capital i.e 1-30% of Used Capital"
                               type="number"
+                              className="calculator-form-input"
                               onChange={targetCalculatorForm.handleChange}
                               onBlur={targetCalculatorForm.handleBlur}
                               value={targetCalculatorForm.values.maxDrawDownPercentage || ""}
@@ -453,12 +482,13 @@ const TargetCalculator = () => {
                       <Row>
                         <Col md="6">
                           <div className="mb-3">
-                            <Label className="form-label">Target ratio 1: ?</Label>
+                            <Label className="form-label calculator-form-input-label">Target ratio 1: ?</Label>
                             <Input
                               name="targetRatioMultiplier"
                               label="targetRatioMultiplier"
                               placeholder="Enter Target multiplier with respect to Loss i.e 1,2,3... etc."
                               type="number"
+                              className="calculator-form-input"
                               onChange={targetCalculatorForm.handleChange}
                               onBlur={targetCalculatorForm.handleBlur}
                               value={targetCalculatorForm.values.targetRatioMultiplier || ""}
@@ -479,15 +509,16 @@ const TargetCalculator = () => {
                         </Col>
                         <Col md="6">
                           <div className="mb-3">
-                            <Label className="form-label">Average Trading Charge of One Trade (Buy & Sell)</Label>
+                            <Label className="form-label calculator-form-input-label">Trading Charge of One Trade (Buy & Sell)</Label>
                             <Input
                               name="averageTradingChargesPerTrade"
                               label="averageTradingChargesPerTrade"
                               placeholder="Please provide Average Trading Charge of One Trade (Buy & Sell)"
                               type="number"
+                              className="calculator-form-input"
                               onChange={targetCalculatorForm.handleChange}
                               onBlur={targetCalculatorForm.handleBlur}
-                              value={targetCalculatorForm.values.averageTradingChargesPerTrade || ""}
+                              value={targetCalculatorForm.values.averageTradingChargesPerTrade}
                               invalid={
                                 targetCalculatorForm.touched.averageTradingChargesPerTrade &&
                                   targetCalculatorForm.errors.averageTradingChargesPerTrade
@@ -508,15 +539,16 @@ const TargetCalculator = () => {
                       <Row>
                         <Col md="6">
                           <div className="mb-3">
-                            <Label className="form-label">Average SL Hit Trade in One Day</Label>
+                            <Label className="form-label calculator-form-input-label">Average SL Hit Trade in One Day</Label>
                             <Input
                               name="averageSLHitTradeInOneDay"
                               label="averageSLHitTradeInOneDay"
                               placeholder="Please provide Average SL Hit Trade In One Day"
                               type="number"
+                              className="calculator-form-input"
                               onChange={targetCalculatorForm.handleChange}
                               onBlur={targetCalculatorForm.handleBlur}
-                              value={targetCalculatorForm.values.averageSLHitTradeInOneDay || ""}
+                              value={targetCalculatorForm.values.averageSLHitTradeInOneDay}
                               invalid={
                                 targetCalculatorForm.touched.averageSLHitTradeInOneDay &&
                                   targetCalculatorForm.errors.averageSLHitTradeInOneDay
@@ -534,15 +566,16 @@ const TargetCalculator = () => {
                         </Col>
                         <Col md="6">
                           <div className="mb-3">
-                            <Label className="form-label">Average Target Hit Trade in One Day</Label>
+                            <Label className="form-label calculator-form-input-label">Average Target Hit Trade in One Day</Label>
                             <Input
                               name="averageTargetHitTradeInOneDay"
                               label="averageTargetHitTradeInOneDay"
                               placeholder="Please provide Average Target Hit Trade In One Day"
                               type="number"
+                              className="calculator-form-input"
                               onChange={targetCalculatorForm.handleChange}
                               onBlur={targetCalculatorForm.handleBlur}
-                              value={targetCalculatorForm.values.averageTargetHitTradeInOneDay || ""}
+                              value={targetCalculatorForm.values.averageTargetHitTradeInOneDay}
                               invalid={
                                 targetCalculatorForm.touched.averageTargetHitTradeInOneDay &&
                                   targetCalculatorForm.errors.averageTargetHitTradeInOneDay
@@ -562,15 +595,16 @@ const TargetCalculator = () => {
                       <Row>
                         <Col md="6">
                           <div className="mb-3">
-                            <Label className="form-label">Zero SL Trade in One Day</Label>
+                            <Label className="form-label calculator-form-input-label">Zero SL Trade in One Day</Label>
                             <Input
                               name="zeroSLHitTradeInOneDay"
                               label="zeroSLHitTradeInOneDay"
                               placeholder="Please provide Zero SL Hit Trade In One Day"
                               type="number"
+                              className="calculator-form-input"
                               onChange={targetCalculatorForm.handleChange}
                               onBlur={targetCalculatorForm.handleBlur}
-                              value={targetCalculatorForm.values.zeroSLHitTradeInOneDay || ""}
+                              value={targetCalculatorForm.values.zeroSLHitTradeInOneDay}
                               invalid={
                                 targetCalculatorForm.touched.zeroSLHitTradeInOneDay &&
                                   targetCalculatorForm.errors.zeroSLHitTradeInOneDay
@@ -588,15 +622,16 @@ const TargetCalculator = () => {
                         </Col>
                         <Col md="6">
                           <div className="mb-3">
-                            <Label className="form-label">Zero Target Hit Trade in One Day</Label>
+                            <Label className="form-label calculator-form-input-label">Zero Target Hit Trade in One Day</Label>
                             <Input
                               name="zeroTargetHitTradeInOneDay"
                               label="zeroTargetHitTradeInOneDay"
                               placeholder="Please provide Zero Target Hit Trade In One Day"
                               type="number"
+                              className="calculator-form-input"
                               onChange={targetCalculatorForm.handleChange}
                               onBlur={targetCalculatorForm.handleBlur}
-                              value={targetCalculatorForm.values.zeroTargetHitTradeInOneDay || ""}
+                              value={targetCalculatorForm.values.zeroTargetHitTradeInOneDay}
                               invalid={
                                 targetCalculatorForm.touched.zeroTargetHitTradeInOneDay &&
                                   targetCalculatorForm.errors.zeroTargetHitTradeInOneDay
@@ -683,11 +718,10 @@ const TargetCalculator = () => {
             </div>
           )
         }
+        <Row ref={resultContainerRef}>
         {!loading && calculatedRiskRows && calculatedRiskRows.length > 0 && (
-          <Row>
-            <Col md={12} style={{ boxShadow: "rgb(179 179 184 / 78%) -3px -3px 5px", padding: "0", width: "100%" }} >
+            <Col md={12} className="result-container" >
               <Card color="" className="card" md="2">
-
                 <div className="text-left" style={{
                   height: "60px",
                   fontSize: "1.4em",
@@ -703,7 +737,7 @@ const TargetCalculator = () => {
                       <div style={{ minHeight: "50px" }}>
 
                         <label
-                          className=""
+                          className="calculator-form-input-label"
                           htmlFor="inlineFormSelectPref"
                           style={{ lineHeight: "40px" }}
                         >
@@ -712,7 +746,7 @@ const TargetCalculator = () => {
                       </div>
                       {/* <br /> */}
                       <select
-                        className="form-select"
+                        className="form-select calculator-form-input"
                         style={{ cursor: "pointer" }}
                         id="inlineFormSelectPref"
                         onChange={tradeIndexChangeHandler}
@@ -731,12 +765,13 @@ const TargetCalculator = () => {
                         </div>
                         {/* <br /> */}
                         {/* <br /> */}
-                        {/* <Label className="form-label">Option Premium Price</Label> */}
+                        {/* <Label className="form-label calculator-form-input-label">Option Premium Price</Label> */}
                         <Input
                           name="optionPremium"
                           label="optionPremium"
                           placeholder={selectedIndexCalculatedRisk.optionPremium}
                           value={selectedIndexCalculatedRisk.optionPremium}
+                          className="calculator-form-input"
                           type="number"
                           onChange={(e) => optionPremiumChangeHandler(e, selectedIndexCalculatedRisk.indexName)}
                         />
@@ -754,8 +789,143 @@ const TargetCalculator = () => {
 
                   </Row>
                   <Row>
-                    <Col md="12">
-                      {selectedIndexCalculatedRisk.drawDownMetrics && <DayWiseCapitalDrawDown drawDownMetrics={selectedIndexCalculatedRisk.drawDownMetrics} title={`Day Wise Capital Drawdown at <strong>&#8377; ${selectedIndexCalculatedRisk.optionPremium}</strong>  Option Premium`} calculatedMetadata={[
+                  <Col md="3">
+
+{
+  selectedIndexCalculatedRisk.totalTradableLots > 0 && selectedIndexCalculatedRisk.totalTradableLots <= 10 && (
+    <UncontrolledAlert color="light" role="alert" className="card border p-0 mb-0">
+      <div className="card-header bg-soft-success">
+        <div className="d-flex">
+          <div className="flex-grow-1">
+            <h5 className="font-size-16 text-success my-1">
+              Awesome
+            </h5>
+          </div>
+          <div className="flex-shrink-0">
+
+          </div>
+        </div>
+      </div>
+
+      <CardBody>
+        <div className="text-center">
+          <div className="mb-4">
+            <i className="mdi mdi-checkbox-marked-circle-outline display-4 text-success"></i>
+          </div>
+          <h4 className="alert-heading">Well done!</h4>
+          <p className="mb-0">
+            You can trade with {selectedIndexCalculatedRisk.totalTradableLots} {selectedIndexCalculatedRisk.totalTradableLots === 1 ? 'lot' : 'lots'} with <strong>much</strong> confidence.
+          </p>
+        </div>
+      </CardBody>
+    </UncontrolledAlert>
+  )
+
+}
+{
+  selectedIndexCalculatedRisk.totalTradableLots > 10 && selectedIndexCalculatedRisk.totalTradableLots < 20 && (
+    <UncontrolledAlert color="light" role="alert" className="card border p-0 mb-0">
+      <div className="card-header bg-soft-success">
+        <div className="d-flex">
+          <div className="flex-grow-1">
+            <h5 className="font-size-16 text-success my-1">
+              Awesome
+            </h5>
+          </div>
+          <div className="flex-shrink-0">
+
+          </div>
+        </div>
+      </div>
+
+      <CardBody>
+        <div className="text-center">
+          <div className="mb-4">
+            <i className="mdi mdi-checkbox-marked-circle-outline display-4 text-success"></i>
+          </div>
+          <h4 className="alert-heading">Well done!</h4>
+          <p className="mb-0">
+            You can trade with {selectedIndexCalculatedRisk.totalTradableLots} lots with <strong>moderate</strong> confidence.
+          </p>
+        </div>
+      </CardBody>
+    </UncontrolledAlert>
+  )
+}
+{
+  selectedIndexCalculatedRisk.totalTradableLots > 20 && (
+    <UncontrolledAlert color="light" role="alert" className="card border mt-4 mt-lg-0 p-0 mb-0">
+      <div className="card-header bg-soft-warning">
+        <div className="d-flex">
+          <div className="flex-grow-1">
+            <h5 className="font-size-16 text-warning my-1">
+              Careful
+            </h5>
+          </div>
+          <div className="flex-shrink-0">
+
+          </div>
+        </div>
+      </div>
+      <CardBody>
+        <div className="text-center">
+          <div className="mb-4">
+            <i className="mdi mdi-alert-outline display-4 text-warning"></i>
+          </div>
+          <h4 className="alert-heading">
+            Please be careful!
+
+          </h4>
+          <p className="mb-0">
+            You can trade with {selectedIndexCalculatedRisk.totalTradableLots} lots but be very <strong>careful</strong>.
+          </p>
+
+        </div>
+      </CardBody>
+    </UncontrolledAlert>
+  )
+
+}
+
+{
+  selectedIndexCalculatedRisk.totalTradableLots < 1 && (
+    <UncontrolledAlert color="light" role="alert" className="card border mt-4 mt-lg-0 p-0 mb-0">
+
+      <div className="card-header bg-soft-danger">
+        <div className="d-flex">
+          <div className="flex-grow-1">
+            <h5 className="font-size-16 text-danger my-1">
+              No Trade
+            </h5>
+          </div>
+          <div className="flex-shrink-0">
+
+          </div>
+        </div>
+      </div>
+      <CardBody>
+        <div className="text-center">
+          <div className="mb-4">
+            <i className="mdi mdi-close display-4 text-danger"></i>
+          </div>
+          <h4 className="alert-heading">
+            Sorry !!!
+          </h4>
+          <p className="mb-0">
+            You can <strong>NOT</strong> trade with the entered Option Premium Price.
+          </p>
+          {/* <p className="mb-0">
+                                            Sorry ! Product not available
+                                        </p> */}
+        </div>
+      </CardBody>
+    </UncontrolledAlert>
+  )
+
+}
+</Col>
+                    <Col md="9">
+                      {selectedIndexCalculatedRisk.drawDownMetrics && <DayWiseCapitalDrawDown drawDownMetrics={selectedIndexCalculatedRisk.drawDownMetrics} title={`Average Target Capital Day Wise at <strong>&#8377; ${selectedIndexCalculatedRisk.optionPremium}</strong>  Option Premium`} calculatedMetadata={[
                         {
                           title: `Starting Trading Capital`,
                           count: `&#8377; ${targetCalculatorForm.values.tradingCapital} `,
@@ -763,7 +933,7 @@ const TargetCalculator = () => {
                         },
                         {
                           title: `Capital left after ${targetCalculatorForm.values.numberOfTradingSessions} Trading Sessions`,
-                          count: `&#8377; ${selectedIndexCalculatedRisk.capitalLeftAfterTradingSessions}`,
+                          count: `&#8377; ${selectedIndexCalculatedRisk.profitAfterAllTradingSessions}`,
                           color: "primary",
                         },
                         {
@@ -779,8 +949,8 @@ const TargetCalculator = () => {
                           color: "danger",
                         },
                         {
-                          title: "Max SL in One Trade",
-                          count: `&#8377; ${calculateMetadata.maxSLCapacityInOneTrade}`,
+                          title: "Max Daily Trade Amount",
+                          count: `&#8377; ${calculateMetadata.maxTradeAmountInOneDay}`,
                           color: "warning",
                         }
 
@@ -790,144 +960,8 @@ const TargetCalculator = () => {
                   <br />
 
                   <Row>
-                    <Col md="3">
-
-                      <div >
-                        {
-                          selectedIndexCalculatedRisk.totalTradableLots > 0 && selectedIndexCalculatedRisk.totalTradableLots <= 10 && (
-                            <UncontrolledAlert color="light" role="alert" className="card border p-0 mb-0">
-                              <div className="card-header bg-soft-success">
-                                <div className="d-flex">
-                                  <div className="flex-grow-1">
-                                    <h5 className="font-size-16 text-success my-1">
-                                      Awesome
-                                    </h5>
-                                  </div>
-                                  <div className="flex-shrink-0">
-
-                                  </div>
-                                </div>
-                              </div>
-
-                              <CardBody>
-                                <div className="text-center">
-                                  <div className="mb-4">
-                                    <i className="mdi mdi-checkbox-marked-circle-outline display-4 text-success"></i>
-                                  </div>
-                                  <h4 className="alert-heading">Well done!</h4>
-                                  <p className="mb-0">
-                                    You can trade with {selectedIndexCalculatedRisk.totalTradableLots} {selectedIndexCalculatedRisk.totalTradableLots === 1 ? 'lot' : 'lots'} with <strong>much</strong> confidence.
-                                  </p>
-                                </div>
-                              </CardBody>
-                            </UncontrolledAlert>
-                          )
-
-                        }
-                        {
-                          selectedIndexCalculatedRisk.totalTradableLots > 10 && selectedIndexCalculatedRisk.totalTradableLots < 20 && (
-                            <UncontrolledAlert color="light" role="alert" className="card border p-0 mb-0">
-                              <div className="card-header bg-soft-success">
-                                <div className="d-flex">
-                                  <div className="flex-grow-1">
-                                    <h5 className="font-size-16 text-success my-1">
-                                      Awesome
-                                    </h5>
-                                  </div>
-                                  <div className="flex-shrink-0">
-
-                                  </div>
-                                </div>
-                              </div>
-
-                              <CardBody>
-                                <div className="text-center">
-                                  <div className="mb-4">
-                                    <i className="mdi mdi-checkbox-marked-circle-outline display-4 text-success"></i>
-                                  </div>
-                                  <h4 className="alert-heading">Well done!</h4>
-                                  <p className="mb-0">
-                                    You can trade with {selectedIndexCalculatedRisk.totalTradableLots} lots with <strong>moderate</strong> confidence.
-                                  </p>
-                                </div>
-                              </CardBody>
-                            </UncontrolledAlert>
-                          )
-                        }
-                        {
-                          selectedIndexCalculatedRisk.totalTradableLots > 20 && (
-                            <UncontrolledAlert color="light" role="alert" className="card border mt-4 mt-lg-0 p-0 mb-0">
-                              <div className="card-header bg-soft-warning">
-                                <div className="d-flex">
-                                  <div className="flex-grow-1">
-                                    <h5 className="font-size-16 text-warning my-1">
-                                      Careful
-                                    </h5>
-                                  </div>
-                                  <div className="flex-shrink-0">
-
-                                  </div>
-                                </div>
-                              </div>
-                              <CardBody>
-                                <div className="text-center">
-                                  <div className="mb-4">
-                                    <i className="mdi mdi-alert-outline display-4 text-warning"></i>
-                                  </div>
-                                  <h4 className="alert-heading">
-                                    Please be careful!
-
-                                  </h4>
-                                  <p className="mb-0">
-                                    You can trade with {selectedIndexCalculatedRisk.totalTradableLots} lots but be very <strong>careful</strong>.
-                                  </p>
-
-                                </div>
-                              </CardBody>
-                            </UncontrolledAlert>
-                          )
-
-                        }
-
-                        {
-                          selectedIndexCalculatedRisk.totalTradableLots < 1 && (
-                            <UncontrolledAlert color="light" role="alert" className="card border mt-4 mt-lg-0 p-0 mb-0">
-
-                              <div className="card-header bg-soft-danger">
-                                <div className="d-flex">
-                                  <div className="flex-grow-1">
-                                    <h5 className="font-size-16 text-danger my-1">
-                                      No Trade
-                                    </h5>
-                                  </div>
-                                  <div className="flex-shrink-0">
-
-                                  </div>
-                                </div>
-                              </div>
-                              <CardBody>
-                                <div className="text-center">
-                                  <div className="mb-4">
-                                    <i className="mdi mdi-close display-4 text-danger"></i>
-                                  </div>
-                                  <h4 className="alert-heading">
-                                    Sorry !!!
-                                  </h4>
-                                  <p className="mb-0">
-                                    You can <strong>NOT</strong> trade with the entered Option Premium Price.
-                                  </p>
-                                  {/* <p className="mb-0">
-                                                                    Sorry ! Product not available
-                                                                </p> */}
-                                </div>
-                              </CardBody>
-                            </UncontrolledAlert>
-                          )
-
-                        }
-                      </div>
-                    </Col>
-                    <Col md="9">
+                    
+                    <Col md="12">
                       <Row>
                         <Col md="3">
                           <Card color="" className={`${selectedIndexCalculatedRisk.totalTradableLots > 0 ? 'card-primary' : 'card-danger'} calculated-risk-card`} md="2">
@@ -1061,12 +1095,12 @@ const TargetCalculator = () => {
                         </Col>
                         <Col md="3">
                           <Card color="" className="card calculated-risk-card" md="2">
-                            <h6 className="card-header">Total Trade Capital</h6>
+                            <h6 className="card-header">Single Trade Amount</h6>
 
                             <CardBody>
 
                               <CardText>
-                                &#8377; {selectedIndexCalculatedRisk.totalTradeCapital}
+                                &#8377; {selectedIndexCalculatedRisk.singleTradeAmount}
 
                               </CardText>
                             </CardBody>
@@ -1140,7 +1174,12 @@ const TargetCalculator = () => {
                                   </Col>
                                   <Col md="3">
                                     <Card color="" className="card calculated-risk-card" md="2">
-                                      <h6 className="card-header">Final Capital after Trading Sessions <br /><span style={{fontWeight:"normal", fontSize:"0.8em"}}>(If Max SL count hit everyday)</span> </h6>
+                                      <div className="card-header">
+                                        <h6 style={{marginBottom:0}}>
+                                        Final Capital after Trading Sessions 
+                                          </h6> 
+                                      <span style={{fontWeight:"normal", fontSize:"0.8em"}}>(If Max SL count hit everyday)</span> 
+                                      </div>
                                       
                                       <CardBody>
                                         <CardText>
@@ -1169,7 +1208,7 @@ const TargetCalculator = () => {
                                           </CardBody>
                                           </Card>
                                         </Col>
-                                        <Col md="3">
+                                        {/* <Col md="3">
                                           <Card color="" className="card calculated-risk-card" md="2">
                                             <h6 className="card-header">Max Trading Amount in One Day</h6>
                                             <CardBody>
@@ -1178,7 +1217,7 @@ const TargetCalculator = () => {
                                               </CardText>
                                             </CardBody>
                                             </Card>
-                                          </Col>
+                                          </Col> */}
 
                         {/* <Col md="3">
                                                                 <Card color="" className="card calculated-risk-card" md="2">
@@ -1203,8 +1242,8 @@ const TargetCalculator = () => {
               {/* </Col> */}
 
             </Col>
-          </Row>
         )}
+        </Row>
 
       </div>
     </React.Fragment>

@@ -123,8 +123,10 @@ $button-active-blue: #1669F2;
 }
 
 .calculated-risk-card{
+  box-shadow: 0 0px 1px #565656d9;
   .card-header{
-    min-height: 54px
+    min-height: 54px;
+    line-height: 30px;
   }
   .card-body{
     // text-align: center;
@@ -144,4 +146,26 @@ $button-active-blue: #1669F2;
     color: white;
   }
 }
+
 @import url(https://fonts.googleapis.com/css?family=Roboto:500);
+
+.result-container{
+  box-shadow: #b3b3b8c7 -3px -3px 5px;
+  padding: 0px;
+  width: 99%;
+  margin-left: 12px;
+  border-radius: 5px;
+}
+
+.calculator-form-input-label{
+  font-weight: normal;
+  color: black;
+}
+
+.calculator-form-input{
+  min-width: 50%;
+  // max-width: 160px;
+  padding:0.7rem 0.75rem;
+  color: black;
+  font-weight: bold;
+}

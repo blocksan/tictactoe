@@ -27,7 +27,7 @@ const SidebarData = [
     //     ],
     // },
     {
-        label: "Calculator",
+        label: "F&O Calculator",
         isMainMenu: true,
         
     },
@@ -42,6 +42,12 @@ const SidebarData = [
         icon: "mdi mdi-trending-up",
         url: "/targetcalculator",
         isHasArrow: true,
+    },
+    {
+        label: "Capital Calculator",
+        url: "/capitalcalculator",
+        isHasArrow: true,
+        icon:"bx bx-rupee"
     },
     // {
     //     label: "Settings",

@@ -129,7 +129,7 @@ const Sidebar = (props) => {
               {(sidebarData || []).map((item, key) => (
                 <React.Fragment key={key}>
                   {item.isMainMenu ? (
-                    <li className="menu-title">{props.t(item.label)}</li>
+                    <li className="menu-title text-white">{props.t(item.label)}</li>
                   ) : (
                     <li key={key}>
                       <Link
