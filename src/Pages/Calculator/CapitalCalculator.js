@@ -11,6 +11,7 @@ const CapitalCalculator = () => {
       <div className="page-content">
         <Container fluid={true}>
           <Breadcrumbs title="F&O Calculator" breadcrumbItem="Capital Calculator" />
+           <h4 style={{textAlign:"center", paddingTop:"100px"}}>Coming soon...</h4>
         </Container>
       </div>
     </React.Fragment>

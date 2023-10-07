@@ -45,11 +45,11 @@ const DayWiseCapitalDrawDown = (props) => {
                     </CardBody>
                     <CardBody style={{background:"rgb(236 251 255)"}}>
                         <div className="text-muted text-center">
-                            <Row className='offset-md-1'>
+                            <Row className='offset-md-0'>
                                 {props.calculatedMetadata.map((item, key) => (
-                                  <Col md={2} key={key} style={{borderRight:"1px solid black",borderColor:"black"}}>
+                                  <Col md={3} key={key} style={{borderRight:"1px solid black",borderColor:"black"}}>
                                     <div className={item.makeDanger == 'true' ? 'chart-bottom-card-danger':''} style={{height:"70px"}}>
-                                        <p className="mb-2"><i className={"mdi mdi-circle font-size-12 me-1 text-" + item.color}></i> {item.title}</p>
+                                        <p className="mb-1"><i className={"mdi mdi-circle font-size-12 me-1 text-" + item.color}></i> {item.title}</p>
                                         <h5 className="font-size-16 mb-0 chart-bottom-card-danger-text">{ReactHtmlParser(item.count)} <span className="text-danger font-size-12">
                                             {item.percentage && <><i className="mdi mdi-menu-down font-size-14 me-1"></i>{item.percentage} %</>
                                             }
