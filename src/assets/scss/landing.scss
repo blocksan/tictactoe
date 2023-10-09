@@ -38,9 +38,10 @@ Table Of Contents
   4.1 - Onboarding
 
 ----------------------------------------------------------------------------- */
-@import url("https://fonts.googleapis.com/css?family=Lato:300,400,700,900");
-@import url("https://fonts.googleapis.com/css?family=PT+Serif:400,700");
-@import url("https://fonts.googleapis.com/icon?family=Material+Icons");
+// @import url("https://fonts.googleapis.com/css?family=Lato:300,400,700,900");
+// @import url("https://fonts.googleapis.com/css?family=PT+Serif:400,700");
+// @import url("https://fonts.googleapis.com/icon?family=Material+Icons");
+@import url('https://fonts.googleapis.com/css2?family=Work+Sans:wght@300;400;500;600&display=swap');
 
 /* -----------------------------------------------------------------------------
 
@@ -111,7 +112,7 @@ Table Of Contents
     html kbd,
     html pre,
     html samp {
-        font-family: monospace, monospace;
+        font-family: 'Work Sans', sans-serif;
         font-size: 1em;
     }
 
@@ -177,7 +178,7 @@ Table Of Contents
     html optgroup,
     html select,
     html textarea {
-        font-family: sans-serif;
+        font-family: 'Work Sans', sans-serif;
         font-size: 100%;
         margin: 0;
     }
@@ -313,7 +314,7 @@ Table Of Contents
 
     body {
         color: #110f24;
-        font-family: "Lato", Helvetica, sans-serif;
+        font-family: 'Work Sans', sans-serif;
         font-size: 1rem;
         line-height: 1.5rem;
         overflow-x: hidden;
@@ -371,13 +372,13 @@ Table Of Contents
     h1,
     h2,
     h3 {
-        font-family: "PT Serif", Georgia, serif;
+        // font-family: 'Work Sans', sans-serif;
     }
 
     h4,
     h5,
     h6 {
-        font-family: "Lato", Helvetica, sans-serif;
+        // font-family: "Lato", Helvetica, sans-serif;
     }
 
     h1 {
@@ -478,7 +479,7 @@ Table Of Contents
     }
 
     .paragraph.serif {
-        font-family: "PT Serif", Georgia, serif;
+        // font-family: "PT Serif", Georgia, serif;
     }
 
     @media only screen and (max-width: 479px) {
@@ -1673,7 +1674,7 @@ Table Of Contents
     .button.button-close:before {
         direction: ltr;
         display: inline-block;
-        font-family: "Material Icons";
+        // font-family: "Material Icons";
         font-feature-settings: "liga";
         font-size: 1.5rem;
         font-style: normal;
@@ -1897,7 +1898,7 @@ Table Of Contents
     form .select-wrapper:before {
         direction: ltr;
         display: inline-block;
-        font-family: "Material Icons";
+        // font-family: "Material Icons";
         font-feature-settings: "liga";
         font-size: 1.5rem;
         font-style: normal;
@@ -1992,7 +1993,7 @@ Table Of Contents
     form label.radio:after {
         direction: ltr;
         display: inline-block;
-        font-family: "Material Icons";
+        // font-family: "Material Icons";
         font-feature-settings: "liga";
         font-size: 1.5rem;
         font-style: normal;
@@ -2452,7 +2453,7 @@ Table Of Contents
 
     .logo span {
         display: inline-block;
-        font-family: "PT Serif", Georgia, serif;
+        // font-family: "PT Serif", Georgia, serif;
         vertical-align: top;
     }
 
