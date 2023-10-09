@@ -15,7 +15,7 @@ const DayWiseCapitalDrawDown = (props) => {
     return (
         <React.Fragment>
             <Col xl={12}>
-                <Card>
+                <Card style={{border:"1px solid #ededed"}}>
                     <CardBody>
                         <div className="d-flex align-items-center">
                             <div className="flex-grow-1">

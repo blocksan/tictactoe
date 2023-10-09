@@ -387,930 +387,938 @@ const TargetCalculator = () => {
 
 
   return (
+    // <React.Fragment>
+    //   <div className="page-content landing-header-main">
+    //     <Container fluid={true}>
+    //       <Breadcrumbs title="F&O Calculator" breadcrumbItem="Target Calculator" />
+    //     </Container>
+    //     <Row>
+    //       <Col lg={12}>
+    //         <Card>
+    //           <CardBody style={{ background: "rgb(241 241 241 / 7%)" }}>
+    //             {/* <CardTitle>Risk Calculator</CardTitle> */}
+    //             <br />
+    //             <CardSubtitle className="mb-3">
+    //               This tool will help you calculate the target amount you can make based on your capital, percentage of risk per trade, and target hit ratio.
+    //             </CardSubtitle>
+    //             <br />
+    //             <Form
+    //               onSubmit={(e) => {
+    //                 e.preventDefault();
+    //                 targetCalculatorForm.handleSubmit();
+    //                 return false;
+    //               }}
+    //             >
+    //               <Row>
+    //                 <Col md="6">
+    //                   <Row>
+    //                     <Col md="6">
+    //                       <div className="mb-3">
+    //                         <Label className="form-label calculator-form-input-label">Trading Capital</Label>
+    //                         <Input
+    //                           name="tradingCapital"
+    //                           label="tradingCapital"
+    //                           placeholder="Please provide your Trading Capital"
+    //                           type="number"
+    //                           className="calculator-form-input"
+    //                           onChange={targetCalculatorForm.handleChange}
+    //                           onBlur={targetCalculatorForm.handleBlur}
+    //                           value={targetCalculatorForm.values.tradingCapital || ""}
+    //                           invalid={
+    //                             targetCalculatorForm.touched.tradingCapital &&
+    //                               targetCalculatorForm.errors.tradingCapital
+    //                               ? true
+    //                               : false
+    //                           }
+    //                         />
+    //                         {targetCalculatorForm.touched.tradingCapital &&
+    //                           targetCalculatorForm.errors.tradingCapital ? (
+    //                           <FormFeedback type="invalid">
+    //                             {targetCalculatorForm.errors.tradingCapital}
+    //                           </FormFeedback>
+    //                         ) : null}
+    //                       </div>
+    //                     </Col>
+    //                     <Col md="6">
+    //                       <div className="mb-3">
+    //                         <Label className="form-label calculator-form-input-label">Trading Sessions (Days)</Label>
+    //                         <Input
+    //                           name="numberOfTradingSessions"
+    //                           label="numberOfTradingSessions"
+    //                           placeholder="Number of Trading Sessions you want to take"
+    //                           type="number"
+    //                           className="calculator-form-input"
+    //                           onChange={targetCalculatorForm.handleChange}
+    //                           onBlur={targetCalculatorForm.handleBlur}
+    //                           value={targetCalculatorForm.values.numberOfTradingSessions || ""}
+    //                           invalid={
+    //                             targetCalculatorForm.touched.numberOfTradingSessions &&
+    //                               targetCalculatorForm.errors.numberOfTradingSessions
+    //                               ? true
+    //                               : false
+    //                           }
+    //                         />
+    //                         {targetCalculatorForm.touched.numberOfTradingSessions &&
+    //                           targetCalculatorForm.errors.numberOfTradingSessions ? (
+    //                           <FormFeedback type="invalid">
+    //                             {targetCalculatorForm.errors.numberOfTradingSessions}
+    //                           </FormFeedback>
+    //                         ) : null}
+    //                       </div>
+    //                     </Col>
+    //                   </Row>
+    //                   <Row>
+    //                     <Col md="6">
+    //                       <div className="mb-3">
+    //                         <Label className="form-label calculator-form-input-label">Max SL Count</Label>
+    //                         <Input
+    //                           name="maxSLCountOneDay"
+    //                           label="maxSLCountOneDay"
+    //                           placeholder="Maximum number of Stop Loss you want to take in a day (1-3)"
+    //                           type="number"
+    //                           className="calculator-form-input"
+    //                           onChange={targetCalculatorForm.handleChange}
+    //                           onBlur={targetCalculatorForm.handleBlur}
+    //                           value={targetCalculatorForm.values.maxSLCountOneDay || ""}
+    //                           invalid={
+    //                             targetCalculatorForm.touched.maxSLCountOneDay &&
+    //                               targetCalculatorForm.errors.maxSLCountOneDay
+    //                               ? true
+    //                               : false
+    //                           }
+    //                         />
+    //                         {targetCalculatorForm.touched.maxSLCountOneDay &&
+    //                           targetCalculatorForm.errors.maxSLCountOneDay ? (
+    //                           <FormFeedback type="invalid">
+    //                             {targetCalculatorForm.errors.maxSLCountOneDay}
+    //                           </FormFeedback>
+    //                         ) : null}
+    //                       </div>
+    //                     </Col>
+    //                     <Col md="6">
+    //                       <div className="mb-3">
+    //                         <Label className="form-label calculator-form-input-label">Maximum SL Percentage(%) of 1 Trade</Label>
+    //                         <Input
+    //                           name="maxDrawDownPercentage"
+    //                           label="maxDrawDownPercentage"
+    //                           placeholder="Maximum SL(Drawdown) percentage of Used Capital i.e 1-30% of Used Capital"
+    //                           type="number"
+    //                           className="calculator-form-input"
+    //                           onChange={targetCalculatorForm.handleChange}
+    //                           onBlur={targetCalculatorForm.handleBlur}
+    //                           value={targetCalculatorForm.values.maxDrawDownPercentage || ""}
+    //                           invalid={
+    //                             targetCalculatorForm.touched.maxDrawDownPercentage &&
+    //                               targetCalculatorForm.errors.maxDrawDownPercentage
+    //                               ? true
+    //                               : false
+    //                           }
+    //                         />
+    //                         {targetCalculatorForm.touched.maxDrawDownPercentage &&
+    //                           targetCalculatorForm.errors.maxDrawDownPercentage ? (
+    //                           <FormFeedback type="invalid">
+    //                             {targetCalculatorForm.errors.maxDrawDownPercentage}
+    //                           </FormFeedback>
+    //                         ) : null}
+    //                       </div>
+    //                     </Col>
+    //                   </Row>
+    //                   <Row>
+    //                     <Col md="6">
+    //                       <div className="mb-3">
+    //                         <Label className="form-label calculator-form-input-label">Target ratio 1: ?</Label>
+    //                         <Input
+    //                           name="targetRatioMultiplier"
+    //                           label="targetRatioMultiplier"
+    //                           placeholder="Enter Target multiplier with respect to Loss i.e 1,2,3... etc."
+    //                           type="number"
+    //                           className="calculator-form-input"
+    //                           onChange={targetCalculatorForm.handleChange}
+    //                           onBlur={targetCalculatorForm.handleBlur}
+    //                           value={targetCalculatorForm.values.targetRatioMultiplier || ""}
+    //                           invalid={
+    //                             targetCalculatorForm.touched.targetRatioMultiplier &&
+    //                               targetCalculatorForm.errors.targetRatioMultiplier
+    //                               ? true
+    //                               : false
+    //                           }
+    //                         />
+    //                         {targetCalculatorForm.touched.targetRatioMultiplier &&
+    //                           targetCalculatorForm.errors.targetRatioMultiplier ? (
+    //                           <FormFeedback type="invalid">
+    //                             {targetCalculatorForm.errors.targetRatioMultiplier}
+    //                           </FormFeedback>
+    //                         ) : null}
+    //                       </div>
+    //                     </Col>
+    //                     <Col md="6">
+    //                       <div className="mb-3">
+    //                         <Label className="form-label calculator-form-input-label">Trading Charge of One Trade (Buy & Sell)</Label>
+    //                         <Input
+    //                           name="averageTradingChargesPerTrade"
+    //                           label="averageTradingChargesPerTrade"
+    //                           placeholder="Please provide Average Trading Charge of One Trade (Buy & Sell)"
+    //                           type="number"
+    //                           className="calculator-form-input"
+    //                           onChange={targetCalculatorForm.handleChange}
+    //                           onBlur={targetCalculatorForm.handleBlur}
+    //                           value={targetCalculatorForm.values.averageTradingChargesPerTrade}
+    //                           invalid={
+    //                             targetCalculatorForm.touched.averageTradingChargesPerTrade &&
+    //                               targetCalculatorForm.errors.averageTradingChargesPerTrade
+    //                               ? true
+    //                               : false
+    //                           }
+    //                         />
+    //                         {targetCalculatorForm.touched.averageTradingChargesPerTrade &&
+    //                           targetCalculatorForm.errors.averageTradingChargesPerTrade ? (
+    //                           <FormFeedback type="invalid">
+    //                             {targetCalculatorForm.errors.averageTradingChargesPerTrade}
+    //                           </FormFeedback>
+    //                         ) : null}
+    //                       </div>
+    //                     </Col>
+
+    //                   </Row>
+    //                   <Row>
+    //                     <Col md="6">
+    //                       <div className="mb-3">
+    //                         <Label className="form-label calculator-form-input-label">Average SL Hit Trade in One Day</Label>
+    //                         <Input
+    //                           name="averageSLHitTradeInOneDay"
+    //                           label="averageSLHitTradeInOneDay"
+    //                           placeholder="Please provide Average SL Hit Trade In One Day"
+    //                           type="number"
+    //                           className="calculator-form-input"
+    //                           onChange={targetCalculatorForm.handleChange}
+    //                           onBlur={targetCalculatorForm.handleBlur}
+    //                           value={targetCalculatorForm.values.averageSLHitTradeInOneDay}
+    //                           invalid={
+    //                             targetCalculatorForm.touched.averageSLHitTradeInOneDay &&
+    //                               targetCalculatorForm.errors.averageSLHitTradeInOneDay
+    //                               ? true
+    //                               : false
+    //                           }
+    //                         />
+    //                         {targetCalculatorForm.touched.averageSLHitTradeInOneDay &&
+    //                           targetCalculatorForm.errors.averageSLHitTradeInOneDay ? (
+    //                           <FormFeedback type="invalid">
+    //                             {targetCalculatorForm.errors.averageSLHitTradeInOneDay}
+    //                           </FormFeedback>
+    //                         ) : null}
+    //                       </div>
+    //                     </Col>
+    //                     <Col md="6">
+    //                       <div className="mb-3">
+    //                         <Label className="form-label calculator-form-input-label">Average Target Hit Trade in One Day</Label>
+    //                         <Input
+    //                           name="averageTargetHitTradeInOneDay"
+    //                           label="averageTargetHitTradeInOneDay"
+    //                           placeholder="Please provide Average Target Hit Trade In One Day"
+    //                           type="number"
+    //                           className="calculator-form-input"
+    //                           onChange={targetCalculatorForm.handleChange}
+    //                           onBlur={targetCalculatorForm.handleBlur}
+    //                           value={targetCalculatorForm.values.averageTargetHitTradeInOneDay}
+    //                           invalid={
+    //                             targetCalculatorForm.touched.averageTargetHitTradeInOneDay &&
+    //                               targetCalculatorForm.errors.averageTargetHitTradeInOneDay
+    //                               ? true
+    //                               : false
+    //                           }
+    //                         />
+    //                         {targetCalculatorForm.touched.averageTargetHitTradeInOneDay &&
+    //                           targetCalculatorForm.errors.averageTargetHitTradeInOneDay ? (
+    //                           <FormFeedback type="invalid">
+    //                             {targetCalculatorForm.errors.averageTargetHitTradeInOneDay}
+    //                           </FormFeedback>
+    //                         ) : null}
+    //                       </div>
+    //                     </Col>
+    //                   </Row>
+    //                   <Row>
+    //                     <Col md="6">
+    //                       <div className="mb-3">
+    //                         <Label className="form-label calculator-form-input-label">Zero SL Trade in One Day</Label>
+    //                         <Input
+    //                           name="zeroSLHitTradeInOneDay"
+    //                           label="zeroSLHitTradeInOneDay"
+    //                           placeholder="Please provide Zero SL Hit Trade In One Day"
+    //                           type="number"
+    //                           className="calculator-form-input"
+    //                           onChange={targetCalculatorForm.handleChange}
+    //                           onBlur={targetCalculatorForm.handleBlur}
+    //                           value={targetCalculatorForm.values.zeroSLHitTradeInOneDay}
+    //                           invalid={
+    //                             targetCalculatorForm.touched.zeroSLHitTradeInOneDay &&
+    //                               targetCalculatorForm.errors.zeroSLHitTradeInOneDay
+    //                               ? true
+    //                               : false
+    //                           }
+    //                         />
+    //                         {targetCalculatorForm.touched.zeroSLHitTradeInOneDay &&
+    //                           targetCalculatorForm.errors.zeroSLHitTradeInOneDay ? (
+    //                           <FormFeedback type="invalid">
+    //                             {targetCalculatorForm.errors.zeroSLHitTradeInOneDay}
+    //                           </FormFeedback>
+    //                         ) : null}
+    //                       </div>
+    //                     </Col>
+    //                     <Col md="6">
+    //                       <div className="mb-3">
+    //                         <Label className="form-label calculator-form-input-label">Zero Target Hit Trade in One Day</Label>
+    //                         <Input
+    //                           name="zeroTargetHitTradeInOneDay"
+    //                           label="zeroTargetHitTradeInOneDay"
+    //                           placeholder="Please provide Zero Target Hit Trade In One Day"
+    //                           type="number"
+    //                           className="calculator-form-input"
+    //                           onChange={targetCalculatorForm.handleChange}
+    //                           onBlur={targetCalculatorForm.handleBlur}
+    //                           value={targetCalculatorForm.values.zeroTargetHitTradeInOneDay}
+    //                           invalid={
+    //                             targetCalculatorForm.touched.zeroTargetHitTradeInOneDay &&
+    //                               targetCalculatorForm.errors.zeroTargetHitTradeInOneDay
+    //                               ? true
+    //                               : false
+    //                           }
+    //                         />
+    //                         {targetCalculatorForm.touched.zeroTargetHitTradeInOneDay &&
+    //                           targetCalculatorForm.errors.zeroTargetHitTradeInOneDay ? (
+    //                           <FormFeedback type="invalid">
+    //                             {targetCalculatorForm.errors.zeroTargetHitTradeInOneDay}
+    //                           </FormFeedback>
+    //                         ) : null}
+    //                       </div>
+    //                     </Col>
+    //                   </Row>
+    //                 </Col>
+    //                 <Col md="5" className="offset-md-1">
+    //                   <Row>
+    //                     <Col md="6">
+    //                       <Card md="2">
+    //                         <h6 className="card-header">BANKNIFTY - 1 Lot Size </h6>
+
+    //                         <CardBody className="text-center">
+
+    //                           <CardText style={{ fontSize: '2em' }}>
+    //                             {BANKNIFTY_LOT_SIZE}
+    //                           </CardText>
+    //                         </CardBody>
+    //                       </Card>
+    //                     </Col>
+    //                     <Col md="6">
+    //                       <Card md="2">
+    //                         <h6 className="card-header">FINNIFTY - 1 Lot Size</h6>
+
+    //                         <CardBody className="text-center">
+
+    //                           <CardText style={{ fontSize: '2em' }}>
+    //                             {FINNIFTY_LOT_SIZE}
+    //                           </CardText>
+    //                         </CardBody>
+    //                       </Card>
+    //                     </Col>
+    //                   </Row>
+    //                   <Row>
+    //                     <Col md="6" className="offset-md-2">
+    //                       <Card color="gray" className="" md="2">
+    //                         <h6 className="card-header">NIFTY 50 - 1 Lot Size</h6>
+
+    //                         <CardBody className="text-center">
+
+    //                           <CardText style={{ fontSize: '2em' }}>
+    //                             {NIFTY50_LOT_SIZE}
+    //                           </CardText>
+    //                         </CardBody>
+    //                       </Card>
+    //                     </Col>
+    //                   </Row>
+    //                 </Col>
+    //                 <Row>
+    //                   <Col>
+    //                     <div className="d-flex flex-wrap gap-2 justify-content-center">
+    //                       <Button type="submit" color="info" className="btn-lg" style={{ padding: "10px 28px", borderRadius: "4px", background: "#12d6df", outline: 0, border: 0 }}>
+    //                         Calculate
+    //                       </Button>{" "}
+    //                       <Button type="reset" color="secondary" className="" onClick={handleResetClick}>
+    //                         Reset Calculator
+    //                       </Button>
+    //                     </div>
+    //                   </Col>
+    //                 </Row>
+    //               </Row>
+    //             </Form>
+
+
+    //           </CardBody>
+    //         </Card>
+    //       </Col>
+    //     </Row>
+    //     <br />
+    //     {loading && (
+    //       <div className="text-center">
+    //         <img src={calculator} width={160} />
+    //       </div>
+    //     )
+    //     }
+    //     <Row ref={resultContainerRef}>
+    //       {!loading && calculatedRiskRows && calculatedRiskRows.length > 0 && (
+    //         <Col md={12} className="result-container" >
+    //           <Card color="" className="card" md="2">
+    //             <div className="text-left" style={{
+    //               height: "60px",
+    //               fontSize: "1.4em",
+    //               fontWeight: "bold",
+    //               paddingTop: "15px",
+    //               paddingLeft: "20px",
+    //             }}>Calculated Risk</div>
+
+
+    //             <CardHeader>
+    //               <Row>
+    //                 <Col md="2" style={{ marginBottom: "30px" }}>
+    //                   <div style={{ minHeight: "50px" }}>
+
+    //                     <label
+    //                       className="calculator-form-input-label"
+    //                       htmlFor="inlineFormSelectPref"
+    //                       style={{ lineHeight: "40px" }}
+    //                     >
+    //                       Select Index
+    //                     </label>
+    //                   </div>
+    //                   {/* <br /> */}
+    //                   <select
+    //                     className="form-select calculator-form-input"
+    //                     style={{ cursor: "pointer" }}
+    //                     id="inlineFormSelectPref"
+    //                     onChange={tradeIndexChangeHandler}
+    //                   >
+    //                     {tradeIndexes.map((tradeIndex) => <option defaultValue={tradeIndex.indexName}>{tradeIndex.indexName}</option>)}
+
+    //                   </select>
+
+    //                 </Col>
+    //                 <Col md="3">
+    //                   <div className="mb-3">
+    //                     <div style={{ minHeight: "50px" }}>
+    //                       <span>Change the <strong>Option Premium Price</strong>, <p> to find the best Target Combination
+    //                       </p>
+    //                       </span>
+    //                     </div>
+    //                     {/* <br /> */}
+    //                     {/* <br /> */}
+    //                     {/* <Label className="form-label calculator-form-input-label">Option Premium Price</Label> */}
+    //                     <Input
+    //                       name="optionPremium"
+    //                       label="optionPremium"
+    //                       placeholder={selectedIndexCalculatedRisk.optionPremium}
+    //                       value={selectedIndexCalculatedRisk.optionPremium}
+    //                       className="calculator-form-input"
+    //                       type="number"
+    //                       onChange={(e) => optionPremiumChangeHandler(e, selectedIndexCalculatedRisk.indexName)}
+    //                     />
+    //                   </div>
+    //                 </Col>
+    //                 <Col md="6" className="text-left" style={{ display: "flex", alignItems: "center", marginTop: "40px", marginLeft: "50px" }}>
+    //                   <h3>{selectedIndex}</h3>
+    //                 </Col>
+    //               </Row>
+    //             </CardHeader>
+    //             <CardBody>
+    //               <Row>
+    //                 <Col className="align-center offset-md-3">
+    //                 </Col>
+
+    //               </Row>
+    //               <Row>
+
+    //                 <Col md="3">
+    //                   <Row>
+    //                     <Col md="12" className="mt-0">
+    //                     {
+    //                     selectedIndexCalculatedRisk.totalTradableLots > 0 && selectedIndexCalculatedRisk.totalTradableLots <= 10 && (
+    //                       <UncontrolledAlert color="light" role="alert" className="card border p-0 mb-0">
+    //                         {/* <div className="card-header bg-soft-success">
+    //                           <div className="d-flex">
+    //                             <div className="flex-grow-1">
+    //                               <h5 className="font-size-16 text-success my-1">
+    //                                 Awesome
+    //                               </h5>
+    //                             </div>
+    //                             <div className="flex-shrink-0">
+
+    //                             </div>
+    //                           </div>
+    //                         </div> */}
+
+    //                         <CardBody>
+    //                           <div className="text-center">
+    //                             <h4 className="alert-heading"> <i className="mdi mdi-checkbox-marked-circle-outline display-4 text-success"></i>Well done!</h4>
+    //                             <p className="mb-0">
+    //                               You can trade with {selectedIndexCalculatedRisk.totalTradableLots} {selectedIndexCalculatedRisk.totalTradableLots === 1 ? 'lot' : 'lots'} with <strong>much</strong> confidence.
+    //                             </p>
+    //                           </div>
+    //                         </CardBody>
+    //                       </UncontrolledAlert>
+    //                     )
+
+    //                   }
+    //                   {
+    //                     selectedIndexCalculatedRisk.totalTradableLots > 10 && selectedIndexCalculatedRisk.totalTradableLots < 20 && (
+    //                       <UncontrolledAlert color="light" role="alert" className="card border p-0 mb-0">
+    //                         {/* <div className="card-header bg-soft-success">
+    //                           <div className="d-flex">
+    //                             <div className="flex-grow-1">
+    //                               <h5 className="font-size-16 text-success my-1">
+    //                                 Awesome
+    //                               </h5>
+    //                             </div>
+    //                             <div className="flex-shrink-0">
+
+    //                             </div>
+    //                           </div>
+    //                         </div> */}
+
+    //                         <CardBody>
+    //                           <div className="text-center">
+    //                             <h4 className="alert-heading"><i className="mdi mdi-checkbox-marked-circle-outline display-4 text-success"></i>Well done!</h4>
+    //                             <p className="mb-0">
+    //                               You can trade with {selectedIndexCalculatedRisk.totalTradableLots} lots with <strong>moderate</strong> confidence.
+    //                             </p>
+    //                           </div>
+    //                         </CardBody>
+    //                       </UncontrolledAlert>
+    //                     )
+    //                   }
+    //                   {
+    //                     selectedIndexCalculatedRisk.totalTradableLots > 20 && (
+    //                       <UncontrolledAlert color="light" role="alert" className="card border mt-4 mt-lg-0 p-0 mb-0">
+    //                         {/* <div className="card-header bg-soft-warning">
+    //                           <div className="d-flex">
+    //                             <div className="flex-grow-1">
+    //                               <h5 className="font-size-16 text-warning my-1">
+    //                                 Careful
+    //                               </h5>
+    //                             </div>
+    //                             <div className="flex-shrink-0">
+
+    //                             </div>
+    //                           </div>
+    //                         </div> */}
+    //                         <CardBody>
+    //                           <div className="text-center">
+    //                             <h4 className="alert-heading">
+    //                             <i className="mdi mdi-alert-outline display-4 text-warning"></i> Please be careful!
+
+    //                             </h4>
+    //                             <p className="mb-0">
+    //                               You can trade with {selectedIndexCalculatedRisk.totalTradableLots} lots but be very <strong>careful</strong>.
+    //                             </p>
+
+    //                           </div>
+    //                         </CardBody>
+    //                       </UncontrolledAlert>
+    //                     )
+
+    //                   }
+
+    //                   {
+    //                     selectedIndexCalculatedRisk.totalTradableLots < 1 && (
+    //                       <UncontrolledAlert color="light" role="alert" className="card border mt-4 mt-lg-0 p-0 mb-0">
+
+    //                         {/* <div className="card-header bg-soft-danger">
+    //                           <div className="d-flex">
+    //                             <div className="flex-grow-1">
+    //                               <h5 className="font-size-16 text-danger my-1">
+    //                                 No Trade
+    //                               </h5>
+    //                             </div>
+    //                             <div className="flex-shrink-0">
+
+    //                             </div>
+    //                           </div>
+    //                         </div> */}
+    //                         <CardBody>
+    //                           <div className="text-center">
+    //                             {/* <div className="mb-4">
+                                  
+    //                             </div> */}
+    //                             <h4 className="alert-heading">
+    //                             <i className="mdi mdi-close display-4 text-danger"></i> Sorry !!!
+    //                             </h4>
+    //                             <p className="mb-0">
+    //                               You can <strong>NOT</strong> trade with the entered Option Premium Price.
+    //                             </p>
+    //                             {/* <p className="mb-0">
+    //                                         Sorry ! Product not available
+    //                                     </p> */}
+    //                           </div>
+    //                         </CardBody>
+    //                       </UncontrolledAlert>
+    //                     )
+
+    //                   }
+    //                     </Col>
+    //                     <Col md="12" className="mt-4">
+    //                       <Card color="" className="card calculated-risk-card" md="2">
+    //                         <h6 className="card-header">Option Premium</h6>
+    //                         <CardBody>
+
+    //                           <CustomOptionPremiumStackedBar chartData={
+    //                             stackedBarChartData
+    //                           }/>
+
+    //                         </CardBody>
+    //                       </Card>
+    //                     </Col>
+                        
+    //                   </Row>
+                      
+    //                 </Col>
+    //                 <Col md="9">
+    //                   {selectedIndexCalculatedRisk.drawDownMetrics && <DayWiseCapitalDrawDown drawDownMetrics={selectedIndexCalculatedRisk.drawDownMetrics} title={`Average Target Capital Day Wise at <strong>&#8377; ${selectedIndexCalculatedRisk.optionPremium}</strong>  Option Premium`} calculatedMetadata={[
+    //                     {
+    //                       title: `Starting Trading Capital`,
+    //                       count: `&#8377; ${targetCalculatorForm.values.tradingCapital} `,
+    //                       color: "info",
+    //                     },
+    //                     {
+    //                       title: `Capital left after ${targetCalculatorForm.values.numberOfTradingSessions} Trading Sessions`,
+    //                       count: `&#8377; ${selectedIndexCalculatedRisk.profitAfterAllTradingSessions}`,
+    //                       color: "primary",
+    //                     },
+    //                     {
+    //                       title: "Tradable Lots in 1 Trade",
+    //                       count: `${selectedIndexCalculatedRisk.totalTradableLots}`,
+    //                       color: `${selectedIndexCalculatedRisk.totalTradableLots > 0 ? 'primary' : ''}`,
+    //                       makeDanger: `${selectedIndexCalculatedRisk.totalTradableLots > 0 ? false : true}`,
+    //                     },
+    //                     {
+    //                       title: "Daily Max SL Capacity",
+    //                       count: `&#8377; ${calculateMetadata.maxSLCapacityDaily}`,
+    //                       percentage: (calculateMetadata.maxSLCapacityDaily / targetCalculatorForm.values.tradingCapital * 100).toFixed(2),
+    //                       color: "danger",
+    //                     },
+    //                     {
+    //                       title: "Max Daily Trade Amount",
+    //                       count: `&#8377; ${calculateMetadata.maxTradeAmountInOneDay}`,
+    //                       color: "warning",
+    //                     }
+
+    //                   ]} />}
+    //                 </Col>
+    //               </Row>
+    //               <br />
+
+    //               <Row>
+
+    //                 <Col md="12">
+    //                   <Row>
+    //                     <Col md="3">
+    //                       <Card color="" className={`${selectedIndexCalculatedRisk.totalTradableLots > 0 ? 'card-primary' : 'card-danger'} calculated-risk-card`} md="2">
+    //                         <h6 className="card-header">Tradable Lots in 1 Trade</h6>
+
+    //                         <CardBody>
+
+    //                           <CardText>
+    //                             {selectedIndexCalculatedRisk.totalTradableLots}
+
+    //                           </CardText>
+    //                         </CardBody>
+    //                       </Card>
+    //                     </Col>
+    //                     <Col md="3">
+    //                       <Card color="" className="card calculated-risk-card" md="2">
+    //                         <h6 className="card-header">Final Target Capital after Trading Charges</h6>
+    //                         <CardBody>
+    //                           <CardText>
+    //                             &#8377; {selectedIndexCalculatedRisk.finalTargetCapitalAfterTradingCharges}
+    //                           </CardText>
+    //                         </CardBody>
+    //                       </Card>
+    //                     </Col>
+    //                     {/* <Col md="3">
+    //                       <Card color="" className="card calculated-risk-card" md="2">
+    //                         <h6 className="card-header">SL of 1 Trade</h6>
+    //                         <CardBody>
+    //                           <CardText>
+    //                             <i className="mdi mdi-trending-down" style={{ fontSize: "32px", color: "red" }}></i> &nbsp;
+    //                             <h4 style={{ marginTop: "-37px", marginRight: "0px", textAlign: "center" }}>
+    //                               &#8377; {selectedIndexCalculatedRisk.totalSLofTrade}</h4>
+
+    //                           </CardText>
+    //                         </CardBody>
+    //                       </Card>
+    //                     </Col> */}
+    //                     {/* <Col md="3">
+    //                       <Card color="" className="card calculated-risk-card" md="2">
+    //                         <h6 className="card-header">Target in 1 Trade</h6>
+
+    //                         <CardBody>
+    //                           <CardText>
+
+    //                             <i className="mdi mdi-target lg" style={{ fontSize: "32px", color: "#0bb197" }}></i> &nbsp;
+
+    //                             <h4 style={{
+    //                               marginTop: "-37px",
+    //                               marginRight: "0px", textAlign: "center"
+    //                             }}>&#8377; {selectedIndexCalculatedRisk.totalTargetofTrade}</h4>
+
+    //                           </CardText>
+    //                         </CardBody>
+    //                       </Card>
+    //                     </Col> */}
+    //                     <Col md="3">
+    //                       <Card color="" className="card calculated-risk-card" md="2">
+    //                         <h6 className="card-header">Lot Size</h6>
+
+    //                         <CardBody>
+
+    //                           <CardText>
+    //                             {selectedIndexCalculatedRisk.lotSize}
+
+    //                           </CardText>
+    //                         </CardBody>
+    //                       </Card>
+    //                     </Col>
+
+    //                     {/* <Col md="3">
+    //                       <Card color="" className="card calculated-risk-card" md="2">
+    //                         <h6 className="card-header">Option Premium</h6>
+
+    //                         <CardBody>
+
+    //                           <CardText>
+    //                             &#8377; {selectedIndexCalculatedRisk.optionPremium}
+
+    //                           </CardText>
+    //                         </CardBody>
+    //                       </Card>
+    //                     </Col>
+    //                     <Col md="3">
+    //                       <Card color="" className="card calculated-risk-card" md="2">
+    //                         <h6 className="card-header">SL in Option Premium</h6>
+
+    //                         <CardBody>
+
+    //                           <CardText>
+    //                             &#8377; {selectedIndexCalculatedRisk.SLAmountInOptionPremium}
+
+    //                           </CardText>
+    //                         </CardBody>
+    //                       </Card>
+
+
+    //                     </Col>
+    //                     <Col md="3">
+    //                       <Card color="" className="card calculated-risk-card" md="2">
+    //                         <h6 className="card-header">
+    //                           Target in Option Premium
+    //                         </h6>
+
+    //                         <CardBody>
+
+    //                           <CardText>
+    //                             &#8377; {selectedIndexCalculatedRisk.TargetAmountInOptionPremium}
+
+    //                           </CardText>
+    //                         </CardBody>
+    //                       </Card>
+    //                       </Col>
+    //                     <Col md="3">
+    //                       <Card color="" className="card calculated-risk-card" md="2">
+    //                         <h6 className="card-header">Option Premium Target Exit Price</h6>
+
+    //                         <CardBody>
+
+    //                           <CardText>
+    //                             &#8377; {selectedIndexCalculatedRisk.optionPremiumTargetPrice}
+
+    //                           </CardText>
+    //                         </CardBody>
+    //                       </Card>
+    //                     </Col>
+    //                     <Col md="3">
+    //                       <Card color="" className="card calculated-risk-card" md="2">
+    //                         <h6 className="card-header">Option Premium Exit Price</h6>
+
+    //                         <CardBody>
+
+    //                           <CardText>
+    //                             &#8377; {selectedIndexCalculatedRisk.optionPremiumExitPrice}
+
+    //                           </CardText>
+    //                         </CardBody>
+    //                       </Card>
+    //                     </Col> */}
+
+    //                     <Col md="3">
+    //                       <Card color="" className="card calculated-risk-card" md="2">
+    //                         <h6 className="card-header">Total Tradable Quantity</h6>
+
+    //                         <CardBody>
+
+    //                           <CardText>
+    //                             {selectedIndexCalculatedRisk.totalTradableQuantity}
+
+    //                           </CardText>
+    //                         </CardBody>
+    //                       </Card>
+    //                     </Col>
+    //                     <Col md="3">
+    //                       <Card color="" className="card calculated-risk-card" md="2">
+    //                         <h6 className="card-header">Single Trade Amount</h6>
+
+    //                         <CardBody>
+
+    //                           <CardText>
+    //                             &#8377; {selectedIndexCalculatedRisk.singleTradeAmount}
+
+    //                           </CardText>
+    //                         </CardBody>
+    //                       </Card>
+    //                     </Col>
+    //                     <Col md="3">
+    //                       <Card color="" className="card calculated-risk-card" md="2">
+    //                         <h6 className="card-header">Total Trades in One Day</h6>
+    //                         <CardBody>
+    //                           <CardText>
+    //                             {selectedIndexCalculatedRisk.totalTradesInOneDay}
+    //                           </CardText>
+    //                         </CardBody>
+    //                       </Card>
+    //                     </Col>
+    //                     <Col md="3">
+    //                       <Card color="" className="card calculated-risk-card" md="2">
+    //                         <h6 className="card-header">Profit in Successful Days</h6>
+
+    //                         <CardBody>
+
+    //                           <CardText>
+    //                             &#8377; {selectedIndexCalculatedRisk.profitInSuccessfulDays}
+
+    //                           </CardText>
+    //                         </CardBody>
+    //                       </Card>
+    //                     </Col>
+    //                     <Col md="3">
+    //                       <Card color="" className="card calculated-risk-card" md="2">
+    //                         <h6 className="card-header">Loss in UnSuccessful Days</h6>
+
+    //                         <CardBody>
+
+    //                           <CardText>
+    //                             &#8377; {selectedIndexCalculatedRisk.lossInUnsuccessfulDays}
+
+    //                           </CardText>
+    //                         </CardBody>
+    //                       </Card>
+    //                     </Col>
+    //                     <Col md="3">
+    //                       <Card color="" className="card calculated-risk-card" md="2">
+    //                         <h6 className="card-header">Profit after all Trading Sessions</h6>
+    //                         <CardBody>
+    //                           <CardText>
+    //                             &#8377; {selectedIndexCalculatedRisk.profitAfterAllTradingSessions}
+    //                           </CardText>
+    //                         </CardBody>
+    //                       </Card>
+    //                     </Col>
+    //                     <Col md="3">
+    //                       <Card color="" className="card calculated-risk-card" md="2">
+    //                         <h6 className="card-header">Total Trading Charges</h6>
+    //                         <CardBody>
+    //                           <CardText>
+    //                             &#8377; {selectedIndexCalculatedRisk.totalTradingCharges}
+    //                           </CardText>
+    //                         </CardBody>
+    //                       </Card>
+    //                     </Col>
+    //                     <Col md="3">
+    //                       <Card color="" className="card calculated-risk-card" md="2">
+    //                         <h6 className="card-header">Target After Trading Charges</h6>
+    //                         <CardBody>
+    //                           <CardText>
+    //                             &#8377; {selectedIndexCalculatedRisk.targetAfterTradingCharges}
+    //                           </CardText>
+    //                         </CardBody>
+    //                       </Card>
+    //                     </Col>
+                        
+    //                     <Col md="3">
+    //                       <Card color="" className="card calculated-risk-card" md="2">
+    //                         <div className="card-header">
+    //                           <h6 style={{ marginBottom: 0 }}>
+    //                             Final Capital after Trading Sessions
+    //                           </h6>
+    //                           <span style={{ fontWeight: "normal", fontSize: "0.8em" }}>(If Max SL count hit everyday)</span>
+    //                         </div>
+
+    //                         <CardBody>
+    //                           <CardText>
+    //                             &#8377; {selectedIndexCalculatedRisk.finalCapitalAfterTradingChargesIfMaxSLHit}
+    //                           </CardText>
+    //                         </CardBody>
+    //                       </Card>
+    //                     </Col>
+    //                     <Col md="3">
+    //                       <Card color="" className="card calculated-risk-card" md="2">
+    //                         <h6 className="card-header">Normal Trading Days</h6>
+    //                         <CardBody>
+    //                           <CardText>
+    //                             {selectedIndexCalculatedRisk.normalTradingDays}
+    //                           </CardText>
+    //                         </CardBody>
+    //                       </Card>
+    //                     </Col>
+                        
+    //                     {/* <Col md="3">
+    //                                       <Card color="" className="card calculated-risk-card" md="2">
+    //                                         <h6 className="card-header">Max Trading Amount in One Day</h6>
+    //                                         <CardBody>
+    //                                           <CardText>
+    //                                            {selectedIndexCalculatedRisk.maxTradeAmountInOneDay}
+    //                                           </CardText>
+    //                                         </CardBody>
+    //                                         </Card>
+    //                                       </Col> */}
+
+    //                     {/* <Col md="3">
+    //                                                             <Card color="" className="card calculated-risk-card" md="2">
+    //                                                                 <h6 className="card-header">Capital Left After Trading Sessions</h6>
+
+    //                                                                 <CardBody>
+
+    //                                                                     <CardText>
+    //                                                                         {selectedIndexCalculatedRisk.capitalLeftAfterTradingSessions}
+
+    //                                                                     </CardText>
+    //                                                                 </CardBody>
+    //                                                             </Card>
+    //                                                         </Col> */}
+    //                   </Row>
+
+
+    //                 </Col>
+    //               </Row>
+    //             </CardBody>
+    //           </Card>
+    //           {/* </Col> */}
+
+    //         </Col>
+    //       )}
+    //     </Row>
+
+    //   </div>
+    // </React.Fragment>
     <React.Fragment>
-      <div className="page-content landing-header-main">
+      <div className="page-content">
         <Container fluid={true}>
           <Breadcrumbs title="F&O Calculator" breadcrumbItem="Target Calculator" />
+           <h4 style={{textAlign:"center", paddingTop:"100px"}}>Coming soon...</h4>
         </Container>
-        <Row>
-          <Col lg={12}>
-            <Card>
-              <CardBody style={{ background: "rgb(241 241 241 / 7%)" }}>
-                {/* <CardTitle>Risk Calculator</CardTitle> */}
-                <br />
-                <CardSubtitle className="mb-3">
-                  This tool will help you calculate the target amount you can make based on your capital, percentage of risk per trade, and target hit ratio.
-                </CardSubtitle>
-                <br />
-                <Form
-                  onSubmit={(e) => {
-                    e.preventDefault();
-                    targetCalculatorForm.handleSubmit();
-                    return false;
-                  }}
-                >
-                  <Row>
-                    <Col md="6">
-                      <Row>
-                        <Col md="6">
-                          <div className="mb-3">
-                            <Label className="form-label calculator-form-input-label">Trading Capital</Label>
-                            <Input
-                              name="tradingCapital"
-                              label="tradingCapital"
-                              placeholder="Please provide your Trading Capital"
-                              type="number"
-                              className="calculator-form-input"
-                              onChange={targetCalculatorForm.handleChange}
-                              onBlur={targetCalculatorForm.handleBlur}
-                              value={targetCalculatorForm.values.tradingCapital || ""}
-                              invalid={
-                                targetCalculatorForm.touched.tradingCapital &&
-                                  targetCalculatorForm.errors.tradingCapital
-                                  ? true
-                                  : false
-                              }
-                            />
-                            {targetCalculatorForm.touched.tradingCapital &&
-                              targetCalculatorForm.errors.tradingCapital ? (
-                              <FormFeedback type="invalid">
-                                {targetCalculatorForm.errors.tradingCapital}
-                              </FormFeedback>
-                            ) : null}
-                          </div>
-                        </Col>
-                        <Col md="6">
-                          <div className="mb-3">
-                            <Label className="form-label calculator-form-input-label">Trading Sessions (Days)</Label>
-                            <Input
-                              name="numberOfTradingSessions"
-                              label="numberOfTradingSessions"
-                              placeholder="Number of Trading Sessions you want to take"
-                              type="number"
-                              className="calculator-form-input"
-                              onChange={targetCalculatorForm.handleChange}
-                              onBlur={targetCalculatorForm.handleBlur}
-                              value={targetCalculatorForm.values.numberOfTradingSessions || ""}
-                              invalid={
-                                targetCalculatorForm.touched.numberOfTradingSessions &&
-                                  targetCalculatorForm.errors.numberOfTradingSessions
-                                  ? true
-                                  : false
-                              }
-                            />
-                            {targetCalculatorForm.touched.numberOfTradingSessions &&
-                              targetCalculatorForm.errors.numberOfTradingSessions ? (
-                              <FormFeedback type="invalid">
-                                {targetCalculatorForm.errors.numberOfTradingSessions}
-                              </FormFeedback>
-                            ) : null}
-                          </div>
-                        </Col>
-                      </Row>
-                      <Row>
-                        <Col md="6">
-                          <div className="mb-3">
-                            <Label className="form-label calculator-form-input-label">Max SL Count</Label>
-                            <Input
-                              name="maxSLCountOneDay"
-                              label="maxSLCountOneDay"
-                              placeholder="Maximum number of Stop Loss you want to take in a day (1-3)"
-                              type="number"
-                              className="calculator-form-input"
-                              onChange={targetCalculatorForm.handleChange}
-                              onBlur={targetCalculatorForm.handleBlur}
-                              value={targetCalculatorForm.values.maxSLCountOneDay || ""}
-                              invalid={
-                                targetCalculatorForm.touched.maxSLCountOneDay &&
-                                  targetCalculatorForm.errors.maxSLCountOneDay
-                                  ? true
-                                  : false
-                              }
-                            />
-                            {targetCalculatorForm.touched.maxSLCountOneDay &&
-                              targetCalculatorForm.errors.maxSLCountOneDay ? (
-                              <FormFeedback type="invalid">
-                                {targetCalculatorForm.errors.maxSLCountOneDay}
-                              </FormFeedback>
-                            ) : null}
-                          </div>
-                        </Col>
-                        <Col md="6">
-                          <div className="mb-3">
-                            <Label className="form-label calculator-form-input-label">Maximum SL Percentage(%) of 1 Trade</Label>
-                            <Input
-                              name="maxDrawDownPercentage"
-                              label="maxDrawDownPercentage"
-                              placeholder="Maximum SL(Drawdown) percentage of Used Capital i.e 1-30% of Used Capital"
-                              type="number"
-                              className="calculator-form-input"
-                              onChange={targetCalculatorForm.handleChange}
-                              onBlur={targetCalculatorForm.handleBlur}
-                              value={targetCalculatorForm.values.maxDrawDownPercentage || ""}
-                              invalid={
-                                targetCalculatorForm.touched.maxDrawDownPercentage &&
-                                  targetCalculatorForm.errors.maxDrawDownPercentage
-                                  ? true
-                                  : false
-                              }
-                            />
-                            {targetCalculatorForm.touched.maxDrawDownPercentage &&
-                              targetCalculatorForm.errors.maxDrawDownPercentage ? (
-                              <FormFeedback type="invalid">
-                                {targetCalculatorForm.errors.maxDrawDownPercentage}
-                              </FormFeedback>
-                            ) : null}
-                          </div>
-                        </Col>
-                      </Row>
-                      <Row>
-                        <Col md="6">
-                          <div className="mb-3">
-                            <Label className="form-label calculator-form-input-label">Target ratio 1: ?</Label>
-                            <Input
-                              name="targetRatioMultiplier"
-                              label="targetRatioMultiplier"
-                              placeholder="Enter Target multiplier with respect to Loss i.e 1,2,3... etc."
-                              type="number"
-                              className="calculator-form-input"
-                              onChange={targetCalculatorForm.handleChange}
-                              onBlur={targetCalculatorForm.handleBlur}
-                              value={targetCalculatorForm.values.targetRatioMultiplier || ""}
-                              invalid={
-                                targetCalculatorForm.touched.targetRatioMultiplier &&
-                                  targetCalculatorForm.errors.targetRatioMultiplier
-                                  ? true
-                                  : false
-                              }
-                            />
-                            {targetCalculatorForm.touched.targetRatioMultiplier &&
-                              targetCalculatorForm.errors.targetRatioMultiplier ? (
-                              <FormFeedback type="invalid">
-                                {targetCalculatorForm.errors.targetRatioMultiplier}
-                              </FormFeedback>
-                            ) : null}
-                          </div>
-                        </Col>
-                        <Col md="6">
-                          <div className="mb-3">
-                            <Label className="form-label calculator-form-input-label">Trading Charge of One Trade (Buy & Sell)</Label>
-                            <Input
-                              name="averageTradingChargesPerTrade"
-                              label="averageTradingChargesPerTrade"
-                              placeholder="Please provide Average Trading Charge of One Trade (Buy & Sell)"
-                              type="number"
-                              className="calculator-form-input"
-                              onChange={targetCalculatorForm.handleChange}
-                              onBlur={targetCalculatorForm.handleBlur}
-                              value={targetCalculatorForm.values.averageTradingChargesPerTrade}
-                              invalid={
-                                targetCalculatorForm.touched.averageTradingChargesPerTrade &&
-                                  targetCalculatorForm.errors.averageTradingChargesPerTrade
-                                  ? true
-                                  : false
-                              }
-                            />
-                            {targetCalculatorForm.touched.averageTradingChargesPerTrade &&
-                              targetCalculatorForm.errors.averageTradingChargesPerTrade ? (
-                              <FormFeedback type="invalid">
-                                {targetCalculatorForm.errors.averageTradingChargesPerTrade}
-                              </FormFeedback>
-                            ) : null}
-                          </div>
-                        </Col>
-
-                      </Row>
-                      <Row>
-                        <Col md="6">
-                          <div className="mb-3">
-                            <Label className="form-label calculator-form-input-label">Average SL Hit Trade in One Day</Label>
-                            <Input
-                              name="averageSLHitTradeInOneDay"
-                              label="averageSLHitTradeInOneDay"
-                              placeholder="Please provide Average SL Hit Trade In One Day"
-                              type="number"
-                              className="calculator-form-input"
-                              onChange={targetCalculatorForm.handleChange}
-                              onBlur={targetCalculatorForm.handleBlur}
-                              value={targetCalculatorForm.values.averageSLHitTradeInOneDay}
-                              invalid={
-                                targetCalculatorForm.touched.averageSLHitTradeInOneDay &&
-                                  targetCalculatorForm.errors.averageSLHitTradeInOneDay
-                                  ? true
-                                  : false
-                              }
-                            />
-                            {targetCalculatorForm.touched.averageSLHitTradeInOneDay &&
-                              targetCalculatorForm.errors.averageSLHitTradeInOneDay ? (
-                              <FormFeedback type="invalid">
-                                {targetCalculatorForm.errors.averageSLHitTradeInOneDay}
-                              </FormFeedback>
-                            ) : null}
-                          </div>
-                        </Col>
-                        <Col md="6">
-                          <div className="mb-3">
-                            <Label className="form-label calculator-form-input-label">Average Target Hit Trade in One Day</Label>
-                            <Input
-                              name="averageTargetHitTradeInOneDay"
-                              label="averageTargetHitTradeInOneDay"
-                              placeholder="Please provide Average Target Hit Trade In One Day"
-                              type="number"
-                              className="calculator-form-input"
-                              onChange={targetCalculatorForm.handleChange}
-                              onBlur={targetCalculatorForm.handleBlur}
-                              value={targetCalculatorForm.values.averageTargetHitTradeInOneDay}
-                              invalid={
-                                targetCalculatorForm.touched.averageTargetHitTradeInOneDay &&
-                                  targetCalculatorForm.errors.averageTargetHitTradeInOneDay
-                                  ? true
-                                  : false
-                              }
-                            />
-                            {targetCalculatorForm.touched.averageTargetHitTradeInOneDay &&
-                              targetCalculatorForm.errors.averageTargetHitTradeInOneDay ? (
-                              <FormFeedback type="invalid">
-                                {targetCalculatorForm.errors.averageTargetHitTradeInOneDay}
-                              </FormFeedback>
-                            ) : null}
-                          </div>
-                        </Col>
-                      </Row>
-                      <Row>
-                        <Col md="6">
-                          <div className="mb-3">
-                            <Label className="form-label calculator-form-input-label">Zero SL Trade in One Day</Label>
-                            <Input
-                              name="zeroSLHitTradeInOneDay"
-                              label="zeroSLHitTradeInOneDay"
-                              placeholder="Please provide Zero SL Hit Trade In One Day"
-                              type="number"
-                              className="calculator-form-input"
-                              onChange={targetCalculatorForm.handleChange}
-                              onBlur={targetCalculatorForm.handleBlur}
-                              value={targetCalculatorForm.values.zeroSLHitTradeInOneDay}
-                              invalid={
-                                targetCalculatorForm.touched.zeroSLHitTradeInOneDay &&
-                                  targetCalculatorForm.errors.zeroSLHitTradeInOneDay
-                                  ? true
-                                  : false
-                              }
-                            />
-                            {targetCalculatorForm.touched.zeroSLHitTradeInOneDay &&
-                              targetCalculatorForm.errors.zeroSLHitTradeInOneDay ? (
-                              <FormFeedback type="invalid">
-                                {targetCalculatorForm.errors.zeroSLHitTradeInOneDay}
-                              </FormFeedback>
-                            ) : null}
-                          </div>
-                        </Col>
-                        <Col md="6">
-                          <div className="mb-3">
-                            <Label className="form-label calculator-form-input-label">Zero Target Hit Trade in One Day</Label>
-                            <Input
-                              name="zeroTargetHitTradeInOneDay"
-                              label="zeroTargetHitTradeInOneDay"
-                              placeholder="Please provide Zero Target Hit Trade In One Day"
-                              type="number"
-                              className="calculator-form-input"
-                              onChange={targetCalculatorForm.handleChange}
-                              onBlur={targetCalculatorForm.handleBlur}
-                              value={targetCalculatorForm.values.zeroTargetHitTradeInOneDay}
-                              invalid={
-                                targetCalculatorForm.touched.zeroTargetHitTradeInOneDay &&
-                                  targetCalculatorForm.errors.zeroTargetHitTradeInOneDay
-                                  ? true
-                                  : false
-                              }
-                            />
-                            {targetCalculatorForm.touched.zeroTargetHitTradeInOneDay &&
-                              targetCalculatorForm.errors.zeroTargetHitTradeInOneDay ? (
-                              <FormFeedback type="invalid">
-                                {targetCalculatorForm.errors.zeroTargetHitTradeInOneDay}
-                              </FormFeedback>
-                            ) : null}
-                          </div>
-                        </Col>
-                      </Row>
-                    </Col>
-                    <Col md="5" className="offset-md-1">
-                      <Row>
-                        <Col md="6">
-                          <Card md="2">
-                            <h6 className="card-header">BANKNIFTY - 1 Lot Size </h6>
-
-                            <CardBody className="text-center">
-
-                              <CardText style={{ fontSize: '2em' }}>
-                                {BANKNIFTY_LOT_SIZE}
-                              </CardText>
-                            </CardBody>
-                          </Card>
-                        </Col>
-                        <Col md="6">
-                          <Card md="2">
-                            <h6 className="card-header">FINNIFTY - 1 Lot Size</h6>
-
-                            <CardBody className="text-center">
-
-                              <CardText style={{ fontSize: '2em' }}>
-                                {FINNIFTY_LOT_SIZE}
-                              </CardText>
-                            </CardBody>
-                          </Card>
-                        </Col>
-                      </Row>
-                      <Row>
-                        <Col md="6" className="offset-md-2">
-                          <Card color="gray" className="" md="2">
-                            <h6 className="card-header">NIFTY 50 - 1 Lot Size</h6>
-
-                            <CardBody className="text-center">
-
-                              <CardText style={{ fontSize: '2em' }}>
-                                {NIFTY50_LOT_SIZE}
-                              </CardText>
-                            </CardBody>
-                          </Card>
-                        </Col>
-                      </Row>
-                    </Col>
-                    <Row>
-                      <Col>
-                        <div className="d-flex flex-wrap gap-2 justify-content-center">
-                          <Button type="submit" color="info" className="btn-lg" style={{ padding: "10px 28px", borderRadius: "4px", background: "#12d6df", outline: 0, border: 0 }}>
-                            Calculate
-                          </Button>{" "}
-                          <Button type="reset" color="secondary" className="" onClick={handleResetClick}>
-                            Reset Calculator
-                          </Button>
-                        </div>
-                      </Col>
-                    </Row>
-                  </Row>
-                </Form>
-
-
-              </CardBody>
-            </Card>
-          </Col>
-        </Row>
-        <br />
-        {loading && (
-          <div className="text-center">
-            <img src={calculator} width={160} />
-          </div>
-        )
-        }
-        <Row ref={resultContainerRef}>
-          {!loading && calculatedRiskRows && calculatedRiskRows.length > 0 && (
-            <Col md={12} className="result-container" >
-              <Card color="" className="card" md="2">
-                <div className="text-left" style={{
-                  height: "60px",
-                  fontSize: "1.4em",
-                  fontWeight: "bold",
-                  paddingTop: "15px",
-                  paddingLeft: "20px",
-                }}>Calculated Risk</div>
-
-
-                <CardHeader>
-                  <Row>
-                    <Col md="2" style={{ marginBottom: "30px" }}>
-                      <div style={{ minHeight: "50px" }}>
-
-                        <label
-                          className="calculator-form-input-label"
-                          htmlFor="inlineFormSelectPref"
-                          style={{ lineHeight: "40px" }}
-                        >
-                          Select Index
-                        </label>
-                      </div>
-                      {/* <br /> */}
-                      <select
-                        className="form-select calculator-form-input"
-                        style={{ cursor: "pointer" }}
-                        id="inlineFormSelectPref"
-                        onChange={tradeIndexChangeHandler}
-                      >
-                        {tradeIndexes.map((tradeIndex) => <option defaultValue={tradeIndex.indexName}>{tradeIndex.indexName}</option>)}
-
-                      </select>
-
-                    </Col>
-                    <Col md="3">
-                      <div className="mb-3">
-                        <div style={{ minHeight: "50px" }}>
-                          <span>Change the <strong>Option Premium Price</strong>, <p> to find the best Target Combination
-                          </p>
-                          </span>
-                        </div>
-                        {/* <br /> */}
-                        {/* <br /> */}
-                        {/* <Label className="form-label calculator-form-input-label">Option Premium Price</Label> */}
-                        <Input
-                          name="optionPremium"
-                          label="optionPremium"
-                          placeholder={selectedIndexCalculatedRisk.optionPremium}
-                          value={selectedIndexCalculatedRisk.optionPremium}
-                          className="calculator-form-input"
-                          type="number"
-                          onChange={(e) => optionPremiumChangeHandler(e, selectedIndexCalculatedRisk.indexName)}
-                        />
-                      </div>
-                    </Col>
-                    <Col md="6" className="text-left" style={{ display: "flex", alignItems: "center", marginTop: "40px", marginLeft: "50px" }}>
-                      <h3>{selectedIndex}</h3>
-                    </Col>
-                  </Row>
-                </CardHeader>
-                <CardBody>
-                  <Row>
-                    <Col className="align-center offset-md-3">
-                    </Col>
-
-                  </Row>
-                  <Row>
-
-                    <Col md="3">
-                      <Row>
-                        <Col md="12" className="mt-0">
-                        {
-                        selectedIndexCalculatedRisk.totalTradableLots > 0 && selectedIndexCalculatedRisk.totalTradableLots <= 10 && (
-                          <UncontrolledAlert color="light" role="alert" className="card border p-0 mb-0">
-                            {/* <div className="card-header bg-soft-success">
-                              <div className="d-flex">
-                                <div className="flex-grow-1">
-                                  <h5 className="font-size-16 text-success my-1">
-                                    Awesome
-                                  </h5>
-                                </div>
-                                <div className="flex-shrink-0">
-
-                                </div>
-                              </div>
-                            </div> */}
-
-                            <CardBody>
-                              <div className="text-center">
-                                <h4 className="alert-heading"> <i className="mdi mdi-checkbox-marked-circle-outline display-4 text-success"></i>Well done!</h4>
-                                <p className="mb-0">
-                                  You can trade with {selectedIndexCalculatedRisk.totalTradableLots} {selectedIndexCalculatedRisk.totalTradableLots === 1 ? 'lot' : 'lots'} with <strong>much</strong> confidence.
-                                </p>
-                              </div>
-                            </CardBody>
-                          </UncontrolledAlert>
-                        )
-
-                      }
-                      {
-                        selectedIndexCalculatedRisk.totalTradableLots > 10 && selectedIndexCalculatedRisk.totalTradableLots < 20 && (
-                          <UncontrolledAlert color="light" role="alert" className="card border p-0 mb-0">
-                            {/* <div className="card-header bg-soft-success">
-                              <div className="d-flex">
-                                <div className="flex-grow-1">
-                                  <h5 className="font-size-16 text-success my-1">
-                                    Awesome
-                                  </h5>
-                                </div>
-                                <div className="flex-shrink-0">
-
-                                </div>
-                              </div>
-                            </div> */}
-
-                            <CardBody>
-                              <div className="text-center">
-                                <h4 className="alert-heading"><i className="mdi mdi-checkbox-marked-circle-outline display-4 text-success"></i>Well done!</h4>
-                                <p className="mb-0">
-                                  You can trade with {selectedIndexCalculatedRisk.totalTradableLots} lots with <strong>moderate</strong> confidence.
-                                </p>
-                              </div>
-                            </CardBody>
-                          </UncontrolledAlert>
-                        )
-                      }
-                      {
-                        selectedIndexCalculatedRisk.totalTradableLots > 20 && (
-                          <UncontrolledAlert color="light" role="alert" className="card border mt-4 mt-lg-0 p-0 mb-0">
-                            {/* <div className="card-header bg-soft-warning">
-                              <div className="d-flex">
-                                <div className="flex-grow-1">
-                                  <h5 className="font-size-16 text-warning my-1">
-                                    Careful
-                                  </h5>
-                                </div>
-                                <div className="flex-shrink-0">
-
-                                </div>
-                              </div>
-                            </div> */}
-                            <CardBody>
-                              <div className="text-center">
-                                <h4 className="alert-heading">
-                                <i className="mdi mdi-alert-outline display-4 text-warning"></i> Please be careful!
-
-                                </h4>
-                                <p className="mb-0">
-                                  You can trade with {selectedIndexCalculatedRisk.totalTradableLots} lots but be very <strong>careful</strong>.
-                                </p>
-
-                              </div>
-                            </CardBody>
-                          </UncontrolledAlert>
-                        )
-
-                      }
-
-                      {
-                        selectedIndexCalculatedRisk.totalTradableLots < 1 && (
-                          <UncontrolledAlert color="light" role="alert" className="card border mt-4 mt-lg-0 p-0 mb-0">
-
-                            {/* <div className="card-header bg-soft-danger">
-                              <div className="d-flex">
-                                <div className="flex-grow-1">
-                                  <h5 className="font-size-16 text-danger my-1">
-                                    No Trade
-                                  </h5>
-                                </div>
-                                <div className="flex-shrink-0">
-
-                                </div>
-                              </div>
-                            </div> */}
-                            <CardBody>
-                              <div className="text-center">
-                                {/* <div className="mb-4">
-                                  
-                                </div> */}
-                                <h4 className="alert-heading">
-                                <i className="mdi mdi-close display-4 text-danger"></i> Sorry !!!
-                                </h4>
-                                <p className="mb-0">
-                                  You can <strong>NOT</strong> trade with the entered Option Premium Price.
-                                </p>
-                                {/* <p className="mb-0">
-                                            Sorry ! Product not available
-                                        </p> */}
-                              </div>
-                            </CardBody>
-                          </UncontrolledAlert>
-                        )
-
-                      }
-                        </Col>
-                        <Col md="12" className="mt-4">
-                          <Card color="" className="card calculated-risk-card" md="2">
-                            <h6 className="card-header">Option Premium</h6>
-                            <CardBody>
-
-                              <CustomOptionPremiumStackedBar chartData={
-                                stackedBarChartData
-                              }/>
-
-                            </CardBody>
-                          </Card>
-                        </Col>
-                        
-                      </Row>
-                      
-                    </Col>
-                    <Col md="9">
-                      {selectedIndexCalculatedRisk.drawDownMetrics && <DayWiseCapitalDrawDown drawDownMetrics={selectedIndexCalculatedRisk.drawDownMetrics} title={`Average Target Capital Day Wise at <strong>&#8377; ${selectedIndexCalculatedRisk.optionPremium}</strong>  Option Premium`} calculatedMetadata={[
-                        {
-                          title: `Starting Trading Capital`,
-                          count: `&#8377; ${targetCalculatorForm.values.tradingCapital} `,
-                          color: "info",
-                        },
-                        {
-                          title: `Capital left after ${targetCalculatorForm.values.numberOfTradingSessions} Trading Sessions`,
-                          count: `&#8377; ${selectedIndexCalculatedRisk.profitAfterAllTradingSessions}`,
-                          color: "primary",
-                        },
-                        {
-                          title: "Tradable Lots in 1 Trade",
-                          count: `${selectedIndexCalculatedRisk.totalTradableLots}`,
-                          color: `${selectedIndexCalculatedRisk.totalTradableLots > 0 ? 'primary' : ''}`,
-                          makeDanger: `${selectedIndexCalculatedRisk.totalTradableLots > 0 ? false : true}`,
-                        },
-                        {
-                          title: "Daily Max SL Capacity",
-                          count: `&#8377; ${calculateMetadata.maxSLCapacityDaily}`,
-                          percentage: (calculateMetadata.maxSLCapacityDaily / targetCalculatorForm.values.tradingCapital * 100).toFixed(2),
-                          color: "danger",
-                        },
-                        {
-                          title: "Max Daily Trade Amount",
-                          count: `&#8377; ${calculateMetadata.maxTradeAmountInOneDay}`,
-                          color: "warning",
-                        }
-
-                      ]} />}
-                    </Col>
-                  </Row>
-                  <br />
-
-                  <Row>
-
-                    <Col md="12">
-                      <Row>
-                        <Col md="3">
-                          <Card color="" className={`${selectedIndexCalculatedRisk.totalTradableLots > 0 ? 'card-primary' : 'card-danger'} calculated-risk-card`} md="2">
-                            <h6 className="card-header">Tradable Lots in 1 Trade</h6>
-
-                            <CardBody>
-
-                              <CardText>
-                                {selectedIndexCalculatedRisk.totalTradableLots}
-
-                              </CardText>
-                            </CardBody>
-                          </Card>
-                        </Col>
-                        <Col md="3">
-                          <Card color="" className="card calculated-risk-card" md="2">
-                            <h6 className="card-header">Final Target Capital after Trading Charges</h6>
-                            <CardBody>
-                              <CardText>
-                                &#8377; {selectedIndexCalculatedRisk.finalTargetCapitalAfterTradingCharges}
-                              </CardText>
-                            </CardBody>
-                          </Card>
-                        </Col>
-                        {/* <Col md="3">
-                          <Card color="" className="card calculated-risk-card" md="2">
-                            <h6 className="card-header">SL of 1 Trade</h6>
-                            <CardBody>
-                              <CardText>
-                                <i className="mdi mdi-trending-down" style={{ fontSize: "32px", color: "red" }}></i> &nbsp;
-                                <h4 style={{ marginTop: "-37px", marginRight: "0px", textAlign: "center" }}>
-                                  &#8377; {selectedIndexCalculatedRisk.totalSLofTrade}</h4>
-
-                              </CardText>
-                            </CardBody>
-                          </Card>
-                        </Col> */}
-                        {/* <Col md="3">
-                          <Card color="" className="card calculated-risk-card" md="2">
-                            <h6 className="card-header">Target in 1 Trade</h6>
-
-                            <CardBody>
-                              <CardText>
-
-                                <i className="mdi mdi-target lg" style={{ fontSize: "32px", color: "#0bb197" }}></i> &nbsp;
-
-                                <h4 style={{
-                                  marginTop: "-37px",
-                                  marginRight: "0px", textAlign: "center"
-                                }}>&#8377; {selectedIndexCalculatedRisk.totalTargetofTrade}</h4>
-
-                              </CardText>
-                            </CardBody>
-                          </Card>
-                        </Col> */}
-                        <Col md="3">
-                          <Card color="" className="card calculated-risk-card" md="2">
-                            <h6 className="card-header">Lot Size</h6>
-
-                            <CardBody>
-
-                              <CardText>
-                                {selectedIndexCalculatedRisk.lotSize}
-
-                              </CardText>
-                            </CardBody>
-                          </Card>
-                        </Col>
-
-                        {/* <Col md="3">
-                          <Card color="" className="card calculated-risk-card" md="2">
-                            <h6 className="card-header">Option Premium</h6>
-
-                            <CardBody>
-
-                              <CardText>
-                                &#8377; {selectedIndexCalculatedRisk.optionPremium}
-
-                              </CardText>
-                            </CardBody>
-                          </Card>
-                        </Col>
-                        <Col md="3">
-                          <Card color="" className="card calculated-risk-card" md="2">
-                            <h6 className="card-header">SL in Option Premium</h6>
-
-                            <CardBody>
-
-                              <CardText>
-                                &#8377; {selectedIndexCalculatedRisk.SLAmountInOptionPremium}
-
-                              </CardText>
-                            </CardBody>
-                          </Card>
-
-
-                        </Col>
-                        <Col md="3">
-                          <Card color="" className="card calculated-risk-card" md="2">
-                            <h6 className="card-header">
-                              Target in Option Premium
-                            </h6>
-
-                            <CardBody>
-
-                              <CardText>
-                                &#8377; {selectedIndexCalculatedRisk.TargetAmountInOptionPremium}
-
-                              </CardText>
-                            </CardBody>
-                          </Card>
-                          </Col>
-                        <Col md="3">
-                          <Card color="" className="card calculated-risk-card" md="2">
-                            <h6 className="card-header">Option Premium Target Exit Price</h6>
-
-                            <CardBody>
-
-                              <CardText>
-                                &#8377; {selectedIndexCalculatedRisk.optionPremiumTargetPrice}
-
-                              </CardText>
-                            </CardBody>
-                          </Card>
-                        </Col>
-                        <Col md="3">
-                          <Card color="" className="card calculated-risk-card" md="2">
-                            <h6 className="card-header">Option Premium Exit Price</h6>
-
-                            <CardBody>
-
-                              <CardText>
-                                &#8377; {selectedIndexCalculatedRisk.optionPremiumExitPrice}
-
-                              </CardText>
-                            </CardBody>
-                          </Card>
-                        </Col> */}
-
-                        <Col md="3">
-                          <Card color="" className="card calculated-risk-card" md="2">
-                            <h6 className="card-header">Total Tradable Quantity</h6>
-
-                            <CardBody>
-
-                              <CardText>
-                                {selectedIndexCalculatedRisk.totalTradableQuantity}
-
-                              </CardText>
-                            </CardBody>
-                          </Card>
-                        </Col>
-                        <Col md="3">
-                          <Card color="" className="card calculated-risk-card" md="2">
-                            <h6 className="card-header">Single Trade Amount</h6>
-
-                            <CardBody>
-
-                              <CardText>
-                                &#8377; {selectedIndexCalculatedRisk.singleTradeAmount}
-
-                              </CardText>
-                            </CardBody>
-                          </Card>
-                        </Col>
-                        <Col md="3">
-                          <Card color="" className="card calculated-risk-card" md="2">
-                            <h6 className="card-header">Total Trades in One Day</h6>
-                            <CardBody>
-                              <CardText>
-                                {selectedIndexCalculatedRisk.totalTradesInOneDay}
-                              </CardText>
-                            </CardBody>
-                          </Card>
-                        </Col>
-                        <Col md="3">
-                          <Card color="" className="card calculated-risk-card" md="2">
-                            <h6 className="card-header">Profit in Successful Days</h6>
-
-                            <CardBody>
-
-                              <CardText>
-                                &#8377; {selectedIndexCalculatedRisk.profitInSuccessfulDays}
-
-                              </CardText>
-                            </CardBody>
-                          </Card>
-                        </Col>
-                        <Col md="3">
-                          <Card color="" className="card calculated-risk-card" md="2">
-                            <h6 className="card-header">Loss in UnSuccessful Days</h6>
-
-                            <CardBody>
-
-                              <CardText>
-                                &#8377; {selectedIndexCalculatedRisk.lossInUnsuccessfulDays}
-
-                              </CardText>
-                            </CardBody>
-                          </Card>
-                        </Col>
-                        <Col md="3">
-                          <Card color="" className="card calculated-risk-card" md="2">
-                            <h6 className="card-header">Profit after all Trading Sessions</h6>
-                            <CardBody>
-                              <CardText>
-                                &#8377; {selectedIndexCalculatedRisk.profitAfterAllTradingSessions}
-                              </CardText>
-                            </CardBody>
-                          </Card>
-                        </Col>
-                        <Col md="3">
-                          <Card color="" className="card calculated-risk-card" md="2">
-                            <h6 className="card-header">Total Trading Charges</h6>
-                            <CardBody>
-                              <CardText>
-                                &#8377; {selectedIndexCalculatedRisk.totalTradingCharges}
-                              </CardText>
-                            </CardBody>
-                          </Card>
-                        </Col>
-                        <Col md="3">
-                          <Card color="" className="card calculated-risk-card" md="2">
-                            <h6 className="card-header">Target After Trading Charges</h6>
-                            <CardBody>
-                              <CardText>
-                                &#8377; {selectedIndexCalculatedRisk.targetAfterTradingCharges}
-                              </CardText>
-                            </CardBody>
-                          </Card>
-                        </Col>
-                        
-                        <Col md="3">
-                          <Card color="" className="card calculated-risk-card" md="2">
-                            <div className="card-header">
-                              <h6 style={{ marginBottom: 0 }}>
-                                Final Capital after Trading Sessions
-                              </h6>
-                              <span style={{ fontWeight: "normal", fontSize: "0.8em" }}>(If Max SL count hit everyday)</span>
-                            </div>
-
-                            <CardBody>
-                              <CardText>
-                                &#8377; {selectedIndexCalculatedRisk.finalCapitalAfterTradingChargesIfMaxSLHit}
-                              </CardText>
-                            </CardBody>
-                          </Card>
-                        </Col>
-                        <Col md="3">
-                          <Card color="" className="card calculated-risk-card" md="2">
-                            <h6 className="card-header">Normal Trading Days</h6>
-                            <CardBody>
-                              <CardText>
-                                {selectedIndexCalculatedRisk.normalTradingDays}
-                              </CardText>
-                            </CardBody>
-                          </Card>
-                        </Col>
-                        
-                        {/* <Col md="3">
-                                          <Card color="" className="card calculated-risk-card" md="2">
-                                            <h6 className="card-header">Max Trading Amount in One Day</h6>
-                                            <CardBody>
-                                              <CardText>
-                                               {selectedIndexCalculatedRisk.maxTradeAmountInOneDay}
-                                              </CardText>
-                                            </CardBody>
-                                            </Card>
-                                          </Col> */}
-
-                        {/* <Col md="3">
-                                                                <Card color="" className="card calculated-risk-card" md="2">
-                                                                    <h6 className="card-header">Capital Left After Trading Sessions</h6>
-
-                                                                    <CardBody>
-
-                                                                        <CardText>
-                                                                            {selectedIndexCalculatedRisk.capitalLeftAfterTradingSessions}
-
-                                                                        </CardText>
-                                                                    </CardBody>
-                                                                </Card>
-                                                            </Col> */}
-                      </Row>
-
-
-                    </Col>
-                  </Row>
-                </CardBody>
-              </Card>
-              {/* </Col> */}
-
-            </Col>
-          )}
-        </Row>
-
       </div>
     </React.Fragment>
   );

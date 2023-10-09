@@ -147,7 +147,14 @@ $button-active-blue: #1669F2;
   }
 }
 
-@import url(https://fonts.googleapis.com/css?family=Roboto:500);
+// @import url(https://fonts.googleapis.com/css?family=Roboto:500);
+
+.grouped-row{
+  border: 1px solid #ddd;
+  padding: 1em;
+  margin-left: 0px;
+  border-radius: 5px;
+}
 
 .result-container{
   box-shadow: #b3b3b8c7 -3px -3px 5px;
@@ -178,8 +185,9 @@ $button-active-blue: #1669F2;
 
 .option-premium-candle-container{
   position: relative;
-  height: 180px;
+  height: 200px;
   width: 100%;
+  border-bottom: 1px solid #eee;
   // background: #eee;
   text-align: center;
   .candle-left-align{
@@ -251,10 +259,10 @@ $button-active-blue: #1669F2;
     height: 0;
     position: absolute;
     width: 30px;
-    background: #7c00e8;
+    background: $metrics-card-primary-color;
     z-index: 1;
     &:hover{
-      background: #6b03c5;
+      background: $metrics-card-primary2-color;
       cursor: pointer;
     }
   }
@@ -262,11 +270,10 @@ $button-active-blue: #1669F2;
     z-index: 2;
     width: 30px;
     position: absolute;
-    background: #ff6c54;
-    opacity: 0.6;
+    background: #cb1b00;
+    opacity: 0.7;
     transition: all 0.2s ease-in-out;
     &:hover{
-      background: #cb1b00;
       cursor: pointer;
       opacity: 1;
     }
@@ -275,7 +282,7 @@ $button-active-blue: #1669F2;
     z-index: 3;
     position: absolute;
     width: 30px;
-    background: rgba(63, 186, 160, 1);
+    background: $metrics-card-success-color;
     &:hover{
       background: rgb(1, 154, 121);
       cursor: pointer;
@@ -290,9 +297,21 @@ $button-active-blue: #1669F2;
     display: flex;
     align-items: center;
     height: 20px;
+    color: black;
     .premium-square{
       height: 10px;
       width: 10px;
+      &.premium{
+        background: $metrics-card-primary-color;
+      }
+      &.sl{
+        // background: $metrics-card-danger-color;
+        background: #cb1b00;
+        opacity: 0.8;
+      }
+      &.target{
+        background: $metrics-card-success-color;
+      }
     }
   }
 }
@@ -325,4 +344,109 @@ $button-active-blue: #1669F2;
     transform: translate(-50%);
     margin-bottom: 0;
     width: 200px;
+}
+
+.configuration-header{
+  background:$metrics-card-primary2-color;
+  .card-title{
+    // height: 50px;
+    // line-height: 50px;
+  }
+}
+
+.metrics-card{
+  // max-width: 380px;
+  min-height: 160px;
+  color: white;
+  .card-body{
+    flex: 1 1 auto;
+    padding: 1.25rem 1.25rem;
+    // justify-content: center;
+    // display: flex;
+    // align-items: center;
+    // flex-direction: column;
+    color:white;
+    .card-info-header{
+      font-weight: 500;
+    }
+    .metric-number{
+      font-size: 2.5em;
+      font-weight: bold;
+      .sub-metric-number{
+        font-size: 0.5em;
+        font-weight: normal;
+      }
+    }
+  }
+  h6{
+    color:white;
+  }
+}
+
+.metrics-card-primary{
+  background: $metrics-card-primary-color;
+  color: $white;
+}
+
+.metrics-card-danger{
+  background: $metrics-card-danger-color;
+  color: $white;
+}
+.metrics-card-success{
+  background: $metrics-card-success-color;
+  color: $white;
+}
+
+.metrics-card-primary2{
+  background: $metrics-card-primary2-color;
+  color: $white;
+}
+
+.metrics-card-raw-info{
+  background: $metrics-card-raw-info-color;
+  color: $metrics-card-primary2-color;
+  
+  .card-body{
+    .card-info-header{
+      font-weight: 500;
+    }
+    color: $metrics-card-primary2-color;
+    .metric-number{
+      color: $metrics-card-primary2-color;
+    }
+  }
+}
+
+.metrics-card-white-info{
+  background: $white;
+  border:1px solid #eee;
+  box-shadow: 0 1px 1px rgba(0, 0, 0, 0.08);
+  .card-body{
+    color: $metrics-card-primary2-color;
+    .card-info-header{
+      font-weight: 500;
+      color: $metrics-card-primary2-color;
+    }
+    // color: $metrics-card-primary2-color;
+    // .metric-number{
+    //   color: $metrics-card-primary2-color;
+    // }
+  }
+  &.option-premium-stacked-container{
+    min-height: 362px;
+  }
+}
+
+.primary-button{
+  background: $metrics-card-primary2-color;
+  color: $white;
+  border: 0;
+  outline: 0;
+  padding: 0.6em 1.25em;
+  &:hover{
+    background:$metrics-card-primary-color;
+  }
+}
+.landing-header-main{
+  margin-bottom: 20px;
 }

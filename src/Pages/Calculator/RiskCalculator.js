@@ -84,7 +84,7 @@ const RiskCalculator = () => {
 
         initialValues: {
             tradingCapital: 10000,
-            desiredNumberOfTradingSessions: 0,
+            desiredNumberOfTradingSessions: 10,
             percentageOfTradingCapitalInOneTrade: 0,
             maxSLCountOneDay: 2,
             maxDrawDownPercentage: 15,
@@ -146,12 +146,12 @@ const RiskCalculator = () => {
 
     const calculateRisk = (riskCalculatorFormValues) => {
         // Calculate Risk Metadata
-        const { maxSLCapacityDaily, maxSLCapacityInOneTrade, maxTradeAmountInOneDay, numberOfTradingSessions } = calculateRiskMetadata(riskCalculatorFormValues);
-        setCalculateMetadata({ maxSLCapacityDaily, maxSLCapacityInOneTrade, maxTradeAmountInOneDay, numberOfTradingSessions });
+        const metadataResult = calculateRiskMetadata(riskCalculatorFormValues);
+        setCalculateMetadata({...metadataResult });
         let calculatedRiskRows = [];
         tradeIndexes.forEach((tradeIndex) => {
             const { lotSize, optionPremium, indexName } = tradeIndex;
-            let calculatedRiskOfIndexResult = calculateRiskofIndex(riskCalculatorFormValues, lotSize, optionPremium, indexName, maxSLCapacityInOneTrade);
+            let calculatedRiskOfIndexResult = calculateRiskofIndex(riskCalculatorFormValues, lotSize, optionPremium, indexName, metadataResult.maxSLCapacityInOneTrade, metadataResult);
             calculatedRiskRows.push(calculatedRiskOfIndexResult);
         });
 
@@ -161,7 +161,7 @@ const RiskCalculator = () => {
 
     }
 
-    const calculateRiskofIndex = (riskCalculatorFormValues, lotSize, optionPremium, indexName, maxSLCapacityInOneTrade) => {
+    const calculateRiskofIndex = (riskCalculatorFormValues, lotSize, optionPremium, indexName, maxSLCapacityInOneTrade, calculateMetadata) => {
         let calculatedLotSize = lotSize;
         riskCalculatorFormValues.optionPremium = optionPremium;
         let SLAmountInOptionPremium = calculateSLAmountInOptionPremium(riskCalculatorFormValues);
@@ -278,8 +278,12 @@ const RiskCalculator = () => {
     };
     const optionPremiumChangeHandler = async (event, indexName) => {
         let updatedOptionPremium = event.target.value;
-        if (!event.target.value) {
-            updatedOptionPremium = 0;
+        console.log(updatedOptionPremium,'--updatedOptionPremium--', event.target.value)
+        if (event.target.value === '') {
+            updatedOptionPremium = '';
+            // console.log("event.target.value", event.target.value)
+            // return
+
         } else if (event.target.value < 0) {
             updatedOptionPremium = 0;
         } else if (event.target.value) {
@@ -290,9 +294,15 @@ const RiskCalculator = () => {
         setCalculatedRiskRows([]);
         calculatedRiskRows.forEach((riskRow) => {
             if (riskRow.indexName == indexName) {
-                riskRow.optionPremium = parseInt(updatedOptionPremium);
+                
+                riskRow.optionPremium = updatedOptionPremium != '' ? parseInt(updatedOptionPremium):0
 
-                const calculatedRiskOfIndexResult = calculateRiskofIndex(riskCalculatorForm.values, riskRow.lotSize, riskRow.optionPremium, riskRow.indexName, calculateMetadata.maxSLCapacityInOneTrade);
+                const calculatedRiskOfIndexResult = calculateRiskofIndex(riskCalculatorForm.values, riskRow.lotSize, riskRow.optionPremium, riskRow.indexName, calculateMetadata.maxSLCapacityInOneTrade, calculateMetadata);
+                console.log(calculatedRiskOfIndexResult,'--calculatedRiskOfIndexResult--')
+                
+                if (riskRow.optionPremium == '') {
+                calculatedRiskOfIndexResult.optionPremium = ''
+                }
                 updatedCalculateRiskRows.push(calculatedRiskOfIndexResult);
             } else {
                 updatedCalculateRiskRows.push(riskRow);
@@ -343,8 +353,11 @@ const RiskCalculator = () => {
                     <Breadcrumbs title="F&O Calculator" breadcrumbItem="Risk Calculator" />
                 </Container>
                 <Row>
-                    <Col lg={12}>
+                    <Col xl={12}>
                         <Card>
+                            <CardHeader className="configuration-header">
+                            <h5 className="card-title mb-0 text-white">Configuration</h5>
+                            </CardHeader>
                             <CardBody style={{ background: "rgb(241 241 241 / 7%)" }}>
                                 {/* <CardTitle>Risk Calculator</CardTitle> */}
                                 <br />
@@ -361,9 +374,9 @@ const RiskCalculator = () => {
                                     onChange={handleOnChange}
                                 >
                                     <Row>
-                                        <Col md="6">
+                                        <Col xl="6">
                                             <Row>
-                                                <Col md="6">
+                                                <Col xl="6">
                                                     <div className="mb-3">
                                                         <Label className="form-label calculator-form-input-label">Trading Capital</Label>
                                                         <Input
@@ -390,10 +403,10 @@ const RiskCalculator = () => {
                                                         ) : null}
                                                     </div>
                                                 </Col>
-                                                <Col md="12">
-                                                    <Row>
-                                                        <Col md="5">
-                                                            <Label className="form-label calculator-form-input-label">Desired No. of Trading Sessions</Label>
+                                                <Col xl="12">
+                                                    <Row className="grouped-row">
+                                                        <Col xl="5">
+                                                            <Label className="form-label calculator-form-input-label">Desired No. of Trading Days</Label>
                                                             <Input
                                                                 name="desiredNumberOfTradingSessions"
                                                                 label="desiredNumberOfTradingSessions"
@@ -421,9 +434,11 @@ const RiskCalculator = () => {
                                                             justifyContent: "center",
                                                             display: "flex",
                                                             alignItems: "center",
-                                                            fontWeight: "bold"
+                                                            fontWeight: "bold",
+                                                            height: "50px",
+                                                            marginTop: "25px"
                                                         }} >Or</Col>
-                                                        <Col md="5">
+                                                        <Col xl="5">
                                                             <Label className="form-label calculator-form-input-label">% of Trading Capital in 1 Trade</Label>
                                                             <Input
                                                                 name="percentageOfTradingCapitalInOneTrade"
@@ -454,7 +469,7 @@ const RiskCalculator = () => {
                                             <br />
                                             <span className={`${disableTheInputs ? 'show-click-link' : 'hide-click-link'}`}><strong className="underline-click" onClick={disableInputsHandler}>Click to edit</strong> the advance configuration</span>
                                             <Row className={`${disableTheInputs ? 'disable-the-inputs' : 'enable-the-inputs'}`}>
-                                                <Col md="6">
+                                                <Col xl="6">
                                                     <div className="mb-3">
                                                         <Label className="form-label calculator-form-input-label">Max SL Count</Label>
                                                         <Input
@@ -481,7 +496,7 @@ const RiskCalculator = () => {
                                                         ) : null}
                                                     </div>
                                                 </Col>
-                                                <Col md="6">
+                                                <Col xl="6">
                                                     <div className="mb-3">
                                                         <Label className="form-label calculator-form-input-label">Maximum SL Percentage(%) of 1 Trade</Label>
                                                         <Input
@@ -508,7 +523,7 @@ const RiskCalculator = () => {
                                                         ) : null}
                                                     </div>
                                                 </Col>
-                                                <Col md="6">
+                                                <Col xl="6">
                                                     <div className="mb-3">
                                                         <Label className="form-label calculator-form-input-label">Target ratio 1: ?</Label>
                                                         <Input
@@ -537,43 +552,41 @@ const RiskCalculator = () => {
                                                 </Col>
                                             </Row>
                                         </Col>
-                                        <Col md="5" className="offset-md-1">
+                                        <Col xl="5" className="offset-xl-1">
                                             <Row>
-                                                <Col md="6">
-                                                    <Card md="2">
-                                                        <h6 className="card-header">BANKNIFTY - 1 Lot Size </h6>
+                                                <Col xl="6" md="4">
+                                                    <Card xl="2" className="metrics-card metrics-card-raw-info">
 
-                                                        <CardBody className="text-center">
-
-                                                            <CardText style={{ fontSize: '2em' }}>
-                                                                {BANKNIFTY_LOT_SIZE}
+                                                        <CardBody>
+                                                            <p className="mb-4 card-info-header">BANKNIFTY </p>
+                                                            <CardText className="metric-number">
+                                                                {BANKNIFTY_LOT_SIZE} <span className="sub-metric-number">Qty</span>
                                                             </CardText>
+                                                            <span>1 Lot Size</span>
                                                         </CardBody>
                                                     </Card>
                                                 </Col>
-                                                <Col md="6">
-                                                    <Card md="2">
-                                                        <h6 className="card-header">FINNIFTY - 1 Lot Size</h6>
+                                                <Col xl="6" md="4">
+                                                    <Card xl="2" className="metrics-card metrics-card-raw-info">
 
-                                                        <CardBody className="text-center">
-
-                                                            <CardText style={{ fontSize: '2em' }}>
-                                                                {FINNIFTY_LOT_SIZE}
+                                                        <CardBody>
+                                                            <p className="mb-4 card-info-header">FINNIFTY </p>
+                                                            <CardText className="metric-number">
+                                                                {FINNIFTY_LOT_SIZE} <span className="sub-metric-number">Qty</span>
                                                             </CardText>
+                                                            <span>1 Lot Size</span>
                                                         </CardBody>
                                                     </Card>
                                                 </Col>
-                                            </Row>
-                                            <Row>
-                                                <Col md="6" className="offset-md-2">
-                                                    <Card color="gray" className="" md="2">
-                                                        <h6 className="card-header">NIFTY 50 - 1 Lot Size</h6>
+                                                <Col xl="6" className="offset-xl-3" md="4" >
+                                                    <Card className="metrics-card metrics-card-raw-info" xl="2">
 
-                                                        <CardBody className="text-center">
-
-                                                            <CardText style={{ fontSize: '2em' }}>
-                                                                {NIFTY50_LOT_SIZE}
+                                                        <CardBody>
+                                                            <p className="mb-4 card-info-header">NIFTY 50 </p>
+                                                            <CardText className="metric-number">
+                                                                {NIFTY50_LOT_SIZE} <span className="sub-metric-number">Qty</span>
                                                             </CardText>
+                                                            <span>1 Lot Size</span>
                                                         </CardBody>
                                                     </Card>
                                                 </Col>
@@ -582,11 +595,11 @@ const RiskCalculator = () => {
                                         <Row>
                                             <Col>
                                                 <div className="d-flex flex-wrap gap-2 justify-content-center">
-                                                    <Button type="submit" color="info" className="btn-lg" style={{ padding: "10px 28px", borderRadius: "4px", background: "#12d6df", outline: 0, border: 0 }}>
+                                                    <Button type="submit" className="btn-lg primary-button" style={{fontSize:"1.1em", borderRadius:"4px", minWidth:"120px"}}>
                                                         Calculate
                                                     </Button>{" "}
-                                                    <Button type="reset" color="secondary" className="" onClick={handleResetClick}>
-                                                        Reset Calculator
+                                                    <Button type="reset" color="secondary" className="" style={{fontSize:"1.1em", borderRadius:"4px", minWidth:"120px"}} onClick={handleResetClick}>
+                                                        Reset
                                                     </Button>
                                                 </div>
                                                 <div
@@ -631,12 +644,12 @@ const RiskCalculator = () => {
                 {!loading && calculatedRiskRows && calculatedRiskRows.length > 0 && (
                     <Row>
                         <Col md={12} className="result-container" >
-                            <Card color="" className="card" md="2">
+                            <Card xl="2" style={{margin:0}}>
 
                                 <div className="text-left" style={{
                                     height: "60px",
                                     fontSize: "1.4em",
-                                    fontWeight: "bold",
+                                    fontWeight: "normal",
                                     paddingTop: "15px",
                                     paddingLeft: "20px",
                                 }}>Calculated Risk</div>
@@ -644,7 +657,7 @@ const RiskCalculator = () => {
 
                                 <CardHeader>
                                     <Row>
-                                        <Col md="2" style={{ marginBottom: "30px" }}>
+                                        <Col xl="2" style={{ marginBottom: "30px" }}>
                                             <div style={{ minHeight: "50px" }}>
 
                                                 <label
@@ -669,11 +682,10 @@ const RiskCalculator = () => {
                                             </select>
 
                                         </Col>
-                                        <Col md="3">
+                                        <Col xl="3">
                                             <div className="mb-3">
                                                 <div style={{ minHeight: "50px" }}>
-                                                    <span>Change the <strong>Option Premium Price</strong>, <p> to find the best Target Combination
-                                                    </p>
+                                                    <span>Change the <strong>Option Premium Price</strong>, to find the best Target Combination
                                                     </span>
                                                 </div>
                                                 {/* <br /> */}
@@ -689,16 +701,16 @@ const RiskCalculator = () => {
                                                 />
                                             </div>
                                         </Col>
-                                        <Col md="6" className="text-left" style={{ display: "flex", alignItems: "center", marginTop: "40px", marginLeft: "50px" }}>
+                                        <Col xl="6" className="text-left" style={{ display: "flex", alignItems: "center", marginTop: "40px", marginLeft: "50px" }}>
                                             <h3>{selectedIndex}</h3>
                                         </Col>
                                     </Row>
                                 </CardHeader>
                                 <CardBody>
                                     <Row>
-                                        <Col md="3">
+                                        <Col xl="3">
                                             <Row>
-                                            <Col md="12" className="mt-0">
+                                            <Col xl="12" className="mt-0">
                                             {
                                                 selectedIndexCalculatedRisk.totalTradableLots > 0 && selectedIndexCalculatedRisk.totalTradableLots <= 10 && (
                                                     <UncontrolledAlert color="light" role="alert" className="card border p-0 mb-0">
@@ -823,10 +835,10 @@ const RiskCalculator = () => {
 
                                             }
                                         </Col>
-                                        <Col md="12" className="mt-4">
-                                            <Card color="" className="card calculated-risk-card" md="2">
-                                                <h6 className="card-header">Option Premium</h6>
+                                        <Col xl="12" className="mt-4">
+                                            <Card className="metrics-card metrics-card-white-info option-premium-stacked-container" xl="2">
                                                 <CardBody>
+                                                <p className="mb-4 card-info-header">Option Premium</p>
 
                                                     <CustomOptionPremiumStackedBar chartData={{
                                                         SLAmountInOptionPremium: selectedIndexCalculatedRisk.SLAmountInOptionPremium,
@@ -843,7 +855,7 @@ const RiskCalculator = () => {
                                         </Col>
                                             </Row>
                                         </Col>
-                                        <Col md="9">
+                                        <Col xl="9">
                                             {selectedIndexCalculatedRisk.drawDownMetrics && <DayWiseCapitalDrawDown drawDownMetrics={selectedIndexCalculatedRisk.drawDownMetrics} title={`Day Wise Capital Drawdown at <strong>&#8377; ${selectedIndexCalculatedRisk.optionPremium}</strong>  Option Premium`} calculatedMetadata={[
                                                 {
                                                     title: `Starting Trading Capital`,
@@ -883,72 +895,68 @@ const RiskCalculator = () => {
                                     </Row>
                                     <Row>
                                         
-                                        <Col md="12">
+                                        <Col xl="12">
                                             <Row>
-                                                <Col md="3">
-                                                    <Card color="" className={`${selectedIndexCalculatedRisk.totalTradableLots > 0 ? 'card-primary' : 'card-danger'} calculated-risk-card`} md="2">
-                                                        <h6 className="card-header">Tradable Lots in 1 Trade</h6>
+                                                <Col xl="3">
+                                                    <Card className={`metrics-card ${selectedIndexCalculatedRisk.totalTradableLots > 0 ? 'metrics-card-success' : 'metrics-card-danger'} calculated-risk-card`} xl="2">
 
                                                         <CardBody>
+                                                        <p className="mb-4 card-info-header">Tradable Lots in 1 Trade</p>
 
-                                                            <CardText>
-                                                                {selectedIndexCalculatedRisk.totalTradableLots}
+                                                            <CardText className="metric-number">
+                                                                {selectedIndexCalculatedRisk.totalTradableLots} <span className="sub-metric-number">{`Lot${selectedIndexCalculatedRisk.totalTradableLots>1?'s':''}`}</span>
+                                                            </CardText>
+                                                        </CardBody>
+                                                    </Card>
+                                                </Col>
+                                                <Col xl="3">
+                                                    <Card color="" className="card metrics-card metrics-card-raw-info" xl="2">
+
+                                                        <CardBody>
+                                                        <p className="mb-4 card-info-header">Total Tradable Quantity</p>
+
+                                                            <CardText className="metric-number">
+                                                                {selectedIndexCalculatedRisk.totalTradableQuantity} <span className="sub-metric-number">Qty</span>
 
                                                             </CardText>
                                                         </CardBody>
                                                     </Card>
                                                 </Col>
-                                                <Col md="3">
-                                                    <Card color="" className="card calculated-risk-card" md="2">
-                                                        <h6 className="card-header">Total Tradable Quantity</h6>
+                                                <Col xl="3">
+
+                                                    <Card className="card metrics-card metrics-card-raw-info" xl="2">
 
                                                         <CardBody>
+                                                        <p className="mb-4 card-info-header">SL of 1 Trade</p>
 
-                                                            <CardText>
-                                                                {selectedIndexCalculatedRisk.totalTradableQuantity}
-
-                                                            </CardText>
-                                                        </CardBody>
-                                                    </Card>
-                                                </Col>
-                                                <Col md="3">
-
-                                                    <Card color="" className="card calculated-risk-card" md="2">
-                                                        <h6 className="card-header">SL of 1 Trade</h6>
-
-                                                        <CardBody>
-
-                                                            <CardText>
+                                                            <CardText className="metric-number">
                                                                 <i className="mdi mdi-trending-down" style={{ fontSize: "32px", color: "red" }}></i> &nbsp;
-                                                                <h4 style={{ marginTop: "-37px", marginRight: "0px", textAlign: "center" }}>
+                                                                {/* <h4 style={{ marginTop: "-37px", marginRight: "0px", textAlign: "center" }}> */}
                                                                     &#8377; {selectedIndexCalculatedRisk.totalSLofTrade}
-                                                                </h4>
+                                                                {/* </h4> */}
 
                                                             </CardText>
-                                                                <p className="sub-max-sl-text">Allowed SL in 1 Trade: <strong>{calculateMetadata.maxSLCapacityInOneTrade}</strong></p>
+                                                                <p className="sub-max-sl-text text-black">Allowed SL in 1 Trade: <strong>{calculateMetadata.maxSLCapacityInOneTrade}</strong></p>
                                                         </CardBody>
                                                     </Card>
                                                 </Col>
-                                                <Col md="3">
-                                                    <Card color="" className="card calculated-risk-card" md="2">
-                                                        <h6 className="card-header">Target in 1 Trade</h6>
+                                                <Col xl="3">
+                                                    <Card className="card metrics-card metrics-card-raw-info" xl="2">
 
                                                         <CardBody>
-                                                            <CardText>
+                                                            <p className="mb-4 card-info-header">Target in 1 Trade</p>
+                                                            <CardText className="metric-number">
 
                                                                 <i className="mdi mdi-target lg" style={{ fontSize: "32px", color: "#0bb197" }}></i> &nbsp;
 
-                                                                <h4 style={{
-                                                                    marginTop: "-37px",
-                                                                    marginRight: "0px", textAlign: "center"
-                                                                }}>&#8377; {selectedIndexCalculatedRisk.totalTargetofTrade}</h4>
+                                                                &#8377; {selectedIndexCalculatedRisk.totalTargetofTrade}
 
                                                             </CardText>
                                                         </CardBody>
                                                     </Card>
                                                 </Col>
-                                                {/* <Col md="3">
-                                                    <Card color="" className="card calculated-risk-card" md="2">
+                                                {/* <Col xl="3">
+                                                    <Card color="" className="card calculated-risk-card" xl="2">
                                                         <h6 className="card-header">Lot Size</h6>
 
                                                         <CardBody>
@@ -960,8 +968,8 @@ const RiskCalculator = () => {
                                                         </CardBody>
                                                     </Card>
                                                 </Col> */}
-                                                {/* <Col md="3">
-                                                    <Card color="" className="card calculated-risk-card" md="2">
+                                                {/* <Col xl="3">
+                                                    <Card color="" className="card calculated-risk-card" xl="2">
                                                         <h6 className="card-header">Option Premium</h6>
 
                                                         <CardBody>
@@ -973,8 +981,8 @@ const RiskCalculator = () => {
                                                         </CardBody>
                                                     </Card>
                                                 </Col> */}
-                                                {/* <Col md="3">
-                                                    <Card color="" className="card calculated-risk-card" md="2">
+                                                {/* <Col xl="3">
+                                                    <Card color="" className="card calculated-risk-card" xl="2">
                                                         <h6 className="card-header">SL in Option Premium</h6>
 
                                                         <CardBody>
@@ -988,8 +996,8 @@ const RiskCalculator = () => {
 
 
                                                 </Col> */}
-                                                {/* <Col md="3">
-                                                    <Card color="" className="card calculated-risk-card" md="2">
+                                                {/* <Col xl="3">
+                                                    <Card color="" className="card calculated-risk-card" xl="2">
                                                         <h6 className="card-header">
                                                         Target in Option Premium
                                                         </h6>
@@ -1003,8 +1011,8 @@ const RiskCalculator = () => {
                                                         </CardBody>
                                                     </Card>
                                                 </Col> */}
-                                                {/* <Col md="3">
-                                                    <Card color="" className="card calculated-risk-card" md="2">
+                                                {/* <Col xl="3">
+                                                    <Card color="" className="card calculated-risk-card" xl="2">
                                                         <h6 className="card-header">Option Premium target price</h6>
 
                                                         <CardBody>
@@ -1018,8 +1026,8 @@ const RiskCalculator = () => {
 
 
                                                 </Col> */}
-                                                {/* <Col md="3">
-                                                    <Card color="" className="card calculated-risk-card" md="2">
+                                                {/* <Col xl="3">
+                                                    <Card color="" className="card calculated-risk-card" xl="2">
                                                         <h6 className="card-header">Option Premium Exit Price</h6>
 
                                                         <CardBody>
@@ -1033,13 +1041,12 @@ const RiskCalculator = () => {
                                                 </Col> */}
 
                                                 
-                                                <Col md="3">
-                                                    <Card color="" className="card calculated-risk-card" md="2">
-                                                        <h6 className="card-header">Single Trade Amount</h6>
+                                                <Col xl="3">
+                                                    <Card className="card metrics-card metrics-card-raw-info" xl="2">
 
                                                         <CardBody>
-
-                                                            <CardText>
+                                                <p className="mb-4 card-info-header">Single Trade Amount</p>
+                                                            <CardText className="metric-number">
                                                                 &#8377; {selectedIndexCalculatedRisk.singleTradeAmount}
 
                                                             </CardText>
@@ -1047,8 +1054,8 @@ const RiskCalculator = () => {
                                                     </Card>
                                                 </Col>
 
-                                                {/* <Col md="3">
-                                                                <Card color="" className="card calculated-risk-card" md="2">
+                                                {/* <Col xl="3">
+                                                                <Card color="" className="card calculated-risk-card" xl="2">
                                                                     <h6 className="card-header">Capital Left After Trading Sessions</h6>
 
                                                                     <CardBody>

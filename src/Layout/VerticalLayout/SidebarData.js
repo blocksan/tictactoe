@@ -43,12 +43,12 @@ const SidebarData = [
         url: "/targetcalculator",
         isHasArrow: true,
     },
-    {
-        label: "Capital Calculator",
-        url: "/capitalcalculator",
-        isHasArrow: true,
-        icon:"bx bx-rupee"
-    },
+    // {
+    //     label: "Capital Calculator",
+    //     url: "/capitalcalculator",
+    //     isHasArrow: true,
+    //     icon:"bx bx-rupee"
+    // },
     // {
     //     label: "Settings",
     //     isMainMenu: true,

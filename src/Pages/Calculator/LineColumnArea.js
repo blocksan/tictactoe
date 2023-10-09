@@ -37,7 +37,7 @@ const LineColumnAreaData = {
         columnWidth: "18%",
       },
     },
-    colors: ["#12d6df", "rgba(212, 218, 221, 0.18)", "rgb(251, 77, 83)"],
+    colors: ["#4747A1", "rgba(212, 218, 221, 0.18)", "rgb(251, 77, 83)"],
 
     fill: {
       opacity: [0.85, 0.25, 1],

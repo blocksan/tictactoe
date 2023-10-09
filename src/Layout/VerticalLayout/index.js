@@ -109,7 +109,7 @@ const Layout = props => {
           type={leftSideBarType}
           isMobile={isMobile}
         />
-        <div className="main-content">{props.children}</div>
+        <div className="main-content" style={{background:"#F5F7FF"}}>{props.children}</div>
         <Footer />
       </div>
       {showRightSidebar ? <RightSidebar /> : null}
