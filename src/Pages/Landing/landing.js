@@ -51,7 +51,7 @@ const Landing = (props) => {
                 <div className="landing-header-main header-main dark">
                     <nav>
                         <div className="nav-toggle"></div>
-                        <ul className="inline left">
+                        <ul className="inline left logo-nav">
                             <div style={{ display: "flex", alignItems: "center", color: "white" }}>
                                 <img src={logoVoiled} alt="" style={{ width: 60 }} />
                                 <div>
@@ -87,7 +87,7 @@ const Landing = (props) => {
                         <div className="row max-width-l">
                             <div className="col-one-half middle">
                                 <div>
-                                    <h1 className="hero text-white" >Manage your Risk today, to Trade tomorrow.</h1>
+                                    <h1 className="hero text-white" style={{fontSize:"2em", lineHeight:"1em"}}>Manage your Risk today, to Trade tomorrow.</h1>
                                     {/* <p className="lead"></p> */}
                                     <p className="lead">A lightweight tool suite which can you help you to minimise your loss and can keep you longer in the market.</p>
                                     <GoogleLogin
