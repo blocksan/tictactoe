@@ -74,14 +74,11 @@ const TargetCalculator = () => {
   }
   ])
 
-  const [calculateMetadata, setCalculateMetadata] = useState({
+  const [calculatedMetadata, setCalculatedMetadata] = useState({
     maxSLCapacityDaily: 0,
     maxSLCapacityInOneTrade: 0,
-    maxTradeAmountInOneDay: 0
-  });
-  const [stackedBarChartData, setStackedBarChartData] = useState({
-    labels: [],
-    series: []
+    maxTradeAmountInOneDay: 0,
+    numberOfTradingSessions: 0
   });
 
   const [calculatedRiskRows, setCalculatedRiskRows] = useState([]);
@@ -98,7 +95,8 @@ const TargetCalculator = () => {
 
     initialValues: {
       tradingCapital: 10000,
-      numberOfTradingSessions: 10,
+      desiredNumberOfTradingSessions: 10,
+      percentageOfTradingCapitalInOneTrade:0,
       maxSLCountOneDay: 2,
       maxDrawDownPercentage: 15,
       targetRatioMultiplier: 2,
@@ -114,11 +112,11 @@ const TargetCalculator = () => {
     },
     validationSchema: Yup.object().shape({
       tradingCapital: Yup.number().required("Please provide your Trading Capital"),
-      numberOfTradingSessions: Yup.number()
-        .typeError('Trading Sessions must be a number')
-        .required("Please provide number of Trading Sessions")
-        .min(1, "Trading Sessions should be at least 1")
-        .max(60, "Trading Sessions be at most 60 "),
+      desiredNumberOfTradingSessions: Yup.number()
+              .typeError('Desired Trading Sessions must be a number')
+              // .required("Please provide desired number of Trading Sessions")
+              .min(0, "Desired Trading Sessions should be at least 0")
+              .max(60, "Desired Trading Sessions be at most 60 "),
       maxSLCountOneDay: Yup.number()
         .typeError('Maximum number of Stop Loss must be a number')
         .required("Please provide Maximum number of Stop Loss you want to take in a day")
@@ -147,6 +145,10 @@ const TargetCalculator = () => {
         .default(0),
       averageTradingChargesPerTrade: Yup.number().required("Please provide Average Trading Charges Per Trade (Buy & Sell)")
         .default(50),
+      percentageOfTradingCapitalInOneTrade: Yup.number()
+        .typeError('Percentage of Trading Capital must be a number')
+        .min(0, "Minimum Percentage of Trading Capital should be at least 0")
+        .max(100, "Maximum Percentage of Trading Capital can be at most 100 "),
 
     }),
     onSubmit: async (formValues) => {
@@ -162,14 +164,25 @@ const TargetCalculator = () => {
     },
   });
 
+  const handleOnChange = (event) => {
+    const { name, value } = event.target;
+    if (name == 'desiredNumberOfTradingSessions') {
+        targetCalculatorForm.setFieldValue('percentageOfTradingCapitalInOneTrade', 0);
+    } else if (name == 'percentageOfTradingCapitalInOneTrade') {
+        targetCalculatorForm.setFieldValue('desiredNumberOfTradingSessions', 0);
+    }
+    // riskCalculatorForm.setFieldValue(name, value);
+}
+
   const calculateRisk = (targetCalculatorFormValues) => {
     // Calculate Risk Metadata
-    const { maxSLCapacityDaily, maxSLCapacityInOneTrade, maxTradeAmountInOneDay } = calculateRiskMetadata(targetCalculatorFormValues);
-    setCalculateMetadata({ maxSLCapacityDaily, maxSLCapacityInOneTrade, maxTradeAmountInOneDay });
+    const metadataResult = calculateRiskMetadata(targetCalculatorFormValues);
+    setCalculatedMetadata({...metadataResult });
+    // setCalculatedMetadata({ maxSLCapacityDaily, maxSLCapacityInOneTrade, maxTradeAmountInOneDay });
     let calculatedRiskRows = [];
     tradeIndexes.forEach((tradeIndex) => {
       const { lotSize, optionPremium, indexName } = tradeIndex;
-      let calculatedRiskOfIndexResult = calculateRiskofIndex(targetCalculatorFormValues, lotSize, optionPremium, indexName, maxSLCapacityInOneTrade);
+      let calculatedRiskOfIndexResult = calculateRiskofIndex(targetCalculatorFormValues, lotSize, optionPremium, indexName, metadataResult.maxSLCapacityInOneTrade, metadataResult);
       console.log("calculatedRiskOfIndexResult", calculatedRiskOfIndexResult)
       calculatedRiskRows.push(calculatedRiskOfIndexResult);
     });
@@ -184,7 +197,7 @@ const TargetCalculator = () => {
 
   }
 
-  const calculateRiskofIndex = (targetCalculatorFormValues, lotSize, optionPremium, indexName, maxSLCapacityInOneTrade) => {
+  const calculateRiskofIndex = (targetCalculatorFormValues, lotSize, optionPremium, indexName, maxSLCapacityInOneTrade, calculatedMetadata) => {
     let calculatedLotSize = lotSize;
     targetCalculatorFormValues.optionPremium = optionPremium;
     let SLAmountInOptionPremium = calculateSLAmountInOptionPremium(targetCalculatorFormValues);
@@ -199,6 +212,9 @@ const TargetCalculator = () => {
     let capitalLeftAfterTradingSessions = calculateCapitalLeftAfterTradingSessions(targetCalculatorFormValues, totalSLofTrade);
     // let drawDownMetricsResult = calculateDrawDownMetrics(targetCalculatorFormValues)
 
+    // console.log('---targetCalculatorFormValues---', targetCalculatorFormValues);
+    // console.log('---calculatedMetadata---', calculatedMetadata);
+    // console.log('---totalTargetofTrade---', totalTargetofTrade);
 
 
     // console.log("capitalDayWiseLabels", capitalDayWiseLabels);
@@ -206,10 +222,10 @@ const TargetCalculator = () => {
     const profitInSuccessfulDays = targetCalculatorFormValues.averageTargetHitTradeInOneDay * targetCalculatorFormValues.zeroSLHitTradeInOneDay * totalTargetofTrade;
     const lossInUnsuccessfulDays = targetCalculatorFormValues.averageSLHitTradeInOneDay * targetCalculatorFormValues.zeroTargetHitTradeInOneDay * totalSLofTrade;
     const totalTradesInOneDay = targetCalculatorFormValues.averageTargetHitTradeInOneDay + targetCalculatorFormValues.averageSLHitTradeInOneDay;
-    const normalTradingDays = targetCalculatorFormValues.numberOfTradingSessions - (targetCalculatorFormValues.zeroSLHitTradeInOneDay + targetCalculatorFormValues.zeroTargetHitTradeInOneDay);
+    const normalTradingDays = calculatedMetadata.numberOfTradingSessions - (targetCalculatorFormValues.zeroSLHitTradeInOneDay + targetCalculatorFormValues.zeroTargetHitTradeInOneDay);
     let totalTradingCharges = 0;
     if (totalTradableQuantity > 0) {
-      totalTradingCharges = targetCalculatorFormValues.averageTradingChargesPerTrade * totalTradesInOneDay * targetCalculatorFormValues.numberOfTradingSessions;
+      totalTradingCharges = targetCalculatorFormValues.averageTradingChargesPerTrade * totalTradesInOneDay * calculatedMetadata.numberOfTradingSessions;
     }
     // console.log(totalTargetofTrade*targetCalculatorFormValues.averageTargetHitTradeInOneDay);
     // console.log(totalSLofTrade*targetCalculatorFormValues.averageSLHitTradeInOneDay);
@@ -224,7 +240,7 @@ const TargetCalculator = () => {
     let averageProfitInOneDay = (totalTargetofTrade * targetCalculatorFormValues.averageTargetHitTradeInOneDay) - (totalSLofTrade * targetCalculatorFormValues.averageSLHitTradeInOneDay);
 
     let currentCapital = targetCalculatorFormValues.tradingCapital;
-    let maxTradingSessions = targetCalculatorFormValues.numberOfTradingSessions;
+    let maxTradingSessions = calculatedMetadata.numberOfTradingSessions;
     for (let i = 1; i <= maxTradingSessions; i++) {
       capitalDayWiseLabels.push(`Day ${i}`);
       targetCapitalDayWise.push(currentCapital + averageProfitInOneDay);
@@ -272,41 +288,22 @@ const TargetCalculator = () => {
 
 
   const calculateRiskMetadata = (targetCalculatorFormValues) => {
-    const maxSLCapacityDaily = Math.floor(targetCalculatorFormValues.tradingCapital / targetCalculatorFormValues.numberOfTradingSessions);
+    const maxSLCapacityDaily = targetCalculatorFormValues.desiredNumberOfTradingSessions ? Math.floor((targetCalculatorFormValues.tradingCapital - (targetCalculatorFormValues.tradingCapital / targetCalculatorFormValues.desiredNumberOfTradingSessions)) / targetCalculatorFormValues.desiredNumberOfTradingSessions) : Math.floor((targetCalculatorFormValues.tradingCapital * targetCalculatorFormValues.percentageOfTradingCapitalInOneTrade / 100) * (targetCalculatorFormValues.maxDrawDownPercentage / 100) * targetCalculatorFormValues.maxSLCountOneDay);
     const maxSLCapacityInOneTrade = Math.floor(maxSLCapacityDaily / targetCalculatorFormValues.maxSLCountOneDay);
-    const maxTradeAmountInOneDay = (100 * (maxSLCapacityInOneTrade / targetCalculatorFormValues.maxDrawDownPercentage)).toFixed(2);
-    return {
-      maxSLCapacityDaily,
-      maxSLCapacityInOneTrade,
-      maxTradeAmountInOneDay
-    }
-  }
+    const numberOfTradingSessions = targetCalculatorFormValues.desiredNumberOfTradingSessions ? targetCalculatorFormValues.desiredNumberOfTradingSessions : Math.floor(((targetCalculatorFormValues.tradingCapital - (targetCalculatorFormValues.tradingCapital * (targetCalculatorFormValues.percentageOfTradingCapitalInOneTrade / 100))) / maxSLCapacityInOneTrade) / targetCalculatorFormValues.maxSLCountOneDay) + 1; //1 is added to consider the buffer amount left after trading sessions
+    const maxTradeAmountInOneDay = Math.floor(100 * (maxSLCapacityInOneTrade / targetCalculatorFormValues.maxDrawDownPercentage))
 
-  const calculateAndSetStackedBarChartData = (selectedIndexCalculatedRisk) => {
-      const result = {
-        chartLabels: [
-        {
-          key: "SL",
-          color: "#ff6c54"
-        },
-        {
-          key: "Option Premium",
-          color: "blue"
-        },
-        {
-          key: "Target",
-          color: "rgba(63, 186, 160, 1)"
-        },
-      ],
-      chartDataArray: [{
-        "SL" : selectedIndexCalculatedRisk.optionPremium-selectedIndexCalculatedRisk.SLAmountInOptionPremium,
-        "Option Premium" : selectedIndexCalculatedRisk.optionPremium,
-        "Target" : selectedIndexCalculatedRisk.optionPremium+selectedIndexCalculatedRisk.TargetAmountInOptionPremium,
-      }]
-    }
-
-    setStackedBarChartData(result);
-
+        // console.log("targetCalculatorFormValues", targetCalculatorFormValues);
+        // console.log("maxSLCapacityDaily", maxSLCapacityDaily);
+        // console.log("maxSLCapacityInOneTrade", maxSLCapacityInOneTrade);
+        // console.log("numberOfTradingSessions", numberOfTradingSessions);
+        // console.log("maxTradeAmountInOneDay", maxTradeAmountInOneDay);
+        return {
+            maxSLCapacityDaily,
+            maxSLCapacityInOneTrade,
+            maxTradeAmountInOneDay,
+            numberOfTradingSessions
+        }
   }
 
 
@@ -342,7 +339,7 @@ const TargetCalculator = () => {
     return (optionPremiumTargetPrice * totalTradableQuantity) - singleTradeAmount;
   }
   const calculateCapitalLeftAfterTradingSessions = (targetCalculatorFormValues, totalSLofTrade) => {
-    return targetCalculatorFormValues.tradingCapital - (totalSLofTrade * targetCalculatorFormValues.numberOfTradingSessions * targetCalculatorFormValues.maxSLCountOneDay);
+    return targetCalculatorFormValues.tradingCapital - (totalSLofTrade * calculatedMetadata.numberOfTradingSessions * targetCalculatorFormValues.maxSLCountOneDay);
   }
 
 
@@ -361,13 +358,13 @@ const TargetCalculator = () => {
     }
     let updatedCalculateRiskRows = [];
     setCalculatedRiskRows([]);
-    setStackedBarChartData({});
+    // setStackedBarChartData({});
     calculatedRiskRows.forEach((riskRow) => {
       if (riskRow.indexName == indexName) {
         riskRow.optionPremium = parseInt(updatedOptionPremium);
 
-        const calculatedRiskOfIndexResult = calculateRiskofIndex(targetCalculatorForm.values, riskRow.lotSize, riskRow.optionPremium, riskRow.indexName, calculateMetadata.maxSLCapacityInOneTrade);
-        calculateAndSetStackedBarChartData(calculatedRiskOfIndexResult)
+        const calculatedRiskOfIndexResult = calculateRiskofIndex(targetCalculatorForm.values, riskRow.lotSize, riskRow.optionPremium, riskRow.indexName, calculatedMetadata.maxSLCapacityInOneTrade, calculatedMetadata);
+        // calculateAndSetStackedBarChartData(calculatedRiskOfIndexResult)
         updatedCalculateRiskRows.push(calculatedRiskOfIndexResult);
       } else {
         updatedCalculateRiskRows.push(riskRow);
@@ -384,7 +381,6 @@ const TargetCalculator = () => {
     if (selectedIndex && selectedIndex != null && calculatedRiskRows.length > 0) {
       calculatedRiskRows.forEach((riskRow) => {
         if (riskRow.indexName == selectedIndex) {
-          calculateAndSetStackedBarChartData(riskRow)
           setSelectedIndexCalculatedRisk(riskRow);
         }
       })
@@ -437,6 +433,7 @@ const TargetCalculator = () => {
                     targetCalculatorForm.handleSubmit();
                     return false;
                   }}
+                  onChange={handleOnChange}
                 >
                   <Row>
                     <Col xl="6">
@@ -966,19 +963,19 @@ const TargetCalculator = () => {
                           color: "info",
                         },
                         {
-                          title: `Total capital after ${targetCalculatorForm.values.numberOfTradingSessions} Trading Sessions`,
+                          title: `Total capital after ${calculatedMetadata.numberOfTradingSessions} Trading Sessions`,
                           count: `&#8377; ${selectedIndexCalculatedRisk.finalTargetCapitalAfterTradingCharges}`,
                           color: "primary",
                         },
                         {
                           title: "Daily Max SL Capacity",
-                          count: `&#8377; ${calculateMetadata.maxSLCapacityDaily}`,
-                          percentage: (calculateMetadata.maxSLCapacityDaily / targetCalculatorForm.values.tradingCapital * 100).toFixed(2),
+                          count: `&#8377; ${calculatedMetadata.maxSLCapacityDaily}`,
+                          percentage: (calculatedMetadata.maxSLCapacityDaily / targetCalculatorForm.values.tradingCapital * 100).toFixed(2),
                           color: "danger",
                         },
                         {
                           title: "Max Daily Trade Amount",
-                          count: `&#8377; ${calculateMetadata.maxTradeAmountInOneDay}`,
+                          count: `&#8377; ${calculatedMetadata.maxTradeAmountInOneDay}`,
                           color: "warning",
                         }
 
@@ -997,20 +994,106 @@ const TargetCalculator = () => {
                             <CardText className="metric-number">
                                 {selectedIndexCalculatedRisk.totalTradableLots} <span className="sub-metric-number">{`Lot${selectedIndexCalculatedRisk.totalTradableLots>1?'s':''}`}</span>
                             </CardText>
+                            <p className="sub-max-sl-text text-black" style={{fontSize:"1.1em"}}>Tradable Quantity: <strong>{selectedIndexCalculatedRisk.totalTradableQuantity}</strong></p>
                         </CardBody>
                         </Card>
+                        </Col>
+                        <Col xl="3">
+                          <Card color="" className="metrics-card metrics-card-raw-info" xl="2">
+                            <CardBody>
+                            <p className="mb-3 card-info-header">Actual Trading Days</p>
+                              <CardText className="metric-number">
+                                {selectedIndexCalculatedRisk.normalTradingDays} <span className="sub-metric-number"> {`Day${selectedIndexCalculatedRisk.normalTradingDays>1?'s':''}`}</span>
+                              </CardText>
+                              <p className="sub-max-sl-text text-black" style={{fontSize:"1.1em"}}>Max Trades in 1 Day: <strong>{selectedIndexCalculatedRisk.totalTradesInOneDay}</strong></p>
+                            </CardBody>
+                          </Card>
+                        </Col>
+                        <Col xl="3">
+                          <Card color="" className="metrics-card metrics-card-raw-info" xl="2">
+
+                            <CardBody>
+                            <p className="mb-4 card-info-header">Target in 1 Trade</p>
+                              <CardText className="metric-number">
+
+                                <i className="mdi mdi-target lg" style={{ fontSize: "32px", color: "#0bb197" }}></i> &nbsp;
+
+                                &#8377; {selectedIndexCalculatedRisk.totalTargetofTrade}
+
+                              </CardText>
+                              
+                            </CardBody>
+                          </Card>
+                        </Col>
+                        {/* <Col xl="3">
+                        <Card color="" className="card metrics-card metrics-card-raw-info" xl="2">
+
+                          <CardBody>
+                          <p className="mb-4 card-info-header">Total Tradable Quantity</p>
+
+                              <CardText className="metric-number">
+                                  {selectedIndexCalculatedRisk.totalTradableQuantity} <span className="sub-metric-number">Qty</span>
+
+                              </CardText>
+                          </CardBody>
+                          </Card>
+                        </Col> */}
+                        <Col xl="3">
+                          <Card color="" className="card metrics-card metrics-card-raw-info" xl="2">
+
+                            <CardBody>
+                            <p className="mb-4 card-info-header">Single Trade Amount</p>
+
+                              <CardText className="metric-number">
+                                &#8377; {selectedIndexCalculatedRisk.singleTradeAmount}
+
+                              </CardText>
+                            </CardBody>
+                          </Card>
+                        </Col>
+                        <Col xl="3">
+                          <Card color="" className="metrics-card metrics-card-raw-info" xl="2">
+                            <CardBody>
+                            <p className="mb-4 card-info-header">Profit after all Trading Sessions</p>
+                              <CardText className="metric-number">
+                                &#8377; {selectedIndexCalculatedRisk.profitAfterAllTradingSessions}
+                              </CardText>
+                            </CardBody>
+                          </Card>
+                        </Col>
+                        <Col xl="3">
+                          <Card color="" className="metrics-card metrics-card-warning" xl="2">
+                            <CardBody>
+                            <p className="mb-4 card-info-header">Total Trading Charges</p>
+                              <CardText className="metric-number">
+                                &#8377; {selectedIndexCalculatedRisk.totalTradingCharges}
+                              </CardText>
+                            </CardBody>
+                          </Card>
+                        </Col>
+                        <Col xl="3">
+                          <Card color="" className="metrics-card metrics-card-raw-info" xl="2">
+                            <CardBody>
+                            <p className="mb-4 card-info-header">Target After Trading Charges</p>
+                              <CardText className="metric-number">
+                                &#8377; {selectedIndexCalculatedRisk.targetAfterTradingCharges}
+                              </CardText>
+                            </CardBody>
+                          </Card>
                         </Col>
                         <Col xl="3"> 
                         {/* //TODO: change the color of the card based on the Target. Blue if target > tradingCapital, yellow if (target > 50% of tradingCapital && target < tradingCapital) and red if target < 50% of tradingCapital */}
                           <Card color="" className="card metrics-card metrics-card-primary" xl="2">
                             <CardBody>
-                            <p className="mb-4 card-info-header">Final Target Capital after Trading Charges</p>
+                            <p className="mb-4 card-info-header">Final Capital after Trading Charges</p>
                               <CardText className="metric-number">
                                 &#8377; {selectedIndexCalculatedRisk.finalTargetCapitalAfterTradingCharges}
                               </CardText>
                             </CardBody>
                           </Card>
                         </Col>
+                        
+                        
                         {/* <Col xl="3">
                           <Card color="" className="card calculated-risk-card" xl="2">
                             <h6 className="card-header">SL of 1 Trade</h6>
@@ -1024,24 +1107,7 @@ const TargetCalculator = () => {
                             </CardBody>
                           </Card>
                         </Col> */}
-                        {/* <Col xl="3">
-                          <Card color="" className="card calculated-risk-card" xl="2">
-                            <h6 className="card-header">Target in 1 Trade</h6>
-
-                            <CardBody>
-                              <CardText>
-
-                                <i className="mdi mdi-target lg" style={{ fontSize: "32px", color: "#0bb197" }}></i> &nbsp;
-
-                                <h4 style={{
-                                  marginTop: "-37px",
-                                  marginRight: "0px", textAlign: "center"
-                                }}>&#8377; {selectedIndexCalculatedRisk.totalTargetofTrade}</h4>
-
-                              </CardText>
-                            </CardBody>
-                          </Card>
-                        </Col> */}
+                        
                         {/* <Col xl="3">
                           <Card color="" className="card calculated-risk-card" xl="2">
                             <h6 className="card-header">Lot Size</h6>
@@ -1126,33 +1192,9 @@ const TargetCalculator = () => {
                           </Card>
                         </Col> */}
 
-                        <Col xl="3">
-                        <Card color="" className="card metrics-card metrics-card-raw-info" xl="2">
-
-                          <CardBody>
-                          <p className="mb-4 card-info-header">Total Tradable Quantity</p>
-
-                              <CardText className="metric-number">
-                                  {selectedIndexCalculatedRisk.totalTradableQuantity} <span className="sub-metric-number">Qty</span>
-
-                              </CardText>
-                          </CardBody>
-                          </Card>
-                        </Col>
-                        <Col xl="3">
-                          <Card color="" className="card metrics-card metrics-card-raw-info" xl="2">
-
-                            <CardBody>
-                            <p className="mb-4 card-info-header">Single Trade Amount</p>
-
-                              <CardText className="metric-number">
-                                &#8377; {selectedIndexCalculatedRisk.singleTradeAmount}
-
-                              </CardText>
-                            </CardBody>
-                          </Card>
-                        </Col>
-                        <Col xl="3">
+                        
+                        
+                        {/* <Col xl="3">
                           <Card color="" className="card metrics-card metrics-card-raw-info" xl="2">
                             <CardBody>
                             <p className="mb-4 card-info-header">Total Trades in One Day</p>
@@ -1161,8 +1203,8 @@ const TargetCalculator = () => {
                               </CardText>
                             </CardBody>
                           </Card>
-                        </Col>
-                        <Col xl="3">
+                        </Col> */}
+                        {targetCalculatorForm.values.zeroSLHitTradeInOneDay >0 && <Col xl="3">
                           <Card color="" className="card metrics-card metrics-card-success" xl="2">
 
                             <CardBody>
@@ -1174,12 +1216,12 @@ const TargetCalculator = () => {
                               </CardText>
                             </CardBody>
                           </Card>
-                        </Col>
-                        <Col xl="3">
+                        </Col>}
+                        {targetCalculatorForm.values.zeroTargetHitTradeInOneDay >0 && <Col xl="3">
                           <Card color="" className="card metrics-card metrics-card-danger" xl="2">
 
                             <CardBody>
-                            <p className="mb-4 card-info-header">Loss in UnSuccessful Days</p>
+                            <p className="mb-4 card-info-header">Loss in Failure Days</p>
 
                               <CardText className="metric-number">
                                 &#8377; {selectedIndexCalculatedRisk.lossInUnsuccessfulDays}
@@ -1187,39 +1229,12 @@ const TargetCalculator = () => {
                               </CardText>
                             </CardBody>
                           </Card>
-                        </Col>
-                        <Col xl="3">
-                          <Card color="" className="metrics-card metrics-card-raw-info" xl="2">
-                            <CardBody>
-                            <p className="mb-4 card-info-header">Profit after all Trading Sessions</p>
-                              <CardText className="metric-number">
-                                &#8377; {selectedIndexCalculatedRisk.profitAfterAllTradingSessions}
-                              </CardText>
-                            </CardBody>
-                          </Card>
-                        </Col>
-                        <Col xl="3">
-                          <Card color="" className="metrics-card metrics-card-warning" xl="2">
-                            <CardBody>
-                            <p className="mb-4 card-info-header">Total Trading Charges</p>
-                              <CardText className="metric-number">
-                                &#8377; {selectedIndexCalculatedRisk.totalTradingCharges}
-                              </CardText>
-                            </CardBody>
-                          </Card>
-                        </Col>
-                        <Col xl="3">
-                          <Card color="" className="metrics-card metrics-card-raw-info" xl="2">
-                            <CardBody>
-                            <p className="mb-4 card-info-header">Target After Trading Charges</p>
-                              <CardText className="metric-number">
-                                &#8377; {selectedIndexCalculatedRisk.targetAfterTradingCharges}
-                              </CardText>
-                            </CardBody>
-                          </Card>
-                        </Col>
+                        </Col>}
                         
-                        <Col xl="3">
+                        
+                        
+                        
+                        {/* <Col xl="3">
                           <Card color="" className="metrics-card metrics-card-raw-info" xl="2">
 
                             <CardBody>
@@ -1234,17 +1249,8 @@ const TargetCalculator = () => {
                               </CardText>
                             </CardBody>
                           </Card>
-                        </Col>
-                        <Col xl="3">
-                          <Card color="" className="metrics-card metrics-card-raw-info" xl="2">
-                            <CardBody>
-                            <p className="mb-4 card-info-header">Normal Trading Days</p>
-                              <CardText className="metric-number">
-                                {selectedIndexCalculatedRisk.normalTradingDays}
-                              </CardText>
-                            </CardBody>
-                          </Card>
-                        </Col>
+                        </Col> */}
+                        
                         
                         {/* <Col xl="3">
                                           <Card color="" className="card calculated-risk-card" xl="2">

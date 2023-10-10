@@ -228,11 +228,11 @@ const RiskCalculator = () => {
         const numberOfTradingSessions = riskCalculatorFormValues.desiredNumberOfTradingSessions ? riskCalculatorFormValues.desiredNumberOfTradingSessions : Math.floor(((riskCalculatorFormValues.tradingCapital - (riskCalculatorFormValues.tradingCapital * (riskCalculatorFormValues.percentageOfTradingCapitalInOneTrade / 100))) / maxSLCapacityInOneTrade) / riskCalculatorFormValues.maxSLCountOneDay) + 1; //1 is added to consider the buffer amount left after trading sessions
         const maxTradeAmountInOneDay = Math.floor(100 * (maxSLCapacityInOneTrade / riskCalculatorFormValues.maxDrawDownPercentage))
 
-        console.log("riskCalculatorFormValues", riskCalculatorFormValues);
-        console.log("maxSLCapacityDaily", maxSLCapacityDaily);
-        console.log("maxSLCapacityInOneTrade", maxSLCapacityInOneTrade);
-        console.log("numberOfTradingSessions", numberOfTradingSessions);
-        console.log("maxTradeAmountInOneDay", maxTradeAmountInOneDay);
+        // console.log("riskCalculatorFormValues", riskCalculatorFormValues);
+        // console.log("maxSLCapacityDaily", maxSLCapacityDaily);
+        // console.log("maxSLCapacityInOneTrade", maxSLCapacityInOneTrade);
+        // console.log("numberOfTradingSessions", numberOfTradingSessions);
+        // console.log("maxTradeAmountInOneDay", maxTradeAmountInOneDay);
         return {
             maxSLCapacityDaily,
             maxSLCapacityInOneTrade,
