@@ -22,7 +22,7 @@ const CustomOptionPremiumStackedBar = (props) => {
     // console.log(premium_target_height,'--premium_target_height-')
 
     return (
-        <div className="stacked-option-premium-container">
+        <div className="stacked-option-premium-container" style={{overflow:"hidden"}}>
             {premium_body_height> 0 && <><div className="option-premium-candle-container">
                 <div className="candle-left-align" style={{marginBottom:premium_sl_height}}>
                     <span className="span-label">SL</span>

@@ -388,18 +388,45 @@ $button-active-blue: #1669F2;
   color: $white;
 }
 
+.metrics-card-text-color{
+  color: $metrics-card-primary-color;
+}
+
+
 .metrics-card-danger{
   background: $metrics-card-danger-color;
   color: $white;
 }
+
+.metrics-card-text-color-danger{
+  color: $metrics-card-danger-color !important;
+}
+
 .metrics-card-success{
   background: $metrics-card-success-color;
   color: $white;
 }
 
+.metrics-card-text-color-success{
+  color: $metrics-card-success-color;
+}
+
+.metrics-card-warning{
+  background: $metrics-card-warning-color;
+  color: $white;
+}
+
+.metrics-card-text-color-warning{
+  color: $metrics-card-warning-color;
+}
+
 .metrics-card-primary2{
   background: $metrics-card-primary2-color;
   color: $white;
+}
+
+.metrics-card-text-color-primary2{
+  color: $metrics-card-primary2-color;
 }
 
 .metrics-card-raw-info{
