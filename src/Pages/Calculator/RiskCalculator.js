@@ -599,9 +599,6 @@ const RiskCalculator = () => {
                         <img src={calculator} width={160} />
                     </div>
                 )
-
-
-
                 }
                 {!loading && calculatedRiskRows && calculatedRiskRows.length > 0 && (
                     <Row>
