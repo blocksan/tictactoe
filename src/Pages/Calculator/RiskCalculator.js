@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react"
+import React, { useEffect, useRef, useState } from "react"
 import {
     Row,
     Col,
@@ -47,20 +47,28 @@ const RiskCalculator = () => {
     const [selectedIndex, setSelectedIndex] = useState(IndexType.BANKNIFTY);
     const [selectedIndexCalculatedRisk, setSelectedIndexCalculatedRisk] = useState({});
 
+    const resultContainerRef = useRef(null);
+    const scrollTop = () => {
+        window.scrollTo({
+        top: window.innerHeight,
+        behavior: 'smooth',
+        });
+    };
+
     const [tradeIndexes, setTradeIndexes] = useState([{
         indexName: IndexType.BANKNIFTY,
         lotSize: BANKNIFTY_LOT_SIZE,
-        optionPremium: 30,
+        optionPremium: 50,
     },
     {
         indexName: IndexType.FINNIFTY,
         lotSize: FINNIFTY_LOT_SIZE,
-        optionPremium: 20,
+        optionPremium: 30,
     },
     {
         indexName: IndexType.NIFTY50,
         lotSize: NIFTY50_LOT_SIZE,
-        optionPremium: 30,
+        optionPremium: 40,
     }
     ])
 
@@ -131,6 +139,7 @@ const RiskCalculator = () => {
             setSelectedIndex(null);
             await new Promise(r => setTimeout(r, 1500));
             calculateRisk(formValues);
+            scrollTop()
         },
 
     });
@@ -279,7 +288,6 @@ const RiskCalculator = () => {
     };
     const optionPremiumChangeHandler = async (event, indexName) => {
         let updatedOptionPremium = event.target.value;
-        console.log(updatedOptionPremium,'--updatedOptionPremium--', event.target.value)
         if (event.target.value === '') {
             updatedOptionPremium = '';
             // console.log("event.target.value", event.target.value)
@@ -288,7 +296,6 @@ const RiskCalculator = () => {
         } else if (event.target.value < 0) {
             updatedOptionPremium = 0;
         } else if (event.target.value) {
-            console.log(parseInt(event.target.value));
             updatedOptionPremium = parseInt(event.target.value);
         }
         let updatedCalculateRiskRows = [];
@@ -299,7 +306,6 @@ const RiskCalculator = () => {
                 riskRow.optionPremium = updatedOptionPremium != '' ? parseInt(updatedOptionPremium):0
 
                 const calculatedRiskOfIndexResult = calculateRiskofIndex(riskCalculatorForm.values, riskRow.lotSize, riskRow.optionPremium, riskRow.indexName, calculateMetadata.maxSLCapacityInOneTrade, calculateMetadata);
-                console.log(calculatedRiskOfIndexResult,'--calculatedRiskOfIndexResult--')
                 
                 if (riskRow.optionPremium == '') {
                 calculatedRiskOfIndexResult.optionPremium = ''
@@ -363,7 +369,7 @@ const RiskCalculator = () => {
                                 {/* <CardTitle>Risk Calculator</CardTitle> */}
                                 <br />
                                 <CardSubtitle className="mb-3">
-                                    This tool will help you calculate the approximate amount you can risk in a trade based on your capital, stop loss per trade, and money management.
+                                    This tool will help you <strong>calculate the approximate amount</strong> you can <strong style={{color:"Red"}}>risk in a trade</strong>  based on your capital, stop loss per trade, and money management.
                                 </CardSubtitle>
                                 <br />
                                 <Form
@@ -600,9 +606,9 @@ const RiskCalculator = () => {
                     </div>
                 )
                 }
-                {!loading && calculatedRiskRows && calculatedRiskRows.length > 0 && (
                     <Row>
-                        <Col md={12} className="result-container" >
+                        <Col md={12} className="result-container" ref={resultContainerRef}>
+                {!loading && calculatedRiskRows && calculatedRiskRows.length > 0 && (
                             <Card xl="2" style={{margin:0}}>
 
                                 <div className="text-left" style={{
@@ -963,11 +969,9 @@ const RiskCalculator = () => {
                                     </Row>
                                 </CardBody>
                             </Card>
-                            {/* </Col> */}
-
-                        </Col>
-                    </Row>
-                )}
+                            )}
+                            </Col>
+                </Row>
 
             </div>
         </React.Fragment>

@@ -45,12 +45,15 @@ const TargetCalculator = () => {
 
 
   const resultContainerRef = useRef(null);
-
-  const bringResultContainerToTop = () => {
-    console.log("I called")
-    resultContainerRef.current.scrollTop = -500;
-    console.log('--resultContainerRef--', resultContainerRef.current)
+  const scrollTop = () => {
+    window.scrollTo({
+      top: window.innerHeight,
+      behavior: 'smooth',
+    });
   };
+  // const bringResultContainerToTop = () => {
+  //   resultContainerRef.current.scrollTop = -500;
+  // };
 
   const [disableTheInputs, setDisableTheInputs] = useState(true);
   const [loading, setLoading] = useState(false);
@@ -60,17 +63,17 @@ const TargetCalculator = () => {
   const [tradeIndexes, setTradeIndexes] = useState([{
     indexName: IndexType.BANKNIFTY,
     lotSize: BANKNIFTY_LOT_SIZE,
-    optionPremium: 30,
+    optionPremium: 50,
   },
   {
     indexName: IndexType.FINNIFTY,
     lotSize: FINNIFTY_LOT_SIZE,
-    optionPremium: 20,
+    optionPremium: 30,
   },
   {
     indexName: IndexType.NIFTY50,
     lotSize: NIFTY50_LOT_SIZE,
-    optionPremium: 30,
+    optionPremium: 40,
   }
   ])
 
@@ -103,9 +106,9 @@ const TargetCalculator = () => {
       maxTradeInOneDay: 4,
       averageTargetHitTradeInOneDay: 2,
       averageSLHitTradeInOneDay: 2,
-      zeroSLHitTradeInOneDay: 0,
-      zeroTargetHitTradeInOneDay: 0,
-      normalTradingDays: 10, // numberOfTradingSessions-(zeroSLHitTradeInOneDay+zeroTargetHitTradeInOneDay)
+      zeroSLHitTradeDays: 0,
+      zeroTargetHitTradeDays: 0,
+      normalTradingDays: 10, // numberOfTradingSessions-(zeroSLHitTradeDays+zeroTargetHitTradeDays)
       averageTradingChargesPerTrade: 50, //Buy & Sell Charges
       totalTradesInOneDay: 4, // averageTargetHitTradeInOneDay+averageSLHitTradeInOneDay
       maxTradeAmountInOneDay: 1000, // tradingCapital/numberOfTradingSessions
@@ -134,12 +137,12 @@ const TargetCalculator = () => {
         .max(30, "Maximum Target ratio can be at most 30 "),
       averageTargetHitTradeInOneDay: Yup.number().required("Please provide Average Target Hit Trade In One Day"),
       averageSLHitTradeInOneDay: Yup.number().required("Please provide Average SL Hit Trade In One Day"),
-      zeroSLHitTradeInOneDay: Yup.number()
+      zeroSLHitTradeDays: Yup.number()
         .required("Please provide Zero SL Hit Trade In One Day")
         .min(0, "Zero SL Hit Trade In One Day should be at least 0")
         .max(20, "Zero SL Hit Trade In One Day can be at most 20 ")
         .default(0),
-      zeroTargetHitTradeInOneDay: Yup.number().required("Please provide Zero Target Hit Trade In One Day")
+      zeroTargetHitTradeDays: Yup.number().required("Please provide Zero Target Hit Trade In One Day")
         .min(0, "Zero Target Hit Trade In One Day should be at least 0")
         .max(4, "Zero Target Hit Trade In One Day can be at most 4")
         .default(0),
@@ -161,6 +164,7 @@ const TargetCalculator = () => {
       setSelectedIndex(null);
       await new Promise(r => setTimeout(r, 1500));
       calculateRisk(formValues);
+      scrollTop()
     },
   });
 
@@ -183,14 +187,13 @@ const TargetCalculator = () => {
     tradeIndexes.forEach((tradeIndex) => {
       const { lotSize, optionPremium, indexName } = tradeIndex;
       let calculatedRiskOfIndexResult = calculateRiskofIndex(targetCalculatorFormValues, lotSize, optionPremium, indexName, metadataResult.maxSLCapacityInOneTrade, metadataResult);
-      console.log("calculatedRiskOfIndexResult", calculatedRiskOfIndexResult)
       calculatedRiskRows.push(calculatedRiskOfIndexResult);
     });
 
     setCalculatedRiskRows(calculatedRiskRows);
     setSelectedIndex(IndexType.BANKNIFTY);
     setLoading(false)
-    bringResultContainerToTop()
+    // bringResultContainerToTop()
     // const section = document.getElementById('scrollView');
     // console.log(section,'---section---')
     // section.scrollIntoView( { behavior: 'smooth', block: 'start' } );
@@ -219,10 +222,10 @@ const TargetCalculator = () => {
 
     // console.log("capitalDayWiseLabels", capitalDayWiseLabels);
     // console.log("remainingCapitalDayWise", remainingCapitalDayWise);
-    const profitInSuccessfulDays = targetCalculatorFormValues.averageTargetHitTradeInOneDay * targetCalculatorFormValues.zeroSLHitTradeInOneDay * totalTargetofTrade;
-    const lossInUnsuccessfulDays = targetCalculatorFormValues.averageSLHitTradeInOneDay * targetCalculatorFormValues.zeroTargetHitTradeInOneDay * totalSLofTrade;
+    const profitInSuccessfulDays = targetCalculatorFormValues.averageTargetHitTradeInOneDay * targetCalculatorFormValues.zeroSLHitTradeDays * totalTargetofTrade;
+    const lossInUnsuccessfulDays = targetCalculatorFormValues.averageSLHitTradeInOneDay * targetCalculatorFormValues.zeroTargetHitTradeDays * totalSLofTrade;
     const totalTradesInOneDay = targetCalculatorFormValues.averageTargetHitTradeInOneDay + targetCalculatorFormValues.averageSLHitTradeInOneDay;
-    const normalTradingDays = calculatedMetadata.numberOfTradingSessions - (targetCalculatorFormValues.zeroSLHitTradeInOneDay + targetCalculatorFormValues.zeroTargetHitTradeInOneDay);
+    const normalTradingDays = calculatedMetadata.numberOfTradingSessions - (targetCalculatorFormValues.zeroSLHitTradeDays + targetCalculatorFormValues.zeroTargetHitTradeDays);
     let totalTradingCharges = 0;
     if (totalTradableQuantity > 0) {
       totalTradingCharges = targetCalculatorFormValues.averageTradingChargesPerTrade * totalTradesInOneDay * calculatedMetadata.numberOfTradingSessions;
@@ -353,7 +356,6 @@ const TargetCalculator = () => {
     } else if (event.target.value < 0) {
       updatedOptionPremium = 0;
     } else if (event.target.value) {
-      console.log(parseInt(event.target.value));
       updatedOptionPremium = parseInt(event.target.value);
     }
     let updatedCalculateRiskRows = [];
@@ -424,7 +426,7 @@ const TargetCalculator = () => {
                 {/* <CardTitle>Risk Calculator</CardTitle> */}
                 <br />
                 <CardSubtitle className="mb-3">
-                  This tool will help you calculate the target amount you can make based on your capital, percentage of risk per trade, and target hit ratio.
+                  This tool will help you <strong>calculate the target amount</strong> you can <strong style={{color:"green"}}>target in a trade</strong> based on your capital, percentage of risk per trade, and target hit ratio.
                 </CardSubtitle>
                 <br />
                 <Form
@@ -698,54 +700,54 @@ const TargetCalculator = () => {
                       
                         <Col xl="6">
                           <div className="mb-3">
-                            <Label className="form-label calculator-form-input-label">Zero SL Trade in One Day</Label>
+                            <Label className="form-label calculator-form-input-label">Zero Stop Loss Days</Label>
                             <Input
-                              name="zeroSLHitTradeInOneDay"
-                              label="zeroSLHitTradeInOneDay"
-                              placeholder="Please provide Zero SL Hit Trade In One Day"
+                              name="zeroSLHitTradeDays"
+                              label="zeroSLHitTradeDays"
+                              placeholder="Please provide Zero SL Hit Trade Days"
                               type="number"
                               className="calculator-form-input"
                               onChange={targetCalculatorForm.handleChange}
                               onBlur={targetCalculatorForm.handleBlur}
-                              value={targetCalculatorForm.values.zeroSLHitTradeInOneDay}
+                              value={targetCalculatorForm.values.zeroSLHitTradeDays}
                               invalid={
-                                targetCalculatorForm.touched.zeroSLHitTradeInOneDay &&
-                                  targetCalculatorForm.errors.zeroSLHitTradeInOneDay
+                                targetCalculatorForm.touched.zeroSLHitTradeDays &&
+                                  targetCalculatorForm.errors.zeroSLHitTradeDays
                                   ? true
                                   : false
                               }
                             />
-                            {targetCalculatorForm.touched.zeroSLHitTradeInOneDay &&
-                              targetCalculatorForm.errors.zeroSLHitTradeInOneDay ? (
+                            {targetCalculatorForm.touched.zeroSLHitTradeDays &&
+                              targetCalculatorForm.errors.zeroSLHitTradeDays ? (
                               <FormFeedback type="invalid">
-                                {targetCalculatorForm.errors.zeroSLHitTradeInOneDay}
+                                {targetCalculatorForm.errors.zeroSLHitTradeDays}
                               </FormFeedback>
                             ) : null}
                           </div>
                         </Col>
                         <Col xl="6">
                           <div className="mb-3">
-                            <Label className="form-label calculator-form-input-label">Zero Target Hit Trade in One Day</Label>
+                            <Label className="form-label calculator-form-input-label">Zero Target Hit Trade Days</Label>
                             <Input
-                              name="zeroTargetHitTradeInOneDay"
-                              label="zeroTargetHitTradeInOneDay"
-                              placeholder="Please provide Zero Target Hit Trade In One Day"
+                              name="zeroTargetHitTradeDays"
+                              label="zeroTargetHitTradeDays"
+                              placeholder="Please provide Zero Target Hit Trade Days"
                               type="number"
                               className="calculator-form-input"
                               onChange={targetCalculatorForm.handleChange}
                               onBlur={targetCalculatorForm.handleBlur}
-                              value={targetCalculatorForm.values.zeroTargetHitTradeInOneDay}
+                              value={targetCalculatorForm.values.zeroTargetHitTradeDays}
                               invalid={
-                                targetCalculatorForm.touched.zeroTargetHitTradeInOneDay &&
-                                  targetCalculatorForm.errors.zeroTargetHitTradeInOneDay
+                                targetCalculatorForm.touched.zeroTargetHitTradeDays &&
+                                  targetCalculatorForm.errors.zeroTargetHitTradeDays
                                   ? true
                                   : false
                               }
                             />
-                            {targetCalculatorForm.touched.zeroTargetHitTradeInOneDay &&
-                              targetCalculatorForm.errors.zeroTargetHitTradeInOneDay ? (
+                            {targetCalculatorForm.touched.zeroTargetHitTradeDays &&
+                              targetCalculatorForm.errors.zeroTargetHitTradeDays ? (
                               <FormFeedback type="invalid">
-                                {targetCalculatorForm.errors.zeroTargetHitTradeInOneDay}
+                                {targetCalculatorForm.errors.zeroTargetHitTradeDays}
                               </FormFeedback>
                             ) : null}
                           </div>
@@ -799,9 +801,10 @@ const TargetCalculator = () => {
           </div>
         )
         }
-        <Row ref={resultContainerRef}>
+        <Row>
+
+            <Col md={12} className="result-container" ref={resultContainerRef} >
           {!loading && calculatedRiskRows && calculatedRiskRows.length > 0 && (
-            <Col md={12} className="result-container" >
               <Card xl="2" style={{margin:0}}>
               <div className="text-left" style={{
                                     height: "60px",
@@ -963,7 +966,7 @@ const TargetCalculator = () => {
                           color: "info",
                         },
                         {
-                          title: `Total capital after ${calculatedMetadata.numberOfTradingSessions} Trading Sessions`,
+                          title: `Capital after ${calculatedMetadata.numberOfTradingSessions} Trading Sessions`,
                           count: `&#8377; ${selectedIndexCalculatedRisk.finalTargetCapitalAfterTradingCharges}`,
                           color: "primary",
                         },
@@ -1021,7 +1024,7 @@ const TargetCalculator = () => {
                                 &#8377; {selectedIndexCalculatedRisk.totalTargetofTrade}
 
                               </CardText>
-                              
+                              <p className="sub-max-sl-text text-black" style={{fontSize:"1.1em"}}>SL in 1 Trade: <strong>&#8377; {selectedIndexCalculatedRisk.totalSLofTrade}</strong></p>
                             </CardBody>
                           </Card>
                         </Col>
@@ -1204,7 +1207,7 @@ const TargetCalculator = () => {
                             </CardBody>
                           </Card>
                         </Col> */}
-                        {targetCalculatorForm.values.zeroSLHitTradeInOneDay >0 && <Col xl="3">
+                        {targetCalculatorForm.values.zeroSLHitTradeDays >0 && <Col xl="3">
                           <Card color="" className="card metrics-card metrics-card-success" xl="2">
 
                             <CardBody>
@@ -1217,7 +1220,7 @@ const TargetCalculator = () => {
                             </CardBody>
                           </Card>
                         </Col>}
-                        {targetCalculatorForm.values.zeroTargetHitTradeInOneDay >0 && <Col xl="3">
+                        {targetCalculatorForm.values.zeroTargetHitTradeDays >0 && <Col xl="3">
                           <Card color="" className="card metrics-card metrics-card-danger" xl="2">
 
                             <CardBody>
@@ -1283,10 +1286,9 @@ const TargetCalculator = () => {
                   </Row>
                 </CardBody>
               </Card>
-              {/* </Col> */}
 
-            </Col>
           )}
+            </Col>
         </Row>
 
       </div>
