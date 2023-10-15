@@ -1,9 +1,9 @@
 import React from "react";
 import PropTypes from "prop-types";
+import {getAuth, GoogleAuthProvider, signInWithPopup} from 'firebase/auth'
 import logoVoiled from "../../assets/images/OnlyLogoVoiled.png";
 import withRouter from "../../components/Common/withRouter";
 import { useDispatch } from "react-redux";
-import { GoogleLogin } from '@react-oauth/google';
 import mandrawing from "../../assets/images/mandrawing.png";
 import riskcalculator from "../../assets/images/riskcalculator.png";
 import riskcalculatorresult from "../../assets/images/riskcalculatorresult.png";
@@ -12,27 +12,38 @@ import tradingdesktops from "../../assets/images/tradingdesktopscompressed.png";
 import { socialLogin } from "../../store/actions";
 import jwt_decode from "jwt-decode";
 //Import config
-import { google } from "../../config";
 import "./../../assets/scss/landing.scss";
+import { getFirebaseApp } from "../../helpers/firebase_helper";
+import { getCheckoutUrl } from "../../helpers/stripe/stripePayment";
+import GoogleButton from "../../components/Common/GoogleButton";
 const Landing = (props) => {
     const dispatch = useDispatch();
-    const signIn = (res, type) => {
-        if (type === "google" && res) {
+
+    const firebaseApp = getFirebaseApp();
+    const firebaseAuth = getAuth(firebaseApp);
+    const provider = new GoogleAuthProvider();
+
+    const signInWithGoogle = async () => {
+        const result = await signInWithPopup(firebaseAuth, provider);
+        const user = result.user;
+        console.log(user,'--user--')
+        // if (type === "google") {
             const postData = {
-                name: res.name,
-                email: res.email,
-                picture: res.picture,
+                name: user.displayName,
+                email: user.email,
+                picture: user.photoURL,
             };
-            dispatch(socialLogin(postData, props.router.navigate, type));
-        } else if (type === "facebook" && res) {
-            const postData = {
-                name: res.name,
-                email: res.email,
-                token: res.accessToken,
-                idToken: res.jti,
-            };
-            dispatch(socialLogin(postData, props.router.navigate, type));
-        }
+            dispatch(socialLogin(postData, props.router.navigate, "google"));
+        // } 
+        // else if (type === "facebook") {
+        //     const postData = {
+        //         name: res.name,
+        //         email: res.email,
+        //         token: res.accessToken,
+        //         idToken: res.jti,
+        //     };
+        //     dispatch(socialLogin(postData, props.router.navigate, type));
+        // }
     };
 
     //handleGoogleLoginResponse
@@ -42,8 +53,28 @@ const Landing = (props) => {
             ...user
         }
         // console.log(formattedResponse,'--formattedResponse--')
-        signIn(formattedResponse, "google");
+        // signIn(formattedResponse, "google");
     };
+
+    const monthlySubscriptionHandler = async () => {
+        try{
+            const monthlyPriceId = process.env.REACT_APP_STRIPE_MONTHLY_PRICE_ID;
+            const checkoutUrl = await getCheckoutUrl(firebaseApp, monthlyPriceId);
+            window.location.replace(checkoutUrl);
+        }catch(err){
+            alert(err.message)
+        }
+    }
+    const yearlySubscriptionHandler = async() => {
+        try{
+            const yearlyPriceId = process.env.REACT_APP_STRIPE_YEARLY_PRICE_ID;
+            const checkoutUrl = await getCheckoutUrl(firebaseApp, yearlyPriceId);
+            window.location.replace(checkoutUrl);
+        }catch(err){
+            alert(err.message)
+        }
+    }
+
     return (
         <React.Fragment>
 
@@ -61,20 +92,13 @@ const Landing = (props) => {
                             </div>
                         </ul>
                         <ul className="inline right">
-                            {/* <li><a href="#">Pricing</a></li> */}
+                            <li><a href="/pricing">Pricing</a></li>
+                            <li onClick={monthlySubscriptionHandler}>Upgrade to Premium Monthly</li>
+                            <li onClick={yearlySubscriptionHandler}>Upgrade to Premium Yearly</li>
                             <li>
-
-                                <GoogleLogin
-                                    clientId={google.CLIENT_ID}
-                                    render={renderProps => (
-                                        <i className="mdi mdi-google" onClick={renderProps.onClick} />
-                                    )}
-                                    theme="filled_blue"
-                                    shape="circle"
-                                    useOneTap
-                                    onSuccess={googleResponse}
-                                    onFailure={() => { }}
-                                />
+                                <span onClick={signInWithGoogle}>
+                                    <GoogleButton></GoogleButton>
+                                </span>
                             </li>
                             {/* <li><a onClick={toggleLoginModal}>Log In</a></li> */}
                             {/* <li><a href="#" onClick={toggleLoginModal} className="button button-secondary button-m full-width-tablet" role="button">Sign Up</a></li> */}
@@ -90,17 +114,10 @@ const Landing = (props) => {
                                     <h1 className="hero text-white" style={{fontSize:"2em", lineHeight:"1em"}}>Manage your Risk today, to Trade tomorrow.</h1>
                                     {/* <p className="lead"></p> */}
                                     <p className="lead">A lightweight tool suite which can you help you to minimise your loss and can keep you longer in the market.</p>
-                                    <GoogleLogin
-                                        className="button button-primary space-top" role="button" style={{ "maxWidth": "120px" }}
-                                        clientId={google.CLIENT_ID}
-                                        render={renderProps => (
-                                            <i className="mdi mdi-google" onClick={renderProps.onClick} />
-                                        )}
-                                        theme="filled_blue"
-                                        shape="circle"
-                                        onSuccess={googleResponse}
-                                        onFailure={() => { }}
-                                    />
+                                    
+                                    <span onClick={signInWithGoogle}>
+                                        <GoogleButton></GoogleButton>
+                                    </span>
                                     {/* <a href="signup.html" className="button button-primary space-top" role="button">Get Started</a> */}
                                 </div>
                             </div>
@@ -283,16 +300,9 @@ const Landing = (props) => {
                                 </div>
                                 </div>
                                 <div className="col-one-third middle">
-                                    <GoogleLogin
-                                        clientId={google.CLIENT_ID}
-                                        render={renderProps => (
-                                            <i className="mdi mdi-google" onClick={renderProps.onClick} />
-                                        )}
-                                        theme="filled_blue"
-                                        shape="circle"
-                                        onSuccess={googleResponse}
-                                        onFailure={() => { }}
-                                    />
+                                    <span onClick={signInWithGoogle}>
+                                        <GoogleButton></GoogleButton>
+                                    </span>
                                     {/* <a href="signup.html" className="button button-primary" role="button">Create An Account</a> */}
                                 </div>
                             </form>

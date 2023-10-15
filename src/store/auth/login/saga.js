@@ -11,6 +11,7 @@ import {
   postJwtLogin,
   postSocialLogin,
 } from "../../../helpers/fakebackend_helper";
+import { getPremiumStatus } from "../../../helpers/stripe/premiumStatus";
 
 const fireBaseBackend = getFirebaseBackend();
 
@@ -46,9 +47,9 @@ function* loginUser({ payload: { user, history } }) {
 
 function* logoutUser() {
   try {
-    localStorage.removeItem("authUser");
     if (process.env.REACT_APP_DEFAULTAUTH === "firebase") {
       const response = yield call(fireBaseBackend.logout);
+      localStorage.removeItem("authUser");
       yield put(logoutUserSuccess(LOGOUT_USER, response));
     } else {
       yield put(logoutUserSuccess(LOGOUT_USER, true));
@@ -61,10 +62,16 @@ function* logoutUser() {
 function* socialLogin({ payload: { data, history, type } }) {
   try {
     if (process.env.REACT_APP_DEFAULTAUTH === "firebase") {
-      const fireBaseBackend = getFirebaseBackend();
-      const response = yield call(fireBaseBackend.socialLoginUser, data, type);
-      localStorage.setItem("authUser", JSON.stringify(response));
-      yield put(loginSuccess(response));
+      // const fireBaseBackend = getFirebaseBackend();
+      let includeTrial = true;
+      const premiumStatus = yield call(fireBaseBackend.isPremiumOrTrial, includeTrial);
+
+      const stripeportalUrl = yield call(fireBaseBackend.getStripePortalUrl);
+
+      data.isPremiumOrTrial = premiumStatus
+      data.stripeportalUrl = stripeportalUrl
+      localStorage.setItem("authUser", JSON.stringify(data));
+      yield put(loginSuccess(data));
     } else {
       const response = yield call(postSocialLogin, data);
       localStorage.setItem("authUser", JSON.stringify(response));

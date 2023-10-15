@@ -23,13 +23,17 @@ const ProfileMenu = props => {
 
   const [username, setusername] = useState("Admin");
   const [avatarUrl, setAvatarUrl] = useState();
+  const [isPremiumOrTrial, setIsPremiumOrTrial] = useState(false);
+  const [stripeportalUrl, setStripePortalUrl] = useState();
 
   useEffect(() => {
     if (localStorage.getItem("authUser")) {
       if (process.env.REACT_APP_DEFAULTAUTH === "firebase") {
         const obj = JSON.parse(localStorage.getItem("authUser"));
-        setusername(obj.user.name);
-        setAvatarUrl(obj.user.avatarUrl);
+        setusername(obj.name);
+        setAvatarUrl(obj.picture);
+        setIsPremiumOrTrial(obj.isPremiumOrTrial);
+        setStripePortalUrl(obj.stripeportalUrl);
       } else if (
         process.env.REACT_APP_DEFAULTAUTH === "fake" ||
         process.env.REACT_APP_DEFAULTAUTH === "jwt"
@@ -57,6 +61,7 @@ const ProfileMenu = props => {
             src={avatarUrl}
             alt="Header Avatar"
           />
+          {isPremiumOrTrial && ("Premium")}
           <span className="d-none d-xl-inline-block ms-2 me-2">{username}</span>
           <i className="mdi mdi-chevron-down d-none d-xl-inline-block" />
         </DropdownToggle>
@@ -70,11 +75,10 @@ const ProfileMenu = props => {
             <i className="ri-wallet-2-line align-middle me-2" />
             {props.t("My Wallet")}
           </DropdownItem> */}
-          {/* <DropdownItem tag="a" href="#">
-            <span className="badge bg-success float-end mt-1">11</span>
-            <i className="ri-settings-2-line align-middle me-2" />
-            {props.t("Settings")}
-          </DropdownItem> */}
+          <DropdownItem tag="a" href={stripeportalUrl} target="_blank">
+              <i className="ri-settings-2-line align-middle me-2" />
+            {props.t("Subscription")}
+          </DropdownItem>
           {/* <DropdownItem tag="a" href="auth-lock-screen">
             <i className="ri-lock-unlock-line align-middle me-2" />
             {props.t("Lock screen")}

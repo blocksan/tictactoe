@@ -1,7 +1,11 @@
 import { initializeApp } from "firebase/app";
-import { getFirestore,collection, addDoc, updateDoc, query, where, getDocs } from "firebase/firestore";
+import {getAuth} from 'firebase/auth'
+import { getFirestore, collection, addDoc, updateDoc, query, where, getDocs } from "firebase/firestore";
+import { getPremiumStatus } from "./stripe/premiumStatus";
+import { stripePortalUrl } from "./stripe/stripePayment";
+
 // import { getAuth, signInWithPopup, GoogleAuthProvider } from "firebase/auth";
-import {ref} from 'firebase/database';
+// import {ref} from 'firebase/database';
 // import { getAnalytics } from "firebase/analytics";
 
 let firebaseApp=null;
@@ -103,7 +107,16 @@ class FirebaseAuthBackend {
    * Logout the user
    */
   logout = () => {
-    return true;
+    return new Promise((resolve, reject) => {
+      const auth = getAuth(firebaseApp);
+      auth.signOut()
+        .then(() => {
+          resolve(true);
+        })
+        .catch(error => {
+          reject(this._handleError(error));
+        });
+    });
   };
 
   /**
@@ -141,6 +154,26 @@ class FirebaseAuthBackend {
     //     // reject(this._handleError(error));
     //   }
     // });
+  };
+
+  isPremiumOrTrial = async (includeTrial) => {
+    return new Promise((resolve, reject) => {
+        try{
+          resolve(getPremiumStatus(firebaseApp, includeTrial));
+        }catch(err){
+          reject(false)
+        }
+    })
+  };
+
+  getStripePortalUrl = async () => {
+    return new Promise((resolve, reject) => {
+        try{
+          resolve(stripePortalUrl(firebaseApp));
+        }catch(err){
+          reject(false)
+        }
+    })
   };
 
   addNewUserToFirestore = async (user) => {
@@ -217,4 +250,8 @@ const getFirebaseBackend = () => {
   return _fireBaseBackend;
 };
 
-export { initFirebaseBackend, getFirebaseBackend };
+const getFirebaseApp = () => {
+  return firebaseApp;
+}
+
+export { initFirebaseBackend, getFirebaseBackend, getFirebaseApp };

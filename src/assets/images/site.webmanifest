@@ -1,6 +1,7 @@
 {
-    "name": "",
-    "short_name": "",
+    "name": "Trrader.in",
+    "short_name": "Trrader.in",
+    "description": "Built by Trader, for Trader!!! Explore the tool suite for better Risk management and Target achievement.",
     "icons": [
         {
             "src": "/android-chrome-192x192.png",

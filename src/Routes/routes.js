@@ -15,6 +15,7 @@ import TargetCalculator from "../Pages/Calculator/TargetCalculator";
 import CapitalCalculator from "../Pages/Calculator/CapitalCalculator";
 import Landing from './../Pages/Landing/landing'
 import Referral from "../Pages/Settings/Referral";
+import Pricing from "../Pages/Pricing/Pricing";
 
 const authProtectedRoutes = [
   //dashboard
@@ -45,6 +46,7 @@ const publicRoutes = [
     component: <Landing></Landing>,
   },
   { path: "/logout", component: <Logout /> },
+  { path: "/pricing", component: <Pricing /> },
   // { path: "/login", component: <Login /> },
   // { path: "/forgot-password", component: <ForgetPasswordPage /> },
   // { path: "/register", component: <Register /> },
