@@ -3,7 +3,7 @@ import React from "react";
 import logosm from "../../assets/images/logo-sm.png";
 import logodark from "../../assets/images/logo-dark.png";
 import logolight from "../../assets/images/logo-light.png";
-
+import { Link } from 'react-router-dom';
 // import component
 import ProfileMenu from "./TopbarDropdown/ProfileMenu";
 
@@ -72,6 +72,9 @@ const TopBar = () => {
               </button>
             </div>
             <NotificationDropdown />
+            <Link to="/pricing" className="">
+              Pricing
+            </Link>
             <ProfileMenu />
 
             <div className="dropdown d-inline-block">

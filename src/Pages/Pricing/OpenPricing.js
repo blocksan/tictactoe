@@ -9,20 +9,21 @@ import { getCheckoutUrl } from '../../helpers/stripe/stripePayment';
 import { getFirebaseApp } from '../../helpers/firebase_helper';
 import PricingContent from './PricingContent';
 import { connect } from 'react-redux';
+import Header from '../../Layout/VerticalLayout/Header';
+import Footer from '../../Layout/VerticalLayout/Footer';
 
-function Pricing(props) {
+function OpenPricing(props) {
   return (
     <React.Fragment>
-            <div className="page-content landing-header-main">
-                <Container fluid={true}>
-                    <Breadcrumbs title="Plans" breadcrumbItem="Pricing Plans" />
-                </Container>
-                <Row>
-                <Col>
-                <PricingContent user={props.user}></PricingContent>
-                </Col>
-                </Row>
-                </div>
+      <Header></Header>
+      <Row>
+        <Container fluid={true} style={{marginTop:"120px"}}>
+          <Col>
+            <PricingContent user={props.user}></PricingContent>
+          </Col>
+        </Container>
+        <Footer></Footer>
+      </Row>
 
     </React.Fragment>
   )
@@ -31,4 +32,4 @@ function Pricing(props) {
 const mapStateToProps = state => {
   return { ...state.login };
 };
-export default connect(mapStateToProps, {})(Pricing)
+export default connect(mapStateToProps, {})(OpenPricing)

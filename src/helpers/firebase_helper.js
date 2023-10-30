@@ -1,14 +1,15 @@
 import { initializeApp } from "firebase/app";
-import {getAuth} from 'firebase/auth'
-import { getFirestore, collection, addDoc, updateDoc, query, where, getDocs } from "firebase/firestore";
+import { getAuth } from 'firebase/auth'
+import { getFirestore, collection, addDoc, updateDoc, query, where, orderBy, getDocs } from "firebase/firestore";
 import { getPremiumStatus } from "./stripe/premiumStatus";
 import { stripePortalUrl } from "./stripe/stripePayment";
+import { RISK_CALCULATOR_COLLECTION, TARGET_CALCULATOR_COLLECTION } from "../constants/firebase";
 
 // import { getAuth, signInWithPopup, GoogleAuthProvider } from "firebase/auth";
 // import {ref} from 'firebase/database';
 // import { getAnalytics } from "firebase/analytics";
 
-let firebaseApp=null;
+let firebaseApp = null;
 let _fireBaseBackend = null;
 class FirebaseAuthBackend {
   constructor(firebaseConfig) {
@@ -122,13 +123,13 @@ class FirebaseAuthBackend {
   /**
    * Social Login user with given details
    */
-  socialLoginUser =  (data, type) => {
+  socialLoginUser = (data, type) => {
     return new Promise((resolve, reject) => {
-            try{
-              resolve(this.addNewUserToFirestore(data));
-            }catch(err){
-              reject(this._handleError(err));
-            }
+      try {
+        resolve(this.addNewUserToFirestore(data));
+      } catch (err) {
+        reject(this._handleError(err));
+      }
     });
     // console.log('---data---',data);
     // console.log('---type---',type)
@@ -158,26 +159,26 @@ class FirebaseAuthBackend {
 
   isPremiumOrTrial = async (includeTrial) => {
     return new Promise((resolve, reject) => {
-        try{
-          resolve(getPremiumStatus(firebaseApp, includeTrial));
-        }catch(err){
-          reject(false)
-        }
+      try {
+        resolve(getPremiumStatus(firebaseApp, includeTrial));
+      } catch (err) {
+        reject(false)
+      }
     })
   };
 
   getStripePortalUrl = async () => {
     return new Promise((resolve, reject) => {
-        try{
-          resolve(stripePortalUrl(firebaseApp));
-        }catch(err){
-          reject(false)
-        }
+      try {
+        resolve(stripePortalUrl(firebaseApp));
+      } catch (err) {
+        reject(false)
+      }
     })
   };
 
   addNewUserToFirestore = async (user) => {
-    try{
+    try {
       const db = getFirestore(firebaseApp);
       const dbUser = {
         name: user.name,
@@ -191,22 +192,203 @@ class FirebaseAuthBackend {
       // await collection(db, "users").id(user.uid).set(dbUser);
       const userQuery = query(collection(db, "users"), where("email", "==", dbUser.email));
       const querySnapshot = await getDocs(userQuery);
-      if(!querySnapshot.empty){
+      if (!querySnapshot.empty) {
         await updateDoc(querySnapshot.docs[0].ref, {
           lastAccessedOn: new Date(),
         });
-      }else{
+      } else {
         await addDoc(collection(db, "users"), {
           ...dbUser
         });
       }
-      return {user:dbUser};
+      return { user: dbUser };
       // const collection = firebaseApp.firestore().collection("users");
-    }catch(err){
-      console.log(err,'---err--')
+    } catch (err) {
+      console.log(err, '---err--')
       throw err;
     }
   };
+
+  addOrUpdateRiskCalculatorConfigToFirestore = async (config, configName, isUpdateQuery) => {
+    try {
+      const db = getFirestore(firebaseApp);
+      const user = this.getAuthenticatedUser();
+      if (!user) {
+        return {
+          status: false,
+          error: "User not found"
+        };
+      }
+      const riskConfigDoc = {
+        createdOn: new Date(),
+        updatedOn: new Date(),
+        riskConfig: JSON.stringify(config),
+        customerEmail: user.email,
+        configName: configName
+      };
+
+      if (isUpdateQuery) {
+        const userQuery = query(collection(db, RISK_CALCULATOR_COLLECTION), where("customerEmail", "==", user.email));
+        const querySnapshot = await getDocs(userQuery);
+        if (!querySnapshot.empty) {
+          await updateDoc(querySnapshot.docs[0].ref, {
+            riskConfig: riskConfigDoc.riskConfig,
+            updatedOn: riskConfigDoc.updatedOn,
+            configName: riskConfigDoc.configName
+          });
+        } else {
+          await addDoc(collection(db, RISK_CALCULATOR_COLLECTION), {
+            ...riskConfigDoc
+          });
+        }
+      } else {
+        await addDoc(collection(db, RISK_CALCULATOR_COLLECTION), {
+          ...riskConfigDoc
+        });
+
+      }
+
+      return {
+        status: true
+      };
+
+    } catch (err) {
+      console.log("error in addOrUpdateRiskCalculatorConfigToFirestore", err)
+      return {
+        status: false,
+        error: err.message
+      };
+
+    }
+  };
+
+  addOrUpdateTargetCalculatorConfigToFirestore = async (config, customerId, configName, isUpdateQuery) => {
+    try {
+      const db = getFirestore(firebaseApp);
+      const user = this.getAuthenticatedUser();
+      if (!user) {
+        return {
+          status: false,
+          error: "User not found"
+        };
+      }
+      const targetConfigDoc = {
+        createdOn: new Date(),
+        updatedOn: new Date(),
+        targetConfig: JSON.stringify(config),
+        customerEmail: user.email,
+        configName: configName
+      };
+
+      if (isUpdateQuery) {
+        const userQuery = query(collection(db, TARGET_CALCULATOR_COLLECTION), where("customerEmail", "==", user.email));
+        const querySnapshot = await getDocs(userQuery);
+        if (!querySnapshot.empty) {
+          await updateDoc(querySnapshot.docs[0].ref, {
+            targetConfig: targetConfigDoc.targetConfig,
+            updatedOn: targetConfigDoc.updatedOn,
+            configName: targetConfigDoc.configName
+          });
+        } else {
+          await addDoc(collection(db, TARGET_CALCULATOR_COLLECTION), {
+            ...targetConfigDoc
+          });
+        }
+      } else {
+        await addDoc(collection(db, TARGET_CALCULATOR_COLLECTION), {
+          ...targetConfigDoc
+        });
+
+      }
+
+      return {
+        status: true
+      };
+
+    } catch (err) {
+      console.log("error in addOrUpdateTargetCalculatorConfigToFirestore", err)
+      return {
+        status: false,
+        error: err.message
+      };
+
+    }
+  }
+
+  fetchRiskCalculatorConfigFromFirestore = async (customerId) => {
+    try {
+      const user = this.getAuthenticatedUser();
+      if (!user) {
+        return {
+          status: false,
+          data: []
+        };
+      }
+      const db = getFirestore(firebaseApp);
+      const userQuery = query(collection(db, RISK_CALCULATOR_COLLECTION), where("customerEmail", "==", user.email));
+      const querySnapshot = await getDocs(userQuery);
+      if (!querySnapshot.empty) {
+        let data = querySnapshot.docs.map(doc => {
+          return {
+            ...doc.data(),
+            createdOn: doc.data().createdOn.toDate(),
+            updatedOn: doc.data().updatedOn.toDate(),
+            parsedConfig: JSON.parse(doc.data().riskConfig)
+          }}).sort((a, b) => b.createdOn - a.createdOn)
+        return {
+          status: true,
+          data
+        };
+      } else {
+        return {
+          status: false,
+          data: []
+        };
+      }
+    } catch (err) {
+      console.log("error in fetchRiskCalculatorConfigFromFirestore", err)
+      return {
+        status: false,
+        error: err.message,
+        data: []
+      };
+
+    }
+  }
+
+  fetchTargetCalculatorConfigFromFirestore = async (customerId) => {
+    try {
+      const user = this.getAuthenticatedUser();
+      if (!user) {
+        return {
+          status: false,
+          data: {}
+        };
+      }
+      const db = getFirestore(firebaseApp);
+      const userQuery = query(collection(db, TARGET_CALCULATOR_COLLECTION), where("customerEmail", "==", user.email), orderBy("createdOn", "desc"));
+      const querySnapshot = await getDocs(userQuery);
+      if (!querySnapshot.empty) {
+        return {
+          status: true,
+          data: querySnapshot.docs.map(doc => doc.data())
+        };
+      } else {
+        return {
+          status: false,
+          data: []
+        };
+      }
+    } catch (err) {
+      console.log("error in fetchTargetCalculatorConfigFromFirestore", err)
+      return {
+        status: false,
+        error: err.message,
+        data: []
+      };
+
+    }
+  }
 
   setLoggeedInUser = user => {
     localStorage.setItem("authUser", JSON.stringify(user));
@@ -216,8 +398,11 @@ class FirebaseAuthBackend {
    * Returns the authenticated user
    */
   getAuthenticatedUser = () => {
-    if (!localStorage.getItem("authUser")) return null;
-    return JSON.parse(localStorage.getItem("authUser"));
+    if (!firebaseApp) {
+      return null;
+    }
+    const auth = getAuth(firebaseApp);
+    return auth.currentUser
   };
 
   /**

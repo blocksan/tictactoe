@@ -11,7 +11,6 @@ import {
   postJwtLogin,
   postSocialLogin,
 } from "../../../helpers/fakebackend_helper";
-import { getPremiumStatus } from "../../../helpers/stripe/premiumStatus";
 
 const fireBaseBackend = getFirebaseBackend();
 
@@ -66,10 +65,10 @@ function* socialLogin({ payload: { data, history, type } }) {
       let includeTrial = true;
       const premiumStatus = yield call(fireBaseBackend.isPremiumOrTrial, includeTrial);
 
-      const stripeportalUrl = yield call(fireBaseBackend.getStripePortalUrl);
+      // const stripePortalUrl = yield call(fireBaseBackend.getStripePortalUrl);
 
       data.isPremiumOrTrial = premiumStatus
-      data.stripeportalUrl = stripeportalUrl
+      // data.stripePortalUrl = stripePortalUrl
       localStorage.setItem("authUser", JSON.stringify(data));
       yield put(loginSuccess(data));
     } else {

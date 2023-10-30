@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useRef } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import PropTypes from "prop-types";
 import sidebarData from "./SidebarData";
 //Simple bar
@@ -9,8 +9,11 @@ import withRouter from "../../components/Common/withRouter";
 import { Link } from "react-router-dom";
 //i18n
 import { withTranslation } from "react-i18next";
+import { Button } from "reactstrap";
+import { connect } from "react-redux";
 const Sidebar = (props) => {
   const ref = useRef();
+  const [loggedInUser, setLoggedInUser] = useState(null)
   const activateParentDropdown = useCallback(item => {
     item.classList.add("active");
     const parent = item.parentElement;
@@ -110,6 +113,13 @@ const Sidebar = (props) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
   useEffect(() => {
+    if (props.user) {
+        setLoggedInUser(JSON.parse(JSON.stringify(props.user)))
+    } else {
+        setLoggedInUser(null)
+    }
+}, [props.user])
+  useEffect(() => {
     activeMenu();
   }, [activeMenu]);
   function scrollElement(item) {
@@ -188,6 +198,16 @@ const Sidebar = (props) => {
                 </React.Fragment>
               ))}
             </ul>
+            {loggedInUser && !loggedInUser.isPremiumOrTrial && 
+             <div className="free-plan-sidebar-button">
+              You are on FREE Plan
+              <Link to={"/pricing"} style={{color:"white"}}>
+              <Button className="btn primary-button mt-2" style={{background:"#f610ffbf"}}> 
+                                Upgrade
+                              </Button>
+                              </Link>
+              </div>
+              }
           </div>
         </SimpleBar>
       </div>
@@ -198,4 +218,7 @@ Sidebar.propTypes = {
   location: PropTypes.object,
   t: PropTypes.any,
 };
-export default withRouter(withTranslation()(Sidebar));
+const mapStateToProps = state => {
+  return { ...state.login };
+};
+export default connect(mapStateToProps, {})(withRouter(withTranslation()(Sidebar)))

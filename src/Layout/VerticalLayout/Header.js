@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
 import { connect } from "react-redux";
 import { Link } from "react-router-dom";
@@ -10,9 +10,6 @@ import { Link } from "react-router-dom";
 import { withTranslation } from "react-i18next";
 
 //import images
-import logoSm from "../../assets/images/logo-sm.png";
-import logoDark from "../../assets/images/logo-dark.png";
-import logoLight from "../../assets/images/logo-light.png";
 import logoVoiled from "../../assets/images/OnlyLogoVoiled.png";
 // Redux Store
 import {
@@ -24,6 +21,7 @@ import ProfileMenu from "../../components/Common/TopbarDropdown/ProfileMenu";
 // import AppsDropdown from "../../components/Common/TopbarDropdown/AppsDropdown";
 
 const Header = (props) => {
+  const [showHamburgerMenu, setShowHamburgerMenu] = useState(false);
   // const [search, setsearch] = useState(false);
 
   function toggleFullscreen() {
@@ -53,12 +51,22 @@ const Header = (props) => {
     }
   }
 
+  useEffect(() => {
+    function handleResize() {
+        if(window.innerWidth < 998) {
+            setShowHamburgerMenu(true);
+        }else{
+            setShowHamburgerMenu(false);
+        }
+    }
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+}, []);
   function tToggle() {
     var body = document.body;
     if (window.screen.width <= 998) {
-      body.classList.toggle("sidebar-enable");
     } else {
-      body.classList.toggle("vertical-collpsed");
+      // body.classList.toggle("vertical-collpsed");
       body.classList.toggle("sidebar-enable");
     }
   }
@@ -69,12 +77,16 @@ const Header = (props) => {
         <div className="navbar-header">
           <div className="d-flex">
             <div className="navbar-brand-box text-left">
-              <Link to="/" className="logo logo-dark">
+              <Link to="/" className="logo logo-dark text-left" style={{
+                color:"black"
+              
+              }}>
                 <span className="logo-sm">
-                  <img src={logoVoiled} alt="logo-sm-dark" height="22" />
+                  <img src={logoVoiled} alt="logo-sm-dark" width={40} />
                 </span>
                 <span className="logo-lg">
-                  <img src={logoVoiled} alt="logo-dark" height="24" />
+                  <img src={logoVoiled} alt="logo-dark" width={40} />
+                  <strong style={{color:"black"}}>Trrader.in</strong>
                 </span>
               </Link>
 
@@ -97,7 +109,7 @@ const Header = (props) => {
                 tToggle();
               }}
             >
-              <i className="ri-menu-2-line align-middle"></i>
+             {showHamburgerMenu && <i className="ri-menu-2-line align-middle"></i>}
             </button>
 
             {/* <form className="app-search d-none d-lg-block">
@@ -168,9 +180,8 @@ const Header = (props) => {
               </button>
             </div>
 
-            {/* <NotificationDropdown /> */}
-
-            <ProfileMenu />
+            
+            {props.user && <ProfileMenu />}
 
             {/* <div
               className="dropdown d-inline-block"
@@ -195,7 +206,8 @@ const Header = (props) => {
 const mapStatetoProps = (state) => {
   const { layoutType, showRightSidebar, leftMenu, leftSideBarType } =
     state.Layout;
-  return { layoutType, showRightSidebar, leftMenu, leftSideBarType };
+  const { error, user } = state.login;
+  return { layoutType, showRightSidebar, leftMenu, leftSideBarType, user };
 };
 
 export default connect(mapStatetoProps, {

@@ -11,7 +11,7 @@ import { layoutTypes } from "../constants/layout";
 import NonAuthLayout from "../Layout/NonAuthLayout";
 import VerticalLayout from "../Layout/VerticalLayout/index";
 import HorizontalLayout from "../Layout/HorizontalLayout/index";
-import { AuthProtected } from "./AuthProtected";
+import AuthProtected from "./AuthProtected";
 
 import { authProtectedRoutes, publicRoutes } from "./routes";
 

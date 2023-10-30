@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import PropTypes from "prop-types";
 import {getAuth, GoogleAuthProvider, signInWithPopup} from 'firebase/auth'
 import logoVoiled from "../../assets/images/OnlyLogoVoiled.png";
@@ -9,13 +9,12 @@ import riskcalculator from "../../assets/images/riskcalculator.png";
 import riskcalculatorresult from "../../assets/images/riskcalculatorresult.png";
 import productOverview from "../../assets/images/product-overview.png";
 import tradingdesktops from "../../assets/images/tradingdesktopscompressed.png";
-import { socialLogin } from "../../store/actions";
-import jwt_decode from "jwt-decode";
+import { logoutUser, socialLogin } from "../../store/actions";
 //Import config
-import "./../../assets/scss/landing.scss";
+
 import { getFirebaseApp } from "../../helpers/firebase_helper";
-import { getCheckoutUrl } from "../../helpers/stripe/stripePayment";
 import GoogleButton from "../../components/Common/GoogleButton";
+import { Link } from "react-router-dom";
 const Landing = (props) => {
     const dispatch = useDispatch();
 
@@ -26,7 +25,6 @@ const Landing = (props) => {
     const signInWithGoogle = async () => {
         const result = await signInWithPopup(firebaseAuth, provider);
         const user = result.user;
-        console.log(user,'--user--')
         // if (type === "google") {
             const postData = {
                 name: user.displayName,
@@ -46,34 +44,19 @@ const Landing = (props) => {
         // }
     };
 
-    //handleGoogleLoginResponse
-    const googleResponse = response => {
-        let user = jwt_decode(response.credential);
-        const formattedResponse = {
-            ...user
+    useEffect(()=>{
+        const user = firebaseAuth.currentUser;
+        if(!user) {
+            dispatch(logoutUser());
+        }else{
+            const postData = {
+                name: user.displayName,
+                email: user.email,
+                picture: user.photoURL,
+            };
+            dispatch(socialLogin(postData, props.router.navigate, "google"));
         }
-        // console.log(formattedResponse,'--formattedResponse--')
-        // signIn(formattedResponse, "google");
-    };
-
-    const monthlySubscriptionHandler = async () => {
-        try{
-            const monthlyPriceId = process.env.REACT_APP_STRIPE_MONTHLY_PRICE_ID;
-            const checkoutUrl = await getCheckoutUrl(firebaseApp, monthlyPriceId);
-            window.location.replace(checkoutUrl);
-        }catch(err){
-            alert(err.message)
-        }
-    }
-    const yearlySubscriptionHandler = async() => {
-        try{
-            const yearlyPriceId = process.env.REACT_APP_STRIPE_YEARLY_PRICE_ID;
-            const checkoutUrl = await getCheckoutUrl(firebaseApp, yearlyPriceId);
-            window.location.replace(checkoutUrl);
-        }catch(err){
-            alert(err.message)
-        }
-    }
+    },[])
 
     return (
         <React.Fragment>
@@ -92,9 +75,7 @@ const Landing = (props) => {
                             </div>
                         </ul>
                         <ul className="inline right">
-                            <li><a href="/pricing">Pricing</a></li>
-                            <li onClick={monthlySubscriptionHandler}>Upgrade to Premium Monthly</li>
-                            <li onClick={yearlySubscriptionHandler}>Upgrade to Premium Yearly</li>
+                            <li><a href="/openpricing">Pricing</a></li>
                             <li>
                                 <span onClick={signInWithGoogle}>
                                     <GoogleButton></GoogleButton>
@@ -310,38 +291,19 @@ const Landing = (props) => {
                         <div className="row center-desktop max-width-l">
                             <div className="col-two-fifths">
                             
-                                {/* <h6>Trrader ®</h6> */}
-                                {/* <p>Product by Trrader, for Trrader.</p> */}
+                                <h6>Trrader ®</h6>
+                                <p>Product by Trrader, for Trrader.</p>
                             </div>
                             <div className="col-one-fifth">
-                                {/* <h6>Info</h6>
+                                <h6>Info</h6>
                                 <ul className="blank">
-                                    <li><a href="#">Getting Started</a></li>
-                                    <li><a href="#">Resources</a></li>
-                                    <li><a href="#">Design</a></li>
-                                    <li><a href="#">Tutorials</a></li>
-                                    <li><a href="#">Pricing</a></li>
-                                </ul> */}
-                            </div>
-                            {/* <div className="col-one-fifth">
-                                <h6>Support</h6>
-                                <ul className="blank">
-                                    <li><a href="#">Documentation</a></li>
-                                    <li><a href="#">Requirements</a></li>
-                                    <li><a href="#">License</a></li>
-                                    <li><a href="#">Updates</a></li>
-                                    <li><a href="#">Contact</a></li>
+                                    <li><Link to={"/openpricing"} style={{color:"white"}}> Pricing</Link></li>
+                                    <li><Link to={"/termsnconditions"} style={{color:"white"}}> Terms & Conditions</Link></li>
+                                    <li><Link to={"/faq"} style={{color:"white"}}> FAQ</Link></li>
+                                    <li><Link to={"/privacypolicy"} style={{color:"white"}}> Privacy & Policy</Link></li>
                                 </ul>
-                            </div> */}
-                            <div className="col-one-fifth">
-                                {/* <h6>Connect</h6>
-                                <ul className="blank">
-                                    <li><a href="#">Twitter</a></li>
-                                    <li><a href="#">Facebook</a></li>
-                                    <li><a href="#">Instagram</a></li>
-                                    <li><a href="#">Medium</a></li>
-                                </ul> */}
                             </div>
+                            
                         </div>
                     </div>
                     <p className="copyright"><span>Product by Trrader, for Trrader</span><span> © 2023, all rights reserved.</span></p>
@@ -352,7 +314,6 @@ const Landing = (props) => {
 };
 
 export default withRouter(Landing);
-// export default withRouter(Login);
 
 Landing.propTypes = {
     history: PropTypes.object,

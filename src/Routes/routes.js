@@ -16,6 +16,10 @@ import CapitalCalculator from "../Pages/Calculator/CapitalCalculator";
 import Landing from './../Pages/Landing/landing'
 import Referral from "../Pages/Settings/Referral";
 import Pricing from "../Pages/Pricing/Pricing";
+import TermsNConditions from "../Pages/DocPages/TermsNConditions";
+import Faq from "../Pages/DocPages/Faq";
+import PrivacyPolicy from "../Pages/DocPages/PrivacyPolicy";
+import OpenPricing from "../Pages/Pricing/OpenPricing";
 
 const authProtectedRoutes = [
   //dashboard
@@ -27,6 +31,8 @@ const authProtectedRoutes = [
   { path: "/targetcalculator", component: <TargetCalculator /> },
   { path: "/riskcalculator", component: <RiskCalculator /> },
   { path: "/capitalcalculator", component: <CapitalCalculator /> },
+  { path: "/pricing", component: <Pricing /> },
+
 
   // this route should be at the end of all other routes
   // eslint-disable-next-line react/display-name
@@ -46,7 +52,10 @@ const publicRoutes = [
     component: <Landing></Landing>,
   },
   { path: "/logout", component: <Logout /> },
-  { path: "/pricing", component: <Pricing /> },
+  { path: "/openpricing", component: <OpenPricing /> },
+  { path: "/termsnconditions", component: <TermsNConditions /> },
+  { path: "/faq", component: <Faq /> },
+  { path: "/privacypolicy", component: <PrivacyPolicy /> },
   // { path: "/login", component: <Login /> },
   // { path: "/forgot-password", component: <ForgetPasswordPage /> },
   // { path: "/register", component: <Register /> },

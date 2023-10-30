@@ -13,6 +13,8 @@ import { withTranslation } from "react-i18next";
 import { connect } from "react-redux";
 import { Link } from "react-router-dom";
 import withRouter from "../withRouter";
+import optimizedPremium from "../../../assets/images/TrraderPremium2.png";
+import { getFirebaseBackend } from "../../../helpers/firebase_helper";
 
 // users
 // import user1 from "../../../assets/images/users/avatar-1.jpg";
@@ -20,32 +22,34 @@ import withRouter from "../withRouter";
 const ProfileMenu = props => {
   // Declare a new state variable, which we'll call "menu"
   const [menu, setMenu] = useState(false);
-
   const [username, setusername] = useState("Admin");
   const [avatarUrl, setAvatarUrl] = useState();
   const [isPremiumOrTrial, setIsPremiumOrTrial] = useState(false);
-  const [stripeportalUrl, setStripePortalUrl] = useState();
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    if (localStorage.getItem("authUser")) {
-      if (process.env.REACT_APP_DEFAULTAUTH === "firebase") {
-        const obj = JSON.parse(localStorage.getItem("authUser"));
-        setusername(obj.name);
-        setAvatarUrl(obj.picture);
-        setIsPremiumOrTrial(obj.isPremiumOrTrial);
-        setStripePortalUrl(obj.stripeportalUrl);
-      } else if (
-        process.env.REACT_APP_DEFAULTAUTH === "fake" ||
-        process.env.REACT_APP_DEFAULTAUTH === "jwt"
-      ) {
-        const obj = JSON.parse(localStorage.getItem("authUser"));
-        setusername(obj.username);
-      }
-    }
-  }, [props.success]);
+    if(!props.user) {
+      // history.push("/logout");
+      return;
+    };
+    let obj = props.user;
+    setusername(obj.name);
+    setAvatarUrl(obj.picture);
+    setIsPremiumOrTrial(obj.isPremiumOrTrial);
+  }, [props.user]);
+
+
+  const navigateToStripePortal = async () => {
+    setLoading(true)
+    const portalUrl = await getFirebaseBackend().getStripePortalUrl();
+    setLoading(false)
+    //navigate to new page
+    window.location.replace(portalUrl)
+  }
 
   return (
     <React.Fragment>
+     {loading && <div class="full-page-loading">Loading&#8230;</div>}
       <Dropdown
         isOpen={menu}
         toggle={() => setMenu(!menu)}
@@ -55,13 +59,25 @@ const ProfileMenu = props => {
           className="btn header-item "
           id="page-header-user-dropdown"
           tag="button"
+          style={{position: "relative"}}
         >
+          <span>
+          {isPremiumOrTrial && <img src={optimizedPremium} style={{
+            position: "absolute",
+            left: "2px",
+            width: "55px",
+            top: "8px",
+          }} alt="Header Avatar" className="header-premium-icon" />}
           <img
             className="rounded-circle header-profile-user"
             src={avatarUrl}
             alt="Header Avatar"
+            style={{
+              zIndex: "10",
+              position: "relative",
+            }}
           />
-          {isPremiumOrTrial && ("Premium")}
+          </span>
           <span className="d-none d-xl-inline-block ms-2 me-2">{username}</span>
           <i className="mdi mdi-chevron-down d-none d-xl-inline-block" />
         </DropdownToggle>
@@ -75,14 +91,16 @@ const ProfileMenu = props => {
             <i className="ri-wallet-2-line align-middle me-2" />
             {props.t("My Wallet")}
           </DropdownItem> */}
-          <DropdownItem tag="a" href={stripeportalUrl} target="_blank">
+          {isPremiumOrTrial && <DropdownItem tag="a" onClick={navigateToStripePortal} style={{cursor:"pointer"}}>
               <i className="ri-settings-2-line align-middle me-2" />
             {props.t("Subscription")}
+          </DropdownItem>}
+          <DropdownItem tag="a">
+          <Link to="/pricing" style={{color:"black"}}>
+            <i className="bx bx-rupee align-middle me-2" />
+            {props.t("Pricing Plans")}
+          </Link>
           </DropdownItem>
-          {/* <DropdownItem tag="a" href="auth-lock-screen">
-            <i className="ri-lock-unlock-line align-middle me-2" />
-            {props.t("Lock screen")}
-          </DropdownItem> */}
           <div className="dropdown-divider" />
           <Link to="/logout" className="dropdown-item">
             <i className="ri-shut-down-line align-middle me-2 text-danger" />
@@ -95,13 +113,13 @@ const ProfileMenu = props => {
 };
 
 ProfileMenu.propTypes = {
-  success: PropTypes.any,
+  user: PropTypes.any,
   t: PropTypes.any
 };
 
 const mapStatetoProps = state => {
-  const { error, success } = state.profile;
-  return { error, success };
+  const { error, user } = state.login;
+  return { error, user };
 };
 
 export default withRouter(

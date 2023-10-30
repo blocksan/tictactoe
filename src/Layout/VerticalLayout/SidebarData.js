@@ -43,6 +43,16 @@ const SidebarData = [
         url: "/targetcalculator",
         isHasArrow: true,
     },
+    {
+        label: "Plans",
+        isMainMenu: true,
+    },
+    {
+        label: "Pricing",
+        url: "/pricing",
+        isHasArrow: true,
+        icon:"bx bx-rupee"
+    },
     // {
     //     label: "Capital Calculator",
     //     url: "/capitalcalculator",
@@ -99,20 +109,15 @@ const SidebarData = [
     //         { sublabel: "Lock Screen", link: "/#" },
     //     ],
     // },
-    // {
-    //     label: "Utility",
-    //     icon: "mdi mdi-format-page-break",
-    //     subItem: [
-    //         { sublabel: "Starter Page", link: "/#" },
-    //         { sublabel: "Maintenance", link: "/#" },
-    //         { sublabel: "Coming Soon", link: "/#" },
-    //         { sublabel: "Timeline", link: "/#" },
-    //         { sublabel: "FAQs", link: "/#" },
-    //         { sublabel: "Pricing", link: "/#" },
-    //         { sublabel: "Error 404", link: "/#" },
-    //         { sublabel: "Error 500", link: "/#" },
-    //     ],
-    // },
+    {
+        label: "Important Links",
+        icon: "mdi mdi-format-page-break",
+        subItem: [
+            { sublabel: "Terms & Conditions", link: "/termsnconditions" },
+            { sublabel: "FAQ", link: "/faq" },
+            { sublabel: "Privacy & Policy", link: "/privacypolicy" },
+        ],
+    },
     // {
     //     label: "Components",
     //     isMainMenu: true,

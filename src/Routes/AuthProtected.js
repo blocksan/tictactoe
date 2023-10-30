@@ -1,16 +1,15 @@
 import React from "react";
 import { Navigate, Route } from "react-router-dom";
 
-import { useProfile } from "../Hooks/UserHooks";
+import withRouter from "../components/Common/withRouter";
+import { connect } from "react-redux";
 
 const AuthProtected = (props) => {
-  const { userProfile, loading } = useProfile();
-
   /*
     redirect is un-auth access protected routes via url
     */
 
-  if (!userProfile && loading) {
+  if (!props.user) {
     return (
       <Navigate to={{ pathname: "/", state: { from: props.location } }} />
     );
@@ -30,4 +29,11 @@ const AccessRoute = ({ component: Component, ...rest }) => {
   );
 };
 
-export { AuthProtected, AccessRoute };
+
+const mapStateToProps = state => {
+  return { ...state.login };
+};
+export default withRouter(
+  connect(mapStateToProps, {})(AuthProtected)
+);
+// export { AuthProtected, AccessRoute };

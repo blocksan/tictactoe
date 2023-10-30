@@ -3,7 +3,6 @@ import React, { useState } from "react";
 
 import { connect } from "react-redux";
 import { Link } from "react-router-dom";
-
 import LanguageDropdown from "../../components/Common/TopbarDropdown/LanguageDropdown";
 import NotificationDropdown from "../../components/Common/TopbarDropdown/NotificationDropdown";
 
@@ -162,7 +161,9 @@ const Header = (props) => {
             </div>
 
             <NotificationDropdown />
-
+            <Link to="/pricing">
+                <span>Pricing</span> 
+            </Link>
             <ProfileMenu />
 
             {/* <div

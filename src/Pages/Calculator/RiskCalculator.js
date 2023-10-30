@@ -1,4 +1,5 @@
 import React, { useEffect, useRef, useState } from "react"
+import classnames from "classnames";
 import {
     Row,
     Col,
@@ -20,6 +21,12 @@ import {
     Toast,
     ToastHeader,
     ToastBody,
+    Modal,
+    NavItem,
+    NavLink,
+    Nav,
+    TabPane,
+    TabContent
 } from "reactstrap";
 
 //Import Breadcrumb
@@ -32,9 +39,56 @@ import DayWiseCapitalDrawDown from "./DayWiseCapitalDrawDown";
 import { IndexType, BANKNIFTY_LOT_SIZE, FINNIFTY_LOT_SIZE, NIFTY50_LOT_SIZE } from "../../constants/NSE_index";
 import CustomOptionPremiumStackedBar from "./CustomOptionPremiumStackedBar";
 import LotSizeCards from "../CommonPages/LotSizeCards";
+import { connect } from "react-redux";
+import { Link, useNavigate } from "react-router-dom";
+import { getFirebaseBackend } from "../../helpers/firebase_helper";
 
-const RiskCalculator = () => {
+const DEFAULT_MAX_SL_COUNT_ONE_DAY = 2;
+const DEFAULT_MAX_DRAW_DOWN_PERCENTAGE = 15;
+const DEFAULT_TARGET_RATIO_MULTIPLIER = 2;
+
+const RiskCalculator = (props) => {
+    const navigate = useNavigate()
     document.title = "Risk Calculator";
+    const premiumOnlyInputs = ['maxSLCountOneDay', 'maxDrawDownPercentage', 'targetRatioMultiplier']
+    const [loggedInUser, setLoggedInUser] = useState(null)
+    const [purchasePremiumModal, setPurchasePremiumModal] = useState(false);
+    const [configNameModal, setConfigNameModal] = useState(false);
+    const [activeTab, setactiveTab] = useState("1");
+    const [riskCalculatorConfigs, setRiskCalculatorConfigs] = useState([]);
+    const [configName, setConfigName] = useState("");
+    useEffect(() => {
+        if (props.user) {
+            setLoggedInUser(JSON.parse(JSON.stringify(props.user)))
+        } else {
+            setLoggedInUser(null)
+            navigate('/logout');
+        }
+    }, [props.user])
+
+    const toggle2 = async (tab) => {
+        if (activeTab !== tab) {
+          if(tab == "2"){
+            const response = await fetchRiskCalculatorConfigs();
+           
+          }
+          setactiveTab(tab);
+        }
+      };
+    
+
+    const fetchRiskCalculatorConfigs = async () => {
+        const response = await getFirebaseBackend().fetchRiskCalculatorConfigFromFirestore();
+        if(response.status){
+            setRiskCalculatorConfigs([...response.data]);
+        }
+    }
+
+    // useEffect(() => { 
+    //     console.log("riskCalculatorConfigs", riskCalculatorConfigs)
+    //  },[riskCalculatorConfigs]) 
+
+
     const [invalidFormValueToast, setInvalidFormValueToast] = React.useState(false);
     const toggleInvalidFormValueToast = () => {
         setInvalidFormValueToast(!invalidFormValueToast);
@@ -50,8 +104,8 @@ const RiskCalculator = () => {
     const resultContainerRef = useRef(null);
     const scrollTop = () => {
         window.scrollTo({
-        top: window.innerHeight,
-        behavior: 'smooth',
+            top: window.innerHeight,
+            behavior: 'smooth',
         });
     };
 
@@ -73,7 +127,12 @@ const RiskCalculator = () => {
     ])
 
     const disableInputsHandler = () => {
-        setDisableTheInputs(!disableTheInputs);
+        if (loggedInUser && !loggedInUser.isPremiumOrTrial) {
+            setPurchasePremiumModal(true);
+            return;
+        } else {
+            setDisableTheInputs(!disableTheInputs);
+        }
     }
 
 
@@ -95,9 +154,9 @@ const RiskCalculator = () => {
             tradingCapital: 10000,
             desiredNumberOfTradingSessions: 10,
             percentageOfTradingCapitalInOneTrade: 0,
-            maxSLCountOneDay: 2,
-            maxDrawDownPercentage: 15,
-            targetRatioMultiplier: 2,
+            maxSLCountOneDay: DEFAULT_MAX_SL_COUNT_ONE_DAY,
+            maxDrawDownPercentage: DEFAULT_MAX_DRAW_DOWN_PERCENTAGE,
+            targetRatioMultiplier: DEFAULT_TARGET_RATIO_MULTIPLIER,
         },
         validationSchema: Yup.object().shape({
             tradingCapital: Yup.number().required("Please provide your Trading Capital"),
@@ -138,11 +197,26 @@ const RiskCalculator = () => {
             setLoading(true)
             setSelectedIndex(null);
             await new Promise(r => setTimeout(r, 1500));
+            validatePremiumInputs(formValues);
             calculateRisk(formValues);
             scrollTop()
         },
 
     });
+
+    const validatePremiumInputs = (formValues) => {
+        if (loggedInUser && !loggedInUser.isPremiumOrTrial) {
+            for (let i = 0; i < premiumOnlyInputs.length; i++) {
+                if (premiumOnlyInputs[i] === 'maxSLCountOneDay' && formValues.maxSLCountOneDay != DEFAULT_MAX_SL_COUNT_ONE_DAY) {
+                    formValues.maxSLCountOneDay = DEFAULT_MAX_SL_COUNT_ONE_DAY
+                } else if (premiumOnlyInputs[i] === 'maxDrawDownPercentage' && formValues.maxDrawDownPercentage != DEFAULT_MAX_DRAW_DOWN_PERCENTAGE) {
+                    formValues.maxDrawDownPercentage = DEFAULT_MAX_DRAW_DOWN_PERCENTAGE
+                } else if (premiumOnlyInputs[i] === 'targetRatioMultiplier' && formValues.targetRatioMultiplier != DEFAULT_TARGET_RATIO_MULTIPLIER) {
+                    formValues.targetRatioMultiplier = DEFAULT_TARGET_RATIO_MULTIPLIER
+                }
+            }
+        }
+    }
 
     const handleOnChange = (event) => {
         const { name, value } = event.target;
@@ -157,7 +231,7 @@ const RiskCalculator = () => {
     const calculateRisk = (riskCalculatorFormValues) => {
         // Calculate Risk Metadata
         const metadataResult = calculateRiskMetadata(riskCalculatorFormValues);
-        setCalculateMetadata({...metadataResult });
+        setCalculateMetadata({ ...metadataResult });
         let calculatedRiskRows = [];
         tradeIndexes.forEach((tradeIndex) => {
             const { lotSize, optionPremium, indexName } = tradeIndex;
@@ -254,7 +328,7 @@ const RiskCalculator = () => {
     }
     const calculateTargetAmountInOptionPremium = (riskCalculatorFormValues, SLAmountInOptionPremium) => {
         return Math.floor(SLAmountInOptionPremium * riskCalculatorFormValues.targetRatioMultiplier);
-      }
+    }
     const calculateOptionPremiumTargetPrice = (riskCalculatorFormValues, SLAmountInOptionPremium) => {
         return Math.floor(riskCalculatorFormValues.optionPremium + (SLAmountInOptionPremium * riskCalculatorFormValues.targetRatioMultiplier));
     }
@@ -263,7 +337,7 @@ const RiskCalculator = () => {
 
     }
     const calculateTotalTradableLots = (riskCalculatorFormValues, maxSLCapacityInOneTrade, lotSize) => {
-        return riskCalculatorFormValues.optionPremium ? Math.floor((maxSLCapacityInOneTrade / (riskCalculatorFormValues.optionPremium * (riskCalculatorFormValues.maxDrawDownPercentage / 100))) / lotSize):0;
+        return riskCalculatorFormValues.optionPremium ? Math.floor((maxSLCapacityInOneTrade / (riskCalculatorFormValues.optionPremium * (riskCalculatorFormValues.maxDrawDownPercentage / 100))) / lotSize) : 0;
     }
     const calculateTotalTradableQuantity = (totalTradableLots, lotSize) => {
         return totalTradableLots * lotSize;
@@ -302,13 +376,13 @@ const RiskCalculator = () => {
         setCalculatedRiskRows([]);
         calculatedRiskRows.forEach((riskRow) => {
             if (riskRow.indexName == indexName) {
-                
-                riskRow.optionPremium = updatedOptionPremium != '' ? parseInt(updatedOptionPremium):0
+
+                riskRow.optionPremium = updatedOptionPremium != '' ? parseInt(updatedOptionPremium) : 0
 
                 const calculatedRiskOfIndexResult = calculateRiskofIndex(riskCalculatorForm.values, riskRow.lotSize, riskRow.optionPremium, riskRow.indexName, calculateMetadata.maxSLCapacityInOneTrade, calculateMetadata);
-                
+
                 if (riskRow.optionPremium == '') {
-                calculatedRiskOfIndexResult.optionPremium = ''
+                    calculatedRiskOfIndexResult.optionPremium = ''
                 }
                 updatedCalculateRiskRows.push(calculatedRiskOfIndexResult);
             } else {
@@ -332,6 +406,18 @@ const RiskCalculator = () => {
         }
     }, [selectedIndex, calculatedRiskRows]);
 
+    const loadSavedConfiguration = (config) => {
+        riskCalculatorForm.setValues(config.parsedConfig);
+        riskCalculatorForm.setTouched({});
+        riskCalculatorForm.setErrors({});
+        riskCalculatorForm.submitForm();
+        toggle2("1");
+    }
+    // useEffect(() => {  
+    //     const firebaseApp = getFirebaseApp();
+    //     const firebaseAuth = getAuth(firebaseApp);
+    //     console.log("firebaseAuth", firebaseAuth.currentUser)
+    //  },[])
 
 
     // const updateProgressBar = async () => {
@@ -352,7 +438,26 @@ const RiskCalculator = () => {
     //     // },500)
     // }
 
+    const saveConfiguration = async () => {
 
+        if (loggedInUser && !loggedInUser.isPremiumOrTrial) {
+            setPurchasePremiumModal(true);
+            return
+        }
+
+        if (!configName) {
+            alert("Please provide a name for the configuration");
+            return;
+        }
+      setLoading(true);
+      const response = await getFirebaseBackend().addOrUpdateRiskCalculatorConfigToFirestore(riskCalculatorForm.values, configName);
+        if(response.status){
+            setConfigNameModal(false);
+            setConfigName("");
+        }
+        setLoading(false);
+        toggle2("2");
+    }
     return (
         <React.Fragment>
             <div className="page-content landing-header-main">
@@ -362,14 +467,49 @@ const RiskCalculator = () => {
                 <Row>
                     <Col xl={12}>
                         <Card>
-                            <CardHeader className="configuration-header">
-                            <h5 className="card-title mb-0 text-white">Risk Configuration</h5>
-                            </CardHeader>
-                            <CardBody style={{ background: "rgb(241 241 241 / 7%)" }}>
+                        <Nav pills className="navtab-bg nav-justified" style={{borderBottom:'1px solid #ccc'}}>
+                    <NavItem>
+                      <NavLink
+                        style={{ cursor: "pointer" }}
+                        className={classnames({
+                          active: activeTab === "1",
+                        })}
+                        onClick={() => {
+                          toggle2("1");
+                        }}
+                      >
+                        <i className="mdi mdi-calculator-variant me-1 align-middle"> </i>{" "}
+                        Risk Configuration
+                      </NavLink>
+                    </NavItem>
+                    <NavItem>
+                      <NavLink
+                        style={{ cursor: "pointer" }}
+                        className={classnames({
+                          active: activeTab === "2",
+                        })}
+                        onClick={() => {
+                          toggle2("2");
+                        }}
+                      >
+                        <i className="mdi mdi-cog me-1 align-middle"></i>{" "}
+                        Saved Configurations
+                      </NavLink>
+                    </NavItem>
+                    
+                  </Nav>
+                            {/* <CardHeader className="configuration-header">
+                                <h5 className="card-title mb-0 text-white"></h5>
+                            </CardHeader> */}
+                    <TabContent activeTab={activeTab} className="p-3 text-muted">
+                    <TabPane tabId="1">
+                      <Row>
+                        <Col sm="12">
+                        <CardBody style={{ background: "rgb(241 241 241 / 7%)" }}>
                                 {/* <CardTitle>Risk Calculator</CardTitle> */}
                                 <br />
                                 <CardSubtitle className="mb-3">
-                                    This tool will help you <strong>calculate the approximate amount</strong> you can <strong style={{color:"Red"}}>risk in a trade</strong>  based on your capital, stop loss per trade, and money management.
+                                    This tool will help you <strong>calculate the approximate amount</strong> you can <strong style={{ color: "Red" }}>risk in a trade</strong>  based on your capital, stop loss per trade, and money management.
                                 </CardSubtitle>
                                 <br />
                                 <Form
@@ -379,6 +519,7 @@ const RiskCalculator = () => {
                                         return false;
                                     }}
                                     onChange={handleOnChange}
+                                    className="calculator-form"
                                 >
                                     <Row>
                                         <Col xl="6">
@@ -560,14 +701,15 @@ const RiskCalculator = () => {
                                             </Row>
                                         </Col>
                                         <Col xl="5" className="offset-xl-1">
-                                        <LotSizeCards></LotSizeCards>
+                                            <LotSizeCards></LotSizeCards>
                                         </Col>
                                         <Col>
                                             <div className="d-flex flex-wrap gap-2 justify-content-center">
-                                                <Button type="submit" className="btn-lg primary-button" style={{fontSize:"1.1em", borderRadius:"4px", minWidth:"120px"}}>
+                                                <Button type="submit" className="btn-lg primary-button cta-button">
+                                                    {loading && <i class="fas fa-circle-notch fa-spin"></i>}&nbsp;
                                                     Calculate
                                                 </Button>{" "}
-                                                <Button type="reset" color="secondary" className="" style={{fontSize:"1.1em", borderRadius:"4px", minWidth:"120px"}} onClick={handleResetClick}>
+                                                <Button type="reset" className="btn btn-outline-primary waves-effect cta-button reset-button" onClick={handleResetClick}>
                                                     Reset
                                                 </Button>
                                             </div>
@@ -593,31 +735,64 @@ const RiskCalculator = () => {
                                         </Col>
                                     </Row>
                                 </Form>
-
-
                             </CardBody>
+                        </Col>
+                      </Row>
+                    </TabPane>
+                    <TabPane tabId="2">
+                      <Row>
+                        <Col sm="12">
+                        <div className="table-responsive">
+                    <table className="table mb-0">
+                      <thead>
+                        <tr>
+                          <th>#</th>
+                          <th>Config Name</th>
+                          <th>Created On</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {riskCalculatorConfigs && riskCalculatorConfigs.map(function(config, index){ return (
+                        <tr onClick={() => loadSavedConfiguration(config)} className="row-hover">
+                          <th scope="row">{index+1}</th>
+                          <td>{config.configName}</td>
+                          <td>{config.createdOn.toLocaleString()}</td>
+                          <Button className="btn-sm row-button" color="secondary">Click to load</Button>
+                        </tr>)
+                    })}
+                      </tbody>
+                    </table>
+                  </div>
+                        </Col>
+                      </Row>
+                    </TabPane>
+                  </TabContent>
+                            
                         </Card>
                     </Col>
                 </Row>
                 <br />
-                {loading && (
+                {/* {loading && (
                     <div className="text-center">
                         <img src={calculator} width={160} />
                     </div>
                 )
-                }
-                    <Row>
-                        <Col md={12} className="result-container" ref={resultContainerRef}>
-                {!loading && calculatedRiskRows && calculatedRiskRows.length > 0 && (
-                            <Card xl="2" style={{margin:0}}>
+                } */}
 
-                                <div className="text-left" style={{
-                                    height: "60px",
-                                    fontSize: "1.4em",
-                                    fontWeight: "normal",
-                                    paddingTop: "15px",
-                                    paddingLeft: "20px",
-                                }}>Calculated Risk</div>
+{loading && <div class="full-page-loading"></div>}
+                <Row>
+                    <Col md={12} className="result-container" ref={resultContainerRef}>
+                        {!loading && activeTab === "1" && calculatedRiskRows && calculatedRiskRows.length > 0 && (
+                            <Card xl="2" style={{ margin: 0 }}>
+
+                                <div className="text-left extra-card-header">
+                                    <span>Calculated Risk</span>
+                                    <Button onClick={()=> {
+                                        setConfigNameModal(true)
+                                    } } style={{float:"right"}}> Save Configuration</Button>
+                                
+                                
+                                </div>
 
 
                                 <CardHeader>
@@ -670,83 +845,83 @@ const RiskCalculator = () => {
                                         <Col xl="3">
                                             <Row>
                                                 <Col xl="12" className="mt-0">
-                                                {
-                                                    selectedIndexCalculatedRisk.totalTradableLots > 0 && selectedIndexCalculatedRisk.totalTradableLots <= 10 && (
-                                                        <UncontrolledAlert color="light" role="alert" className="card border p-0 mb-0">
-                                                            <CardBody>
-                                                                <div className="text-center">
-                                                                    <h4 className="alert-heading"> <i className="mdi mdi-checkbox-marked-circle-outline display-4 text-success"></i>Well done!</h4>
-                                                                    <p className="mb-0">
-                                                                        You can trade with {selectedIndexCalculatedRisk.totalTradableLots} {selectedIndexCalculatedRisk.totalTradableLots === 1 ? 'lot' : 'lots'} with <strong>much</strong> confidence.
-                                                                    </p>
-                                                                </div>
-                                                            </CardBody>
-                                                        </UncontrolledAlert>
-                                                    )
+                                                    {
+                                                        selectedIndexCalculatedRisk.totalTradableLots > 0 && selectedIndexCalculatedRisk.totalTradableLots <= 10 && (
+                                                            <UncontrolledAlert color="light" role="alert" className="card border p-0 mb-0">
+                                                                <CardBody>
+                                                                    <div className="text-center">
+                                                                        <h4 className="alert-heading"> <i className="mdi mdi-checkbox-marked-circle-outline display-4 text-success"></i>Well done!</h4>
+                                                                        <p className="mb-0">
+                                                                            You can trade with {selectedIndexCalculatedRisk.totalTradableLots} {selectedIndexCalculatedRisk.totalTradableLots === 1 ? 'lot' : 'lots'} with <strong>much</strong> confidence.
+                                                                        </p>
+                                                                    </div>
+                                                                </CardBody>
+                                                            </UncontrolledAlert>
+                                                        )
 
-                                                }
-                                                {
-                                                    selectedIndexCalculatedRisk.totalTradableLots > 10 && selectedIndexCalculatedRisk.totalTradableLots < 20 && (
-                                                        <UncontrolledAlert color="light" role="alert" className="card border p-0 mb-0">
-                                                            <CardBody>
-                                                                <div className="text-center">
-                                                                    <h4 className="alert-heading"><i className="mdi mdi-checkbox-marked-circle-outline display-4 text-success"></i>Well done!</h4>
-                                                                    <p className="mb-0">
-                                                                        You can trade with {selectedIndexCalculatedRisk.totalTradableLots} lots with <strong>moderate</strong> confidence.
-                                                                    </p>
-                                                                </div>
-                                                            </CardBody>
-                                                        </UncontrolledAlert>
-                                                    )
-                                                }
-                                                {
-                                                    selectedIndexCalculatedRisk.totalTradableLots >= 20 && (
-                                                        <UncontrolledAlert color="light" role="alert" className="card border mt-4 mt-lg-0 p-0 mb-0">
-                                                            <CardBody>
-                                                                <div className="text-center">
-                                                                    <h4 className="alert-heading">
-                                                                        <i className="mdi mdi-alert-outline display-4 text-warning"></i> Please be careful!
+                                                    }
+                                                    {
+                                                        selectedIndexCalculatedRisk.totalTradableLots > 10 && selectedIndexCalculatedRisk.totalTradableLots < 20 && (
+                                                            <UncontrolledAlert color="light" role="alert" className="card border p-0 mb-0">
+                                                                <CardBody>
+                                                                    <div className="text-center">
+                                                                        <h4 className="alert-heading"><i className="mdi mdi-checkbox-marked-circle-outline display-4 text-success"></i>Well done!</h4>
+                                                                        <p className="mb-0">
+                                                                            You can trade with {selectedIndexCalculatedRisk.totalTradableLots} lots with <strong>moderate</strong> confidence.
+                                                                        </p>
+                                                                    </div>
+                                                                </CardBody>
+                                                            </UncontrolledAlert>
+                                                        )
+                                                    }
+                                                    {
+                                                        selectedIndexCalculatedRisk.totalTradableLots >= 20 && (
+                                                            <UncontrolledAlert color="light" role="alert" className="card border mt-4 mt-lg-0 p-0 mb-0">
+                                                                <CardBody>
+                                                                    <div className="text-center">
+                                                                        <h4 className="alert-heading">
+                                                                            <i className="mdi mdi-alert-outline display-4 text-warning"></i> Please be careful!
 
-                                                                    </h4>
-                                                                    <p className="mb-0">
-                                                                        You can trade with {selectedIndexCalculatedRisk.totalTradableLots} lots but be very <strong>careful</strong>.
-                                                                    </p>
+                                                                        </h4>
+                                                                        <p className="mb-0">
+                                                                            You can trade with {selectedIndexCalculatedRisk.totalTradableLots} lots but be very <strong>careful</strong>.
+                                                                        </p>
 
-                                                                </div>
-                                                            </CardBody>
-                                                        </UncontrolledAlert>
-                                                    )
+                                                                    </div>
+                                                                </CardBody>
+                                                            </UncontrolledAlert>
+                                                        )
 
-                                                }
+                                                    }
 
-                                                {
-                                                    selectedIndexCalculatedRisk.totalTradableLots < 1 && (
-                                                        <UncontrolledAlert color="light" role="alert" className="card border mt-4 mt-lg-0 p-0 mb-0">
-                                                            <CardBody>
-                                                                <div className="text-center">
-                                                                    {/* <div className="mb-4">
+                                                    {
+                                                        selectedIndexCalculatedRisk.totalTradableLots < 1 && (
+                                                            <UncontrolledAlert color="light" role="alert" className="card border mt-4 mt-lg-0 p-0 mb-0">
+                                                                <CardBody>
+                                                                    <div className="text-center">
+                                                                        {/* <div className="mb-4">
                                     
                                     </div> */}
-                                                                    <h4 className="alert-heading">
-                                                                        <i className="mdi mdi-close display-4 text-danger"></i> Sorry !!!
-                                                                    </h4>
-                                                                    <p className="mb-0">
-                                                                        You can <strong>NOT</strong> trade with the entered Option Premium Price.
-                                                                    </p>
-                                                                    {/* <p className="mb-0">
+                                                                        <h4 className="alert-heading">
+                                                                            <i className="mdi mdi-close display-4 text-danger"></i> Sorry !!!
+                                                                        </h4>
+                                                                        <p className="mb-0">
+                                                                            You can <strong>NOT</strong> trade with the entered Option Premium Price.
+                                                                        </p>
+                                                                        {/* <p className="mb-0">
                                                 Sorry ! Product not available
                                             </p> */}
-                                                                </div>
-                                                            </CardBody>
-                                                        </UncontrolledAlert>
-                                                    )
+                                                                    </div>
+                                                                </CardBody>
+                                                            </UncontrolledAlert>
+                                                        )
 
-                                                }
+                                                    }
                                                 </Col>
                                                 <Col xl="12" className="mt-4">
                                                     <Card className="metrics-card metrics-card-white-info option-premium-stacked-container" xl="2">
                                                         <CardBody>
-                                                        <p className="mb-4 card-info-header">Option Premium</p>
+                                                            <p className="mb-4 card-info-header">Option Premium</p>
 
                                                             <CustomOptionPremiumStackedBar chartData={{
                                                                 SLAmountInOptionPremium: selectedIndexCalculatedRisk.SLAmountInOptionPremium,
@@ -754,7 +929,7 @@ const RiskCalculator = () => {
                                                                 EntryAmountInOptionPremium: selectedIndexCalculatedRisk.optionPremium,
                                                                 optionPremiumTargetPrice: selectedIndexCalculatedRisk.optionPremiumTargetPrice,
                                                                 optionPremiumExitPrice: selectedIndexCalculatedRisk.optionPremiumExitPrice,
-                                                            }}/>
+                                                            }} />
 
                                                         </CardBody>
                                                     </Card>
@@ -789,17 +964,17 @@ const RiskCalculator = () => {
                                         </Col>
                                     </Row>
                                     <Row>
-                                        
+
                                         <Col xl="12">
                                             <Row>
                                                 <Col xl="3">
                                                     <Card className={`metrics-card ${selectedIndexCalculatedRisk.totalTradableLots > 0 ? 'metrics-card-success' : 'metrics-card-danger'} calculated-risk-card`} xl="2">
 
                                                         <CardBody>
-                                                        <p className="mb-4 card-info-header">Tradable Lots in 1 Trade</p>
+                                                            <p className="mb-4 card-info-header">Tradable Lots in 1 Trade</p>
 
                                                             <CardText className="metric-number">
-                                                                {selectedIndexCalculatedRisk.totalTradableLots} <span className="sub-metric-number">{`Lot${selectedIndexCalculatedRisk.totalTradableLots>1?'s':''}`}</span>
+                                                                {selectedIndexCalculatedRisk.totalTradableLots} <span className="sub-metric-number">{`Lot${selectedIndexCalculatedRisk.totalTradableLots > 1 ? 's' : ''}`}</span>
                                                             </CardText>
                                                         </CardBody>
                                                     </Card>
@@ -808,7 +983,7 @@ const RiskCalculator = () => {
                                                     <Card color="" className="card metrics-card metrics-card-raw-info" xl="2">
 
                                                         <CardBody>
-                                                        <p className="mb-4 card-info-header">Total Tradable Quantity</p>
+                                                            <p className="mb-4 card-info-header">Total Tradable Quantity</p>
 
                                                             <CardText className="metric-number">
                                                                 {selectedIndexCalculatedRisk.totalTradableQuantity} <span className="sub-metric-number">Qty</span>
@@ -822,16 +997,16 @@ const RiskCalculator = () => {
                                                     <Card className="card metrics-card metrics-card-raw-info" xl="2">
 
                                                         <CardBody>
-                                                        <p className="mb-4 card-info-header">SL of 1 Trade</p>
+                                                            <p className="mb-4 card-info-header">SL of 1 Trade</p>
 
                                                             <CardText className="metric-number">
                                                                 <i className="mdi mdi-trending-down" style={{ fontSize: "32px", color: "red" }}></i> &nbsp;
                                                                 {/* <h4 style={{ marginTop: "-37px", marginRight: "0px", textAlign: "center" }}> */}
-                                                                    &#8377; {selectedIndexCalculatedRisk.totalSLofTrade}
+                                                                &#8377; {selectedIndexCalculatedRisk.totalSLofTrade}
                                                                 {/* </h4> */}
 
                                                             </CardText>
-                                                                <p className="sub-max-sl-text text-black">Allowed SL in 1 Trade: <strong>{calculateMetadata.maxSLCapacityInOneTrade}</strong></p>
+                                                            <p className="sub-max-sl-text text-black">Allowed SL in 1 Trade: <strong>{calculateMetadata.maxSLCapacityInOneTrade}</strong></p>
                                                         </CardBody>
                                                     </Card>
                                                 </Col>
@@ -935,12 +1110,12 @@ const RiskCalculator = () => {
                                                     </Card>
                                                 </Col> */}
 
-                                                
+
                                                 <Col xl="3">
                                                     <Card className="card metrics-card metrics-card-raw-info" xl="2">
 
                                                         <CardBody>
-                                                <p className="mb-4 card-info-header">Single Trade Amount</p>
+                                                            <p className="mb-4 card-info-header">Single Trade Amount</p>
                                                             <CardText className="metric-number">
                                                                 &#8377; {selectedIndexCalculatedRisk.singleTradeAmount}
 
@@ -969,13 +1144,134 @@ const RiskCalculator = () => {
                                     </Row>
                                 </CardBody>
                             </Card>
-                            )}
-                            </Col>
+                        )}
+                    </Col>
                 </Row>
 
             </div>
+            <Modal
+                size="sm"
+                centered
+                isOpen={purchasePremiumModal}
+                toggle={() => {
+                    setPurchasePremiumModal(false);
+                }}
+            >
+                <div className="modal-header">
+                    <h5
+                        className="modal-title mt-0"
+                        id="mySmallModalLabel"
+                    >
+                        Ohh No !!!
+                    </h5>
+                    <button
+                        onClick={() => {
+                            setPurchasePremiumModal(false);
+                        }}
+                        type="button"
+                        className="close"
+                        data-dismiss="modal"
+                        aria-label="Close"
+                    >
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div className="modal-body">
+                    <p>
+                        You are not a Premium Trrader.
+                    </p>
+                    <p>
+                        Please purchase and become a <strong>Premium Trrader </strong> to access this feature at ONLY <strong style={{ color: "#4747A1" }}>less than ₹2 per day</strong>.
+                    </p>
+                </div>
+                <div className="modal-footer">
+                    <button
+                        className="btn btn-light"
+                        onClick={() => {
+                            setPurchasePremiumModal(false);
+                        }}
+                    >
+                        Cancel
+                    </button>
+                    <Link
+                        to="/pricing"
+                        className="btn btn-primary"
+                        style={{
+                            background: "#4747A1",
+                            borderColor: "#4747A1",
+                        }}
+                    >
+                        Check Plans
+                    </Link>
+                </div>
+
+            </Modal>
+
+            <Modal
+                centered
+                isOpen={configNameModal}
+                toggle={() => {
+                    setConfigNameModal(false);
+                }}
+            >
+                <div className="modal-header">
+                    <h5
+                        className="modal-title mt-0"
+                        id="mySmallModalLabel"
+                    >
+                        Save Configuration
+                    </h5>
+                    <button
+                        onClick={() => {
+                            setConfigNameModal(false);
+                        }}
+                        type="button"
+                        className="close"
+                        data-dismiss="modal"
+                        aria-label="Close"
+                    >
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div className="modal-body">
+                    <label htmlFor="configName">Configuration Name</label>
+                    <Input value={configName} placeholder="Configuration Name" onChange={ e => 
+                        setConfigName(e.target.value)
+                    }></Input>
+                </div>
+                <div className="modal-footer">
+                    <button
+                        className="btn btn-light"
+                        onClick={() => {
+                            setConfigNameModal(false);
+                        }}
+                    >
+                        Cancel
+                    </button>
+                    <button className="btn btn-primary" onClick={saveConfiguration}>
+                        Save Configuration
+                    </button>
+                    {/* <Link
+                        to="/pricing"
+                        className="btn btn-primary"
+                        style={{
+                            background: "#4747A1",
+                            borderColor: "#4747A1",
+                        }}
+                    >
+                        Check Plans
+                    </Link> */}
+                </div>
+
+            </Modal>
         </React.Fragment>
     );
 };
 
-export default RiskCalculator;
+const mapStateToProps = state => {
+    return { ...state.login };
+};
+export default connect(mapStateToProps, {})(RiskCalculator)
+
+
+// export default RiskCalculator;

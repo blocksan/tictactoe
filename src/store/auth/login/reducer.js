@@ -22,11 +22,16 @@ const login = (state = initialState, action) => {
     case LOGIN_SUCCESS:
       state = {
         ...state,
+        user: action.payload,
+        isUserLogout: false,
         loading: false,
       };
       break;
     case LOGOUT_USER:
-      state = { ...state, isUserLogout: false };
+      state = { 
+        ...state, 
+        user: null,
+        isUserLogout: true };
       break;
     case LOGOUT_USER_SUCCESS:
       state = { ...state, isUserLogout: true };
