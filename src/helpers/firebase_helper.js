@@ -262,7 +262,7 @@ class FirebaseAuthBackend {
     }
   };
 
-  addOrUpdateTargetCalculatorConfigToFirestore = async (config, customerId, configName, isUpdateQuery) => {
+  addOrUpdateTargetCalculatorConfigToFirestore = async (config, configName, isUpdateQuery) => {
     try {
       const db = getFirestore(firebaseApp);
       const user = this.getAuthenticatedUser();
@@ -362,16 +362,23 @@ class FirebaseAuthBackend {
       if (!user) {
         return {
           status: false,
-          data: {}
+          data: []
         };
       }
       const db = getFirestore(firebaseApp);
-      const userQuery = query(collection(db, TARGET_CALCULATOR_COLLECTION), where("customerEmail", "==", user.email), orderBy("createdOn", "desc"));
+      const userQuery = query(collection(db, TARGET_CALCULATOR_COLLECTION), where("customerEmail", "==", user.email));
       const querySnapshot = await getDocs(userQuery);
       if (!querySnapshot.empty) {
+        let data = querySnapshot.docs.map(doc => {
+          return {
+            ...doc.data(),
+            createdOn: doc.data().createdOn.toDate(),
+            updatedOn: doc.data().updatedOn.toDate(),
+            parsedConfig: JSON.parse(doc.data().targetConfig)
+          }}).sort((a, b) => b.createdOn - a.createdOn)
         return {
           status: true,
-          data: querySnapshot.docs.map(doc => doc.data())
+          data: data
         };
       } else {
         return {

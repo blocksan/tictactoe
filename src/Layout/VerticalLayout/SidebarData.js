@@ -113,7 +113,7 @@ const SidebarData = [
         label: "Important Links",
         icon: "mdi mdi-format-page-break",
         subItem: [
-            { sublabel: "Terms & Conditions", link: "/termsnconditions" },
+            { sublabel: "Terms & Conditions", link: "/termsandconditions" },
             { sublabel: "FAQ", link: "/faq" },
             { sublabel: "Privacy & Policy", link: "/privacypolicy" },
         ],

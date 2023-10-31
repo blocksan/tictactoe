@@ -39,7 +39,7 @@ function PrivacyPolicy() {
                                     <p style={{
                                         color: "black",
                                         fontSize: "1rem",
-                                    }}>At Decentralized Job Portal, we take the privacy of our users very seriously. This privacy policy explains how we collect, use, and protect the personal information of job seekers and employers who use our decentralized job platform.
+                                    }}>At <strong>Trrader.in</strong>, we take the privacy of our users very seriously. This privacy policy explains how we collect, use, and protect the personal information of users.
                                     </p>
                                     <br></br>
                                     <h3 style={{
@@ -53,9 +53,8 @@ function PrivacyPolicy() {
                                         color: "black",
                                         fontSize: "1rem",
                                     }}>
-                                        <li>We collect personal information such as names, contact information, resumes, and job preferences from job seekers who use our platform to search for job opportunities and create profiles.</li>
-                                        <li>Employers who use our platform to post job listings and search for job candidates also provide personal information such as company information and contact information.</li>
-                                        <li>We use this information to match job seekers with job openings, to communicate with job seekers and employers, and to improve our services</li>
+                                        <li>We collect personal information which includes only names, email, and profile from users to create the profile.</li>
+                                        <li>We do not use this information for any other purpose except creating the user account</li>
                                     </ul>
                                     <br></br>
                                     <h3 style={{
@@ -69,8 +68,6 @@ function PrivacyPolicy() {
                                         fontSize: "1rem",
                                     }}>
                                         <li>We do not share personal information with third parties without the consent of the user, except as required by law or to comply with legal process.</li>
-                                        <li>We use smart contracts to ensure that all job seekers and employers are verified before they can access the platform.</li>
-                                        <li>We use blockchain technology to ensure that all transactions on our platform are secure and transparent.</li>
                                     </ul>
                                     <br></br>
                                     <h3 style={{
@@ -103,8 +100,7 @@ function PrivacyPolicy() {
                                         color: "black",
                                         fontSize: "1rem",
                                     }}>
-                                        <li>Job seekers and employers can access and update their personal information by logging into their account on our platform.</li>
-                                        <li>Users can also contact us directly to request access to or updates to their personal information.</li>
+                                        <li>Users can always login to the account using the email, there is no other method we support as of now</li>
                                     </ul>
                                     <br></br>
                                     <h3 style={{
@@ -117,7 +113,7 @@ function PrivacyPolicy() {
                                         color: "black",
                                         fontSize: "1rem",
                                     }}>
-                                        <li>We comply with all applicable laws and regulations related to data protection, including the General Data Protection Regulation (GDPR) in the European Union.</li>
+                                        <li>We comply with all applicable laws and regulations related to data protection.</li>
                                     </ul>
                                     <br></br>
                                     <h3 style={{
@@ -143,7 +139,7 @@ function PrivacyPolicy() {
                                         color: "black",
                                         fontSize: "1rem",
                                     }}>
-                                        If you have any questions or concerns about this privacy policy, please contact us at <strong>contact@onchaincareer.io</strong>
+                                        If you have any questions or concerns about this privacy policy, please contact us at <strong>trraderin@gmail.com</strong>
                                     </p>
 
                                 </div>

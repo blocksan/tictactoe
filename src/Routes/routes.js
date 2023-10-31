@@ -53,7 +53,7 @@ const publicRoutes = [
   },
   { path: "/logout", component: <Logout /> },
   { path: "/openpricing", component: <OpenPricing /> },
-  { path: "/termsnconditions", component: <TermsNConditions /> },
+  { path: "/termsandconditions", component: <TermsNConditions /> },
   { path: "/faq", component: <Faq /> },
   { path: "/privacypolicy", component: <PrivacyPolicy /> },
   // { path: "/login", component: <Login /> },

@@ -70,7 +70,7 @@ const Landing = (props) => {
                                 <img src={logoVoiled} alt="" style={{ width: 60 }} />
                                 <div>
                                 <h4 style={{ color: "white", marginBottom:0 }}>Trrader.in</h4>
-                                <h6 style={{ color: "white", fontSize:"0.9em", fontWeight:"normal" }}>Built by Trader, for Trader</h6>
+                                <h6 style={{ color: "white", fontSize:"0.9em", fontWeight:"normal" }}>Built by Trrader, for Trrader</h6>
                                 </div>
                             </div>
                         </ul>
@@ -94,7 +94,7 @@ const Landing = (props) => {
                                 <div>
                                     <h1 className="hero text-white" style={{fontSize:"2em", lineHeight:"1em"}}>Manage your Risk today, to Trade tomorrow.</h1>
                                     {/* <p className="lead"></p> */}
-                                    <p className="lead">A lightweight tool suite which can you help you to minimise your loss and can keep you longer in the market.</p>
+                                    <p className="lead">A lightweight tool suite for Traders which helps you to visualize your losses and targets based on your capital.</p>
                                     
                                     <span onClick={signInWithGoogle}>
                                         <GoogleButton></GoogleButton>
@@ -245,7 +245,7 @@ const Landing = (props) => {
                     <div className="padding">
                         <div className="center margin-bottom max-width-m">
                             <h3 className="text-white">Trade with skills, knowledge and better risk management</h3>
-                            <p className="paragraph"> suite which can you help you to minimise your loss and can keep you longer in the market.</p>
+                            <p className="paragraph"> Tool suite which can you help you to minimise your loss and can keep you longer in the market.</p>
                         </div>
                         <div className="center margin-bottom max-width-l">
                             {/* <div className="row margin-bottom min-two-columns">
@@ -298,7 +298,7 @@ const Landing = (props) => {
                                 <h6>Info</h6>
                                 <ul className="blank">
                                     <li><Link to={"/openpricing"} style={{color:"white"}}> Pricing</Link></li>
-                                    <li><Link to={"/termsnconditions"} style={{color:"white"}}> Terms & Conditions</Link></li>
+                                    <li><Link to={"/termsandconditions"} style={{color:"white"}}> Terms & Conditions</Link></li>
                                     <li><Link to={"/faq"} style={{color:"white"}}> FAQ</Link></li>
                                     <li><Link to={"/privacypolicy"} style={{color:"white"}}> Privacy & Policy</Link></li>
                                 </ul>

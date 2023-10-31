@@ -492,6 +492,7 @@ $button-active-blue: #1669F2;
   }
 }
 .landing-header-main{
+  min-height: 75vh;
   margin-bottom: 20px;
 }
 .strikediag {
@@ -502,8 +503,8 @@ $button-active-blue: #1669F2;
   position: absolute;
   width: 70px;
   border-radius: 500px;
-  top: -115px;
-  left: -22px;
+  top: -100px;
+  left: -0px;
 }
 
 .extra-card-header{
@@ -689,5 +690,16 @@ box-shadow: rgba(255,255,255, 0.75) 1.5em 0 0 0, rgba(255,255,255, 0.75) 1.1em 1
     -ms-transform: rotate(360deg);
     -o-transform: rotate(360deg);
     transform: rotate(360deg);
+  }
+}
+
+.accordion-button:not(.collapsed) {
+  color: #575bde;
+  background-color: #575bde2e;
+}
+.accordion-body{
+  color: black;
+  .text-muted{
+    color: black !important;
   }
 }

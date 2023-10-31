@@ -743,7 +743,7 @@ const RiskCalculator = (props) => {
                       <Row>
                         <Col sm="12">
                         <div className="table-responsive">
-                    <table className="table mb-0">
+                    {riskCalculatorConfigs && riskCalculatorConfigs.length > 0 && <table className="table mb-0">
                       <thead>
                         <tr>
                           <th>#</th>
@@ -761,7 +761,9 @@ const RiskCalculator = (props) => {
                         </tr>)
                     })}
                       </tbody>
-                    </table>
+                    </table>}
+
+                    {!riskCalculatorConfigs || riskCalculatorConfigs.length == 0 && <div className="text-center" style={{minHeight:"200px", alignItems:"center", display:"flex", justifyContent:"center"}}>No saved configurations found</div>}
                   </div>
                         </Col>
                       </Row>

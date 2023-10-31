@@ -1,16 +1,15 @@
 import React from 'react'
-import { Link } from 'react-router-dom';
 import {
     Row,
     Col,
-    Container,
     Card,
     CardBody,
     CardFooter
 } from "reactstrap";
 import { getFirebaseApp } from '../../helpers/firebase_helper';
 import { getCheckoutUrl } from '../../helpers/stripe/stripePayment';
-import OffLogo33 from "../../assets/images/OffLogo33Compressed.png";
+// import OffLogo33 from "../../assets/images/OffLogo33Compressed.png";
+import OffLogo50 from "../../assets/images/OffLogo50Compressed.png";
 const PRICING_PLANS = ["Free", "Monthly", "Yearly"];
 function PricingContent(props) {
     const PricingData = [
@@ -29,7 +28,7 @@ function PricingContent(props) {
             title: "Monthly",
             caption: "Small payment for a big change",
             icon: "bx bx-calendar-star",
-            price: "31",
+            price: "49",
             pricingPlan: PRICING_PLANS[1],
             isChild: [
                 { id: "1", features: "Perform Unlimited Calculation" },
@@ -42,8 +41,8 @@ function PricingContent(props) {
             title: "Yearly",
             caption: "Best suited, if don't want to pay monthly",
             icon: "bx bx-calendar",
-            price: "372",
-            discountedPrice: "249",
+            price: "588",
+            discountedPrice: "299",
             yearly: true,
             pricingPlan: PRICING_PLANS[2],
             isChild: [
@@ -169,7 +168,7 @@ function PricingContent(props) {
                                     </h4>
                                 </div>
                                 <div className="plan-features mt-4" style={{ minHeight: "150px", position: "relative" }}>
-                                    {item.yearly && <img src={OffLogo33} className="offer-image" />}
+                                    {item.yearly && <img src={OffLogo50} className="offer-image" />}
                                     <h5 className="text-left font-size-15 mb-4" style={{ color: "#444" }}>
                                         Plan Features :
                                     </h5>

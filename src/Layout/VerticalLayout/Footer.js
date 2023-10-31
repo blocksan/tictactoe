@@ -6,7 +6,7 @@ const Footer = () => {
   return (
     <React.Fragment>
       <footer className="loggedin-footer">
-        <Container fluid ={true}>
+        <Container fluid ={true} style={{padding:0}}>
           <Row>
             {/* <Col sm={6}>{new Date().getFullYear()} © Trrader.in</Col> */}
             <div className="landing">
@@ -22,7 +22,7 @@ const Footer = () => {
                             <div className="col-one-fifth">
                                 <h6>Info</h6>
                                 <ul className="blank">
-                                    <li><Link to={"/termsnconditions"} style={{color:"white"}}> Terms & Conditions</Link></li>
+                                    <li><Link to={"/termsandconditions"} style={{color:"white"}}> Terms & Conditions</Link></li>
                                     <li><Link to={"/faq"} style={{color:"white"}}> FAQ</Link></li>
                                     <li><Link to={"/privacypolicy"} style={{color:"white"}}> Privacy & Policy</Link></li>
                                 </ul>

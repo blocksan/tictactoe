@@ -49,7 +49,7 @@ const ProfileMenu = props => {
 
   return (
     <React.Fragment>
-     {loading && <div class="full-page-loading">Loading&#8230;</div>}
+     {loading && <div className="full-page-loading">Loading&#8230;</div>}
       <Dropdown
         isOpen={menu}
         toggle={() => setMenu(!menu)}
