@@ -973,7 +973,9 @@ const TargetCalculator = (props) => {
                   <span>Calculated Risk</span>
                   <Button onClick={() => {
                     setConfigNameModal(true)
-                  }} style={{ float: "right" }}> Save Configuration</Button>
+                  }} 
+                  disabled
+                  style={{ float: "right", opacity:"0.2" }}> Save Configuration</Button>
 
 
                 </div>
