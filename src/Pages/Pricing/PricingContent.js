@@ -184,10 +184,11 @@ function PricingContent(props) {
                                 <CardFooter className='text-center'>
                                     <div className="float-centre plan-btn">
                                         <button
-                                            onClick={item.yearly ? yearlySubscriptionHandler : monthlySubscriptionHandler}
+                                        disabled
+                                            // onClick={item.yearly ? yearlySubscriptionHandler : monthlySubscriptionHandler}
                                             className="btn metrics-card-primary-2 btn-sm waves-effect waves-light"
                                         >
-                                            Purchase Now
+                                            Coming Soon...
                                         </button>
                                     </div>
                                 </CardFooter>}
