@@ -536,6 +536,9 @@ $button-active-blue: #1669F2;
 }
 
 .nav-link{
+  @media (max-width: 480px) {
+    min-height: 60px;
+  }
   &.active{
     background: $metrics-card-primary2-color !important;
     color: $white;
