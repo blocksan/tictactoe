@@ -62,7 +62,7 @@ const Landing = (props) => {
         <React.Fragment>
 
             <div className="landing">
-                <div className="landing-header-main header-main dark">
+                <div className="header-main dark">
                     <nav>
                         <div className="nav-toggle"></div>
                         <ul className="inline left logo-nav">
