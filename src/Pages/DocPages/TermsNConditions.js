@@ -1,14 +1,13 @@
 import React from 'react'
 import { Container, Row } from 'reactstrap'
-import Footer from '../../Layout/VerticalLayout/Footer'
-import Header from '../../Layout/VerticalLayout/Header'
+
 
 function TermsNConditions() {
   return (
     <React.Fragment>
-      <Header></Header>
+
       <Row>
-        <Container style={{ marginTop: "70px" }}>
+        <Container style={{ marginTop: "120px" }}>
 
           <div className="container">
             <section id="terms-of-service" className="mt-10">
@@ -282,9 +281,7 @@ function TermsNConditions() {
             </section>
           </div>
         </Container>
-        <Footer>
 
-        </Footer>
       </Row>
 
     </React.Fragment>

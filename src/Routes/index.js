@@ -1,5 +1,4 @@
-import React from "react";
-import { Routes, Route } from "react-router-dom";
+import { Route, Routes } from "react-router-dom";
 
 // redux
 import { useSelector } from "react-redux";
@@ -8,9 +7,10 @@ import { useSelector } from "react-redux";
 import { layoutTypes } from "../constants/layout";
 
 // layouts
-import NonAuthLayout from "../Layout/NonAuthLayout";
-import VerticalLayout from "../Layout/VerticalLayout/index";
 import HorizontalLayout from "../Layout/HorizontalLayout/index";
+import NonAuthLayout from "../Layout/NonAuthLayout";
+import PublicLayout from "../Layout/PublicLayout";
+import VerticalLayout from "../Layout/VerticalLayout/index";
 import AuthProtected from "./AuthProtected";
 
 import { authProtectedRoutes, publicRoutes } from "./routes";
@@ -30,29 +30,44 @@ const getLayout = (layoutType) => {
   return Layout;
 };
 
+
+
 const Index = () => {
 
-  const { layoutType } = useSelector((state) => ({
+  const { layoutType, user } = useSelector((state) => ({
     layoutType: state.Layout.layoutType,
+    user: state.login.user
   }));
 
   const Layout = getLayout(layoutType);
 
+  const adaptiveRoutes = ['/termsandconditions', '/faq', '/privacypolicy', '/openpricing'];
+
   return (
     <Routes>
       <Route>
-        {publicRoutes.map((route, idx) => (
+        {publicRoutes.map((route, idx) => {
+          let LayoutComponent = NonAuthLayout;
+            if (adaptiveRoutes.includes(route.path)) {
+                if (user) {
+                    LayoutComponent = Layout;
+                } else {
+                    LayoutComponent = PublicLayout;
+                }
+            }
+          
+          return (
           <Route
             path={route.path}
             element={
-              <NonAuthLayout>
+              <LayoutComponent>
                   {route.component}
-              </NonAuthLayout>
+              </LayoutComponent>
           }
             key={idx}
             exact={true}
           />
-        ))}
+        )})}
       </Route>
 
       <Route>

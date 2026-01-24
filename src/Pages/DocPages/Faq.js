@@ -1,8 +1,7 @@
-import React, { useState } from 'react'
-import { Row, Col, Card, CardBody, Collapse, CardTitle, Container } from 'reactstrap'
 import classnames from "classnames";
-import Footer from '../../Layout/VerticalLayout/Footer';
-import Header from '../../Layout/VerticalLayout/Header';
+import React, { useState } from 'react';
+import { Card, CardBody, Col, Collapse, Container, Row } from 'reactstrap';
+
 
 function Faq() {
     const [col1, setcol1] = useState(true);
@@ -74,9 +73,9 @@ function Faq() {
 
     return (
         <React.Fragment>
-            <Header></Header>
+
             <Row>
-                <Container style={{ marginTop: "70px", minHeight:"75vh" }}>
+                <Container style={{ marginTop: "120px", minHeight:"75vh" }}>
                     <div className="container">
                         <Col xl={12}>
                             <Card>
@@ -368,7 +367,7 @@ function Faq() {
                         </Col>
                     </div>
                 </Container>
-                <Footer></Footer>
+
             </Row>
         </React.Fragment>
     )
