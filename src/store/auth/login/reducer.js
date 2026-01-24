@@ -1,14 +1,15 @@
 import {
-  LOGIN_USER,
-  LOGIN_SUCCESS,
-  LOGOUT_USER,
-  LOGOUT_USER_SUCCESS,
-  API_ERROR,
+    API_ERROR,
+    LOGIN_SUCCESS,
+    LOGIN_USER,
+    LOGOUT_USER,
+    LOGOUT_USER_SUCCESS,
 } from "./actionTypes";
 
 const initialState = {
   error: "",
   loading: false,
+  user: JSON.parse(localStorage.getItem("authUser")),
 };
 
 const login = (state = initialState, action) => {

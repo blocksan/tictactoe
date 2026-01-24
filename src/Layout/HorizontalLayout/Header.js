@@ -10,18 +10,18 @@ import NotificationDropdown from "../../components/Common/TopbarDropdown/Notific
 import { withTranslation } from "react-i18next";
 
 //import images
-import logoSm from "../../assets/images/logo-sm.png";
 import logoDark from "../../assets/images/logo-dark.png";
 import logoLight from "../../assets/images/logo-light.png";
+import logoSm from "../../assets/images/logo-sm.png";
 
 // Redux Store
-import {
-  showRightSidebarAction,
-  toggleLeftmenu,
-  changeSidebarType,
-} from "../../store/actions";
-import ProfileMenu from "../../components/Common/TopbarDropdown/ProfileMenu";
 import AppsDropdown from "../../components/Common/TopbarDropdown/AppsDropdown";
+import ProfileMenu from "../../components/Common/TopbarDropdown/ProfileMenu";
+import {
+    changeSidebarType,
+    showRightSidebarAction,
+    toggleLeftmenu,
+} from "../../store/actions";
 
 const Header = (props) => {
   const [search, setsearch] = useState(false);
@@ -59,7 +59,7 @@ const Header = (props) => {
         <div className="navbar-header">
           <div className="d-flex">
             <div className="navbar-brand-box text-center">
-              <Link to="/" className="logo logo-dark">
+              <Link to="/riskcalculator" className="logo logo-dark">
                 <span className="logo-sm">
                   <img src={logoSm} alt="logo-sm-dark" height="22" />
                 </span>
@@ -68,7 +68,7 @@ const Header = (props) => {
                 </span>
               </Link>
 
-              <Link to="/" className="logo logo-light">
+              <Link to="/riskcalculator" className="logo logo-light">
                 <span className="logo-sm">
                   <img src={logoSm} alt="logo-sm-light" height="22" />
                 </span>
