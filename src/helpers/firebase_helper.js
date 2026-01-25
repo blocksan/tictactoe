@@ -1,9 +1,9 @@
 import { initializeApp } from "firebase/app";
-import { getAuth } from 'firebase/auth'
-import { getFirestore, collection, addDoc, updateDoc, query, where, orderBy, getDocs } from "firebase/firestore";
+import { getAuth } from 'firebase/auth';
+import { addDoc, collection, getDocs, getFirestore, query, updateDoc, where } from "firebase/firestore";
+import { RISK_CALCULATOR_COLLECTION, TARGET_CALCULATOR_COLLECTION } from "../constants/firebase";
 import { getPremiumStatus } from "./stripe/premiumStatus";
 import { stripePortalUrl } from "./stripe/stripePayment";
-import { RISK_CALCULATOR_COLLECTION, TARGET_CALCULATOR_COLLECTION } from "../constants/firebase";
 
 // import { getAuth, signInWithPopup, GoogleAuthProvider } from "firebase/auth";
 // import {ref} from 'firebase/database';
@@ -245,7 +245,6 @@ class FirebaseAuthBackend {
         await addDoc(collection(db, RISK_CALCULATOR_COLLECTION), {
           ...riskConfigDoc
         });
-
       }
 
       return {
@@ -446,4 +445,5 @@ const getFirebaseApp = () => {
   return firebaseApp;
 }
 
-export { initFirebaseBackend, getFirebaseBackend, getFirebaseApp };
+export { getFirebaseApp, getFirebaseBackend, initFirebaseBackend };
+

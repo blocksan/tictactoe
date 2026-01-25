@@ -5,12 +5,12 @@ import { LOGIN_USER, LOGOUT_USER, SOCIAL_LOGIN } from "./actionTypes";
 import { apiError, loginSuccess, logoutUserSuccess } from "./actions";
 
 //Include Both Helper File with needed methods
-import { getFirebaseBackend } from "../../../helpers/firebase_helper";
 import {
   postFakeLogin,
   postJwtLogin,
   postSocialLogin,
 } from "../../../helpers/fakebackend_helper";
+import { getFirebaseBackend } from "../../../helpers/firebase_helper";
 
 const fireBaseBackend = getFirebaseBackend();
 
@@ -62,6 +62,11 @@ function* socialLogin({ payload: { data, history, type } }) {
   try {
     if (process.env.REACT_APP_DEFAULTAUTH === "firebase") {
       // const fireBaseBackend = getFirebaseBackend();
+      yield call(
+        fireBaseBackend.socialLoginUser,
+        data,
+        type
+      );
       let includeTrial = true;
       const premiumStatus = yield call(fireBaseBackend.isPremiumOrTrial, includeTrial);
 

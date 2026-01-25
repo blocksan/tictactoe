@@ -1,47 +1,43 @@
-import React, { useEffect, useRef, useState } from "react"
 import classnames from "classnames";
+import React, { useEffect, useRef, useState } from "react";
 import {
-    Row,
-    Col,
+    Button,
     Card,
     CardBody,
-    FormGroup,
-    Button,
-    CardTitle,
-    CardSubtitle,
-    Label,
-    Input,
-    Container,
-    FormFeedback,
-    Form,
-    CardText,
     CardHeader,
-    UncontrolledAlert,
-    Progress,
-    Toast,
-    ToastHeader,
-    ToastBody,
+    CardSubtitle,
+    CardText,
+    Col,
+    Container,
+    Form,
+    FormFeedback,
+    Input,
+    Label,
     Modal,
+    Nav,
     NavItem,
     NavLink,
-    Nav,
+    Row,
+    TabContent,
     TabPane,
-    TabContent
+    Toast,
+    ToastBody,
+    ToastHeader,
+    UncontrolledAlert
 } from "reactstrap";
 
 //Import Breadcrumb
-import logoVoiled from "../../assets/images/OnlyLogoVoiled.png";
-import Breadcrumbs from "../../components/Common/Breadcrumb";
-import * as Yup from "yup";
 import { useFormik } from "formik";
-import calculator from "../../assets/images/calculator.gif";
-import DayWiseCapitalDrawDown from "./DayWiseCapitalDrawDown";
-import { IndexType, BANKNIFTY_LOT_SIZE, FINNIFTY_LOT_SIZE, NIFTY50_LOT_SIZE } from "../../constants/NSE_index";
-import CustomOptionPremiumStackedBar from "./CustomOptionPremiumStackedBar";
-import LotSizeCards from "../CommonPages/LotSizeCards";
 import { connect } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
+import * as Yup from "yup";
+import logoVoiled from "../../assets/images/OnlyLogoVoiled.png";
+import Breadcrumbs from "../../components/Common/Breadcrumb";
+import { BANKNIFTY_LOT_SIZE, FINNIFTY_LOT_SIZE, IndexType, NIFTY50_LOT_SIZE } from "../../constants/NSE_index";
 import { getFirebaseBackend } from "../../helpers/firebase_helper";
+import LotSizeCards from "../CommonPages/LotSizeCards";
+import CustomOptionPremiumStackedBar from "./CustomOptionPremiumStackedBar";
+import DayWiseCapitalDrawDown from "./DayWiseCapitalDrawDown";
 
 const DEFAULT_MAX_SL_COUNT_ONE_DAY = 2;
 const DEFAULT_MAX_DRAW_DOWN_PERCENTAGE = 15;
@@ -440,10 +436,10 @@ const RiskCalculator = (props) => {
 
     const saveConfiguration = async () => {
 
-        if (loggedInUser && !loggedInUser.isPremiumOrTrial) {
-            setPurchasePremiumModal(true);
-            return
-        }
+        // if (loggedInUser && !loggedInUser.isPremiumOrTrial) {
+        //     setPurchasePremiumModal(true);
+        //     return
+        // }
 
         if (!configName) {
             alert("Please provide a name for the configuration");
@@ -792,8 +788,8 @@ const RiskCalculator = (props) => {
                                     <Button onClick={()=> {
                                         setConfigNameModal(true)
                                     } }
-                                    disabled
-                                    style={{float:"right", opacity:"0.2"}}> Save Configuration</Button>
+                                    
+                                    style={{float:"right"}}> Save Configuration</Button>
                                 
                                 
                                 </div>
