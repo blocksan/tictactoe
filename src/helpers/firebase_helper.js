@@ -2,7 +2,9 @@ import { initializeApp } from "firebase/app";
 import { getAuth } from 'firebase/auth';
 import { addDoc, collection, doc, getDocs, getFirestore, query, updateDoc, where } from "firebase/firestore";
 import { RISK_CALCULATOR_COLLECTION, SUBSCRIPTIONS_COLLECTION, TARGET_CALCULATOR_COLLECTION } from "../constants/firebase";
+import { loginSuccess } from "../store/actions";
 import { cancelSubscription } from "./cashfree_helper";
+import { getStore } from "./redux_store_helper";
 import { stripePortalUrl } from "./stripe/stripePayment";
 
 // import { getAuth, signInWithPopup, GoogleAuthProvider } from "firebase/auth";
@@ -197,15 +199,17 @@ class FirebaseAuthBackend {
       const userQuery = query(collection(db, "users"), where("email", "==", dbUser.email));
       const querySnapshot = await getDocs(userQuery);
       if (!querySnapshot.empty) {
+        const existingData = querySnapshot.docs[0].data();
         await updateDoc(querySnapshot.docs[0].ref, {
           lastAccessedOn: new Date(),
         });
+        return { user: { ...dbUser, ...existingData } };
       } else {
         await addDoc(collection(db, "users"), {
           ...dbUser
         });
+        return { user: dbUser };
       }
-      return { user: dbUser };
       // const collection = firebaseApp.firestore().collection("users");
     } catch (err) {
       console.log(err, '---err--')
@@ -404,6 +408,14 @@ class FirebaseAuthBackend {
 
       console.log("querySnapshot", querySnapshot.docs);
 
+      // Fetch user doc to sync freeTrialConfig
+      const userQuery = query(collection(db, "users"), where("email", "==", user.email));
+      const userSnapshot = await getDocs(userQuery);
+      let freeTrialConfig = {};
+      if (!userSnapshot.empty) {
+          freeTrialConfig = userSnapshot.docs[0].data().freeTrialConfig || {};
+      }
+
       // Filter in memory for active subscriptions
       const activeSubscriptions = querySnapshot.docs
         .map(doc => doc.data())
@@ -422,13 +434,13 @@ class FirebaseAuthBackend {
          const endDate = latestSubscription.endDate.toDate();
          const planId = latestSubscription.planId;
 
-         await this.updateAuthUser({ isPremiumUser: true, subscriptionEndDate: endDate, planId: planId });
-         return { isPremium: true, endDate: endDate, planId: planId };
+         await this.updateAuthUser({ isPremiumUser: true, subscriptionEndDate: endDate, planId: planId, freeTrialConfig: freeTrialConfig });
+         return { isPremium: true, endDate: endDate, planId: planId, freeTrialConfig: freeTrialConfig };
       }
 
       // If we reach here, user is NOT premium. Update local state to sync.
-      await this.updateAuthUser({ isPremiumUser: false });
-      return { isPremium: false };
+      await this.updateAuthUser({ isPremiumUser: false, freeTrialConfig: freeTrialConfig });
+      return { isPremium: false, freeTrialConfig: freeTrialConfig };
 
     } catch (err) {
       console.log("Error in currentPremiumStatus:", err);
@@ -503,10 +515,70 @@ class FirebaseAuthBackend {
        const currentAuthUser = JSON.parse(localStorage.getItem("authUser")) || {};
        const newAuthUser = { ...currentAuthUser, ...updatedUser };
        localStorage.setItem("authUser", JSON.stringify(newAuthUser));
+       const reduxStore = getStore();
+       if (reduxStore) {
+           reduxStore.dispatch(loginSuccess(newAuthUser));
+       }
        return newAuthUser;
     } catch (err) {
       console.log("Error updating user object:", err);
       return null;
+    }
+  }
+
+  checkAndIncrementTrialCount = async (category) => {
+    try {
+      const db = getFirestore(firebaseApp);
+      const user = await this.waitForCurrentUser();
+      
+      if (!user) return { allowed: false, error: "User not logged in" };
+
+      // Check premium status first
+      const premiumStatus = await this.currentPremiumStatus();
+      if (premiumStatus.isPremium) {
+          return { allowed: true, isPremium: true };
+      }
+
+      // Fetch user doc to check trial count
+      const userQuery = query(collection(db, "users"), where("email", "==", user.email));
+      const querySnapshot = await getDocs(userQuery);
+      
+      if (querySnapshot.empty) {
+          return { allowed: false, error: "User record not found" };
+      }
+      
+      const userDoc = querySnapshot.docs[0];
+      const userData = userDoc.data();
+      
+      const freeTrialConfig = userData.freeTrialConfig || {};
+      const currentCategoryCount = freeTrialConfig[category] || 0;
+      
+      // Calculate total count across all categories
+      const totalCount = Object.values(freeTrialConfig).reduce((sum, val) => sum + val, 0);
+      
+      if (totalCount >= 10) {
+          return { allowed: false, count: totalCount, isPremium: false };
+      }
+      
+      // Increment category count
+      const updatedConfig = {
+          ...freeTrialConfig,
+          [category]: currentCategoryCount + 1
+      };
+
+      await updateDoc(userDoc.ref, {
+          freeTrialConfig: updatedConfig,
+          updatedOn: new Date()
+      });
+      
+      // Sync local state so header can pick it up
+      await this.updateAuthUser({ freeTrialConfig: updatedConfig });
+      
+      return { allowed: true, count: totalCount + 1, isPremium: false };
+      
+    } catch (err) {
+      console.error("Error in checkAndIncrementTrialCount:", err);
+      return { allowed: false, error: err.message };
     }
   }
 
@@ -640,7 +712,7 @@ class FirebaseAuthBackend {
  * Initilize the backend
  * @param {*} config
  */
-const initFirebaseBackend = config => {
+export function initFirebaseBackend(config) {
   if (!_fireBaseBackend) {
     _fireBaseBackend = new FirebaseAuthBackend(config);
   }
@@ -650,13 +722,11 @@ const initFirebaseBackend = config => {
 /**
  * Returns the firebase backend
  */
-const getFirebaseBackend = () => {
+export function getFirebaseBackend() {
   return _fireBaseBackend;
 };
 
-const getFirebaseApp = () => {
+export function getFirebaseApp() {
   return firebaseApp;
 }
-
-export { getFirebaseApp, getFirebaseBackend, initFirebaseBackend };
 

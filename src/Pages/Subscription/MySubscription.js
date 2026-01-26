@@ -98,7 +98,7 @@ const MySubscription = () => {
                                                                     {sub.planId && sub.planId.includes("YEARLY") ? "Yearly Plan" : 
                                                                      sub.planId && sub.planId.includes("MONTHLY") ? "Monthly Plan" : "Premium Plan"}
                                                                 </h5>
-                                                                <span className="text-muted font-size-12">{sub.planId}</span>
+                                                                {/* <span className="text-muted font-size-12">{sub.planId}</span> */}
                                                             </td>
                                                             <td>{formatDate(sub.startDate)}</td>
                                                             <td>{formatDate(sub.endDate)}</td>

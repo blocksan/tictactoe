@@ -45,7 +45,21 @@ const PublicHeader = (props) => {
                                 {props.user?.isPremiumUser ? (
                                      <h6 style={{ color: "#FFD700", fontSize: "0.9em", fontWeight: "bold", textTransform: "uppercase", marginTop: "5px" }}>(Premium)</h6>
                                 ) : (
-                                    <h6 style={{ color: "white", fontSize: "0.9em", fontWeight: "normal" }}>Built by Trrader, for Trrader</h6>
+                                    <>
+                                        <h6 style={{ color: "white", fontSize: "0.9em", fontWeight: "normal" }}>Built by Trrader, for Trrader</h6>
+                                        {props.user && props.user.freeTrialConfig && (
+                                            <h6 style={{ color: "orange", fontSize: "0.8em", marginTop: "5px", display: "flex", alignItems: "center" }}>
+                                                Trial Left : <span style={{
+                                                    backgroundColor: 'orange',
+                                                    color: 'white',
+                                                    borderRadius: '50%',
+                                                    padding: '2px 6px',
+                                                    marginLeft: '5px',
+                                                    fontSize: '0.9em'
+                                                }}>{Math.max(0, 10 - Object.values(props.user.freeTrialConfig).reduce((a, b) => a + b, 0))}</span>
+                                            </h6>
+                                        )}
+                                    </>
                                 )}
                             </div>
                         </Link>

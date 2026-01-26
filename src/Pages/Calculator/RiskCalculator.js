@@ -192,6 +192,15 @@ const RiskCalculator = (props) => {
             }
 
             setLoading(true)
+
+            const backend = getFirebaseBackend();
+            const trialStatus = await backend.checkAndIncrementTrialCount("RiskCalculator");
+            if (!trialStatus.allowed) {
+                 setLoading(false);
+                 setPurchasePremiumModal(true);
+                 return;
+            }
+
             setSelectedIndex(null);
             await new Promise(r => setTimeout(r, 1500));
             validatePremiumInputs(formValues);

@@ -12,11 +12,11 @@ import {
 } from "../../../helpers/fakebackend_helper";
 import { getFirebaseBackend } from "../../../helpers/firebase_helper";
 
-const fireBaseBackend = getFirebaseBackend();
 
 function* loginUser({ payload: { user, history } }) {
   try {
     if (process.env.REACT_APP_DEFAULTAUTH === "firebase") {
+      const fireBaseBackend = getFirebaseBackend();
       const response = yield call(
         fireBaseBackend.loginUser,
         user.email,
@@ -47,6 +47,7 @@ function* loginUser({ payload: { user, history } }) {
 function* logoutUser() {
   try {
     if (process.env.REACT_APP_DEFAULTAUTH === "firebase") {
+      const fireBaseBackend = getFirebaseBackend();
       const response = yield call(fireBaseBackend.logout);
       localStorage.removeItem("authUser");
       yield put(logoutUserSuccess(LOGOUT_USER, response));
@@ -61,21 +62,28 @@ function* logoutUser() {
 function* socialLogin({ payload: { data, history, type } }) {
   try {
     if (process.env.REACT_APP_DEFAULTAUTH === "firebase") {
-      // const fireBaseBackend = getFirebaseBackend();
-      yield call(
+      const fireBaseBackend = getFirebaseBackend();
+      const firebaseUserResponse = yield call(
         fireBaseBackend.socialLoginUser,
         data,
         type
       );
+      
+      const firestoreUser = firebaseUserResponse?.user || {};
+      
       let includeTrial = true;
       const premiumStatus = yield call(fireBaseBackend.isPremiumUser, includeTrial);
 
-      // const stripePortalUrl = yield call(fireBaseBackend.getStripePortalUrl);
-
-      data.isPremiumUser = premiumStatus
-      // data.stripePortalUrl = stripePortalUrl
-      localStorage.setItem("authUser", JSON.stringify(data));
-      yield put(loginSuccess(data));
+      const mergedData = {
+          ...data,
+          ...firestoreUser,
+          isPremiumUser: premiumStatus.isPremium,
+          subscriptionEndDate: premiumStatus.endDate,
+          freeTrialConfig: premiumStatus.freeTrialConfig
+      };
+      
+      localStorage.setItem("authUser", JSON.stringify(mergedData));
+      yield put(loginSuccess(mergedData));
     } else {
       const response = yield call(postSocialLogin, data);
       localStorage.setItem("authUser", JSON.stringify(response));

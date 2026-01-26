@@ -42,6 +42,17 @@ const ProfileMenu = props => {
 
   return (
     <React.Fragment>
+        {props.user && !isPremiumUser && (
+             <span className="ms-1" style={{fontWeight: 'bold', color: 'orange', alignSelf: 'center', marginRight: '15px'}}>
+                Trial Left : <span style={{
+                    backgroundColor: 'orange',
+                    color: 'white',
+                    borderRadius: '50%',
+                    padding: '2px 8px',
+                    marginLeft: '5px'
+                }}>{Math.max(0, 10 - (Object.values(props.user.freeTrialConfig || {}).reduce((a,b)=>a+b, 0)))}</span>
+            </span>
+        )}
 
       <Dropdown
         isOpen={menu}
