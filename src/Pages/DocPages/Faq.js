@@ -75,8 +75,8 @@ function Faq() {
         <React.Fragment>
 
             <Row>
-                <Container>
-                    <div className="container">
+                <Container fluid={true} style={{marginTop:"120px"}}>
+                    <div className="container"> 
                         <Col xl={12}>
                             <Card>
                                 <CardBody>

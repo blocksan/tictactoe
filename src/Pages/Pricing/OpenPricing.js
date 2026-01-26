@@ -1,9 +1,9 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import {
-    Col,
-    Container,
-    Row
+  Col,
+  Container,
+  Row
 } from "reactstrap";
 import PricingContent from './PricingContent';
 
