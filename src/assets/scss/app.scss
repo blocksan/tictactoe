@@ -534,6 +534,123 @@ $button-active-blue: #1669F2;
   background: linear-gradient(to left top, transparent 47.75%, currentColor 49.5%, currentColor 50.5%, transparent 52.25%);
   color: red;
 }
+
+
+// --- Documentation Pages Styles (Terms, Privacy, FAQ) ---
+.doc-page-wrapper {
+  padding-top: 80px; // account for fixed header
+  padding-bottom: 80px;
+  background-color: #f8f9fa;
+  min-height: 100vh;
+}
+
+.doc-container {
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+.doc-card {
+  background: #fff;
+  border-radius: 16px;
+  border: 1px solid #e2e8f0;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+  padding: 3rem !important;
+
+  @media (max-width: 768px) {
+    padding: 1.5rem !important;
+  }
+}
+
+.doc-main-heading {
+    color: #0f172a; // Slate-900
+    font-weight: 700;
+    font-size: 2rem;
+    margin-bottom: 1rem;
+    padding-bottom: 1.5rem;
+    border-bottom: 1px solid #e2e8f0;
+}
+
+.doc-content {
+  color: #334155; // Slate-700
+  
+  h3 {
+    color: #1e293b; // Slate-800
+    font-weight: 600;
+    font-size: 1.25rem;
+    margin-top: 2.5rem;
+    margin-bottom: 1rem;
+  }
+
+  p {
+    line-height: 1.75;
+    margin-bottom: 1.25rem;
+    font-size: 1rem;
+    color: #475569;
+  }
+
+  ul {
+    padding-left: 1.5rem;
+    margin-bottom: 1.5rem;
+    
+    li {
+      margin-bottom: 0.75rem;
+      line-height: 1.7;
+      color: #475569;
+      position: relative;
+    }
+  }
+  
+  a {
+    color: #4285f4;
+    text-decoration: none;
+    font-weight: 500;
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+}
+
+
+// Clean FAQ Accordion
+.faq-accordion {
+  .accordion-item {
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    margin-bottom: 1rem;
+    overflow: hidden;
+    background: #fff;
+    
+    // Remove default bootstrap accordion rounded corners logic that links items
+    &:first-of-type, &:last-of-type {
+      border-radius: 12px;
+    }
+  }
+
+  .accordion-button {
+    font-weight: 600;
+    color: #1e293b;
+    background-color: #fff;
+    padding: 1.25rem;
+    box-shadow: none !important;
+    font-size: 1.05rem;
+
+    &:not(.collapsed) {
+      color: #4285f4; // Primary Blue
+      background-color: #f1f5f9; // Very light slate
+    }
+    
+    &::after {
+      background-size: 1rem;
+    }
+  }
+
+  .accordion-body {
+    padding: 1.25rem;
+    color: #475569;
+    line-height: 1.7;
+    border-top: 1px solid #f1f5f9;
+  }
+}
 .offer-image{
   position: absolute;
   width: 70px;
