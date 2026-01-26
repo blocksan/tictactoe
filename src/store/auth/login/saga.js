@@ -68,11 +68,11 @@ function* socialLogin({ payload: { data, history, type } }) {
         type
       );
       let includeTrial = true;
-      const premiumStatus = yield call(fireBaseBackend.isPremiumOrTrial, includeTrial);
+      const premiumStatus = yield call(fireBaseBackend.isPremiumUser, includeTrial);
 
       // const stripePortalUrl = yield call(fireBaseBackend.getStripePortalUrl);
 
-      data.isPremiumOrTrial = premiumStatus
+      data.isPremiumUser = premiumStatus
       // data.stripePortalUrl = stripePortalUrl
       localStorage.setItem("authUser", JSON.stringify(data));
       yield put(loginSuccess(data));
