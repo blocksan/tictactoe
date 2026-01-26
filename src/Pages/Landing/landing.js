@@ -1,20 +1,20 @@
-import React, { useEffect } from "react";
+import { getAuth, GoogleAuthProvider, signInWithPopup } from 'firebase/auth';
 import PropTypes from "prop-types";
-import {getAuth, GoogleAuthProvider, signInWithPopup} from 'firebase/auth'
-import logoVoiled from "../../assets/images/OnlyLogoVoiled.png";
-import withRouter from "../../components/Common/withRouter";
+import React, { useEffect } from "react";
 import { useDispatch } from "react-redux";
 import mandrawing from "../../assets/images/mandrawing.png";
+import logoVoiled from "../../assets/images/OnlyLogoVoiled.png";
+import productOverview from "../../assets/images/product-overview.png";
 import riskcalculator from "../../assets/images/riskcalculator.png";
 import riskcalculatorresult from "../../assets/images/riskcalculatorresult.png";
-import productOverview from "../../assets/images/product-overview.png";
 import tradingdesktops from "../../assets/images/tradingdesktopscompressed.png";
+import withRouter from "../../components/Common/withRouter";
 import { logoutUser, socialLogin } from "../../store/actions";
 //Import config
 
-import { getFirebaseApp } from "../../helpers/firebase_helper";
-import GoogleButton from "../../components/Common/GoogleButton";
 import { Link } from "react-router-dom";
+import GoogleButton from "../../components/Common/GoogleButton";
+import { getFirebaseApp } from "../../helpers/firebase_helper";
 const Landing = (props) => {
     const dispatch = useDispatch();
 
@@ -61,7 +61,7 @@ const Landing = (props) => {
     return (
         <React.Fragment>
 
-            <div className="landing">
+            <div className="landing landing-page">
                 <div className="header-main dark">
                     <nav>
                         <div className="nav-toggle"></div>
@@ -248,24 +248,6 @@ const Landing = (props) => {
                             <p className="paragraph"> Tool suite which can you help you to minimise your loss and can keep you longer in the market.</p>
                         </div>
                         <div className="center margin-bottom max-width-l">
-                            {/* <div className="row margin-bottom min-two-columns">
-                                <div className="col-one-fourth">
-                                    <i className="feature-icons material-icons bg-gradient-pink">format_shapes</i>
-                                    <h6>Minimal Design</h6>
-                                </div>
-                                <div className="col-one-fourth">
-                                    <i className="feature-icons material-icons bg-gradient-cyan">network_check</i>
-                                    <h6>Rocket Fast</h6>
-                                </div>
-                                <div className="col-one-fourth">
-                                    <i className="feature-icons material-icons bg-gradient-green">line_style</i>
-                                    <h6>Framework</h6>
-                                </div>
-                                <div className="col-one-fourth">
-                                    <i className="feature-icons material-icons bg-gradient-indigo">check</i>
-                                    <h6>HTML5 Valid</h6>
-                                </div>
-                            </div> */}
                         </div>
                         <div className="card card-content dark margin-bottom max-width-l">
                             <form className="row reduce-spacing">
@@ -284,26 +266,23 @@ const Landing = (props) => {
                                     <span onClick={signInWithGoogle}>
                                         <GoogleButton></GoogleButton>
                                     </span>
-                                    {/* <a href="signup.html" className="button button-primary" role="button">Create An Account</a> */}
                                 </div>
                             </form>
                         </div>
-                        <div className="row center-desktop max-width-l">
-                            <div className="col-two-fifths">
-                            
-                                <h6>Trrader ®</h6>
-                                <p>Product by Trrader, for Trrader.</p>
+                        <div className="row max-width-l">
+                            <div className="col-one-half">
+                                <h6 className="text-white">Trrader ®</h6>
+                                <p className="text-white text-opacity-50">Precision risk management tools designed for modern traders. Built to protect your capital and optimize your performance.</p>
                             </div>
-                            <div className="col-one-fifth">
-                                <h6>Info</h6>
+                            <div className="col-one-half">
+                                <h6 className="text-white">Resources</h6>
                                 <ul className="blank">
-                                    <li><Link to={"/openpricing"} style={{color:"white"}}> Pricing</Link></li>
-                                    <li><Link to={"/termsandconditions"} style={{color:"white"}}> Terms & Conditions</Link></li>
-                                    <li><Link to={"/faq"} style={{color:"white"}}> FAQ</Link></li>
-                                    <li><Link to={"/privacypolicy"} style={{color:"white"}}> Privacy & Policy</Link></li>
+                                    <li><Link to={"/openpricing"} style={{color:"white"}}>Pricing</Link></li>
+                                    <li><Link to={"/termsandconditions"} style={{color:"white"}}>Terms & Conditions</Link></li>
+                                    <li><Link to={"/faq"} style={{color:"white"}}>FAQ</Link></li>
+                                    <li><Link to={"/privacypolicy"} style={{color:"white"}}>Privacy & Policy</Link></li>
                                 </ul>
                             </div>
-                            
                         </div>
                     </div>
                     <p className="copyright"><span>Product by Trrader, for Trrader</span><span> © 2023, all rights reserved.</span></p>

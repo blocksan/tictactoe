@@ -75,7 +75,7 @@ function Faq() {
         <React.Fragment>
 
             <Row>
-                <Container style={{ marginTop: "120px", minHeight:"75vh" }}>
+                <Container>
                     <div className="container">
                         <Col xl={12}>
                             <Card>

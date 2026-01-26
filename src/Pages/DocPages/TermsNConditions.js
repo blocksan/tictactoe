@@ -7,7 +7,7 @@ function TermsNConditions() {
     <React.Fragment>
 
       <Row>
-        <Container style={{ marginTop: "120px" }}>
+        <Container>
 
           <div className="container">
             <section id="terms-of-service" className="mt-10">

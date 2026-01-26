@@ -1,12 +1,12 @@
-import React from 'react'
+
 
 function GoogleButton() {
   return (
     <div className="google-btn">
         <div className="google-icon-wrapper">
-            <img className="google-icon" src="https://upload.wikimedia.org/wikipedia/commons/5/53/Google_%22G%22_Logo.svg"/>
+            <img className="google-icon" src="https://www.gstatic.com/images/branding/product/1x/googleg_48dp.png" alt="Google Logo"/>
         </div>
-        <p className="btn-text"><b>Google Sign In</b></p>
+        <p className="btn-text">Sign in with Google</p>
     </div>
   )
 }

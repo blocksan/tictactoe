@@ -8,7 +8,7 @@ function PrivacyPolicy() {
 
 
             <Row>
-                <Container style={{ marginTop: "120px" }}>
+                <Container>
                     <div className="container">
                         <section id="terms-of-service" className="mt-10">
                             <div

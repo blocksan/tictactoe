@@ -85,22 +85,24 @@ $button-active-blue: #1669F2;
 
 
 .google-btn {
-  width: 184px;
+  width: 210px;
   height: 42px;
   background-color: $google-blue;
   border-radius: 500px;
   box-shadow: 0 3px 4px 0 rgba(0,0,0,.25);
   cursor: pointer;
   display: flex;
+  align-items: center;
+  padding-left: 1px;
+  transition: all 0.2s ease;
+
   .google-icon-wrapper {
-    margin-top: 1px;
-    margin-left: 1px;
     width: 40px;
     height: 40px;
     border-radius: 500px;
     background-color: $white;
-    justify-content: center;
     display: flex;
+    justify-content: center;
     align-items: center;
   }
   .google-icon {
@@ -108,24 +110,24 @@ $button-active-blue: #1669F2;
     height: 18px;
   }
   .btn-text {
-    justify-content: center;
-    display: flex;
-    align-items: center;
-    float: right;
-    margin-left: 8px !important;
-    // margin: 11px 11px 0 0;
+    flex-grow: 1;
+    text-align: center;
+    margin: 0 !important;
+    padding-right: 12px; // Offset the icon width to center visually
     color: $white;
     font-size: 14px;
+    font-weight: 500;
     letter-spacing: 0.2px;
-    font-family: "Roboto";
+    font-family: "Roboto", sans-serif;
   }
   &:hover {
-    box-shadow: 0 0 6px $google-blue;
+    box-shadow: 0 4px 12px rgba(66, 133, 244, 0.3);
+    transform: translateY(-1px);
   }
   &:active {
-    background: $button-active-blue;
+    background: darken($google-blue, 5%);
+    transform: translateY(0);
   }
-  
 }
 
 .calculated-risk-card{
@@ -605,6 +607,144 @@ $button-active-blue: #1669F2;
 
 
 
+#layout-wrapper {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.main-content {
+  flex: 1 0 auto;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Ensure the landing page root supports sticky footer without affecting the shared header component */
+.landing-page {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  
+  /* Landing sections should grow to push footer */
+  & > section {
+    flex: 1 0 auto;
+  }
+}
+
+.public-layout .main-content {
+  margin-left: 0 !important;
+  background-color: #F5F7FF;
+  
+  .content, .page-content {
+    margin-top: 0 !important;
+    padding-top: 80px; // Reduced to prevent excessive white space
+  }
+}
+
+.footer, .footer-main {
+  flex-shrink: 0;
+  margin-top: auto !important; // Pushes footer to the bottom of the flex container
+  position: relative !important;
+  left: 0 !important;
+  background-color: #fff;
+  border-top: 1px solid rgba(0, 0, 0, 0.05);
+  padding: 1.5rem 2rem;
+  color: #74788d;
+  width: 100%;
+}
+
+.footer-main {
+  background: #1e1b3a !important;
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
+  position: relative;
+  overflow: hidden;
+  
+  &::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
+  }
+
+  .padding {
+    padding: 5rem 0 !important;
+    margin: 0 auto;
+    width: 90%;
+    max-width: 1200px;
+  }
+
+  h3, h6 {
+    color: white !important;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+  }
+  
+  h6 {
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    color: rgba(255, 255, 255, 0.4) !important;
+    margin-bottom: 1.5rem !important;
+  }
+
+  p {
+    color: rgba(255, 255, 255, 0.6) !important;
+    font-size: 0.95rem;
+    line-height: 1.6;
+    max-width: 400px;
+  }
+
+  .blank {
+    padding: 0;
+    margin: 0;
+    list-style: none;
+    
+    li {
+      margin-bottom: 0.5rem;
+      
+      a {
+        color: rgba(255, 255, 255, 0.6) !important;
+        transition: all 0.2s ease;
+        padding: 0.25rem 0;
+        display: inline-block;
+        font-size: 0.95rem;
+        
+        &:hover {
+          color: white !important;
+          transform: translateX(4px);
+        }
+      }
+    }
+  }
+
+  .card.dark {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    backdrop-filter: blur(10px);
+    border-radius: 16px;
+    padding: 3rem !important;
+    margin-bottom: 4rem !important;
+    
+    h3 {
+      font-size: 1.85rem;
+      margin-bottom: 0.75rem;
+    }
+  }
+
+  .copyright {
+    background: rgba(0, 0, 0, 0.2);
+    padding: 1.5rem 0;
+    margin-bottom: 0;
+    border-top: 1px solid rgba(255, 255, 255, 0.05);
+    color: rgba(255, 255, 255, 0.3) !important;
+    font-size: 0.8rem;
+    text-align: center;
+    letter-spacing: 0.02em;
+  }
+}
+
 .full-page-loading{
   position: fixed;
   z-index: 999;
@@ -869,3 +1009,4 @@ box-shadow: rgba(255,255,255, 0.75) 1.5em 0 0 0, rgba(255,255,255, 0.75) 1.1em 1
 .tracking-tight { letter-spacing: -0.025em; }
 .bg-soft-warning { background-color: rgba(241, 180, 76, 0.15); }
 .text-warning { color: #f1b44c !important; }
+.hover-primary:hover { color: #4747A1 !important; }

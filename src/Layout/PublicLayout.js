@@ -6,9 +6,13 @@ import Footer from '../Layout/VerticalLayout/Footer';
 const PublicLayout = (props) => {
   return (
     <React.Fragment>
-      <PublicHeader />
-      {props.children}
-      <Footer />
+      <div id="layout-wrapper" className="public-layout">
+        <PublicHeader />
+        <div className="main-content">
+          {props.children}
+          <Footer />
+        </div>
+      </div>
     </React.Fragment>
   );
 };

@@ -1,23 +1,23 @@
-import React, { useCallback, useEffect } from 'react';
 import PropTypes from "prop-types";
+import React, { useCallback, useEffect } from 'react';
 import withRouter from "../../components/Common/withRouter";
 
 // import Components
-import Sidebar from './Sidebar';
-import Header from './Header';
-import Footer from './Footer';
 import RightSidebar from '../../components/Common/RightSideBar';
+import Footer from './Footer';
+import Header from './Header';
+import Sidebar from './Sidebar';
 
 //redux
-import { useSelector, useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 
 import {
-  changeLayout,
-  changeSidebarTheme,
-  changeSidebarType,
-  changeTopbarTheme,
-  changeLayoutWidth,
-  showRightSidebarAction
+    changeLayout,
+    changeLayoutWidth,
+    changeSidebarTheme,
+    changeSidebarType,
+    changeTopbarTheme,
+    showRightSidebarAction
 } from "../../store/actions";
 
 const Layout = props => {
@@ -109,8 +109,10 @@ const Layout = props => {
           type={leftSideBarType}
           isMobile={isMobile}
         />
-        <div className="main-content" style={{background:"#F5F7FF"}}>{props.children}</div>
-        <Footer />
+        <div className="main-content" style={{ background: "#F5F7FF" }}>
+          {props.children}
+          <Footer />
+        </div>
       </div>
       {showRightSidebar ? <RightSidebar /> : null}
     </React.Fragment>

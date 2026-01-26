@@ -1,42 +1,27 @@
-import React from "react"
 import { Link } from "react-router-dom";
-import { Container, Row, Col } from "reactstrap"
+import { Col, Row } from "reactstrap";
 
 const Footer = () => {
   return (
-    <React.Fragment>
-      <footer className="loggedin-footer">
-        <Container fluid ={true} style={{padding:0}}>
-          <Row>
-            {/* <Col sm={6}>{new Date().getFullYear()} © Trrader.in</Col> */}
-            <div className="landing">
-              <footer className="footer-main bg-gradient-primary dark overlay-shape-06">
-                    <div className="padding">
-                        
-                        <div className="row center-desktop max-width-l">
-                            <div className="col-two-fifths">
-                            
-                                <h6>Trrader ®</h6>
-                                <p>Product by Trrader, for Trrader.</p>
-                            </div>
-                            <div className="col-one-fifth">
-                                <h6>Info</h6>
-                                <ul className="blank">
-                                    <li><Link to={"/termsandconditions"} style={{color:"white"}}> Terms & Conditions</Link></li>
-                                    <li><Link to={"/faq"} style={{color:"white"}}> FAQ</Link></li>
-                                    <li><Link to={"/privacypolicy"} style={{color:"white"}}> Privacy & Policy</Link></li>
-                                </ul>
-                            </div>
-                        </div>
-                    </div>
-                    <p className="copyright"><span>Product by Trrader, for Trrader</span><span> © 2023, all rights reserved.</span></p>
-                </footer>
+    <footer className="footer shadow-sm">
+      <div className="max-width-l">
+        <Row className="align-items-center">
+          <Col md={6}>
+            <div className="d-flex align-items-center">
+              <span className="fw-semibold text-dark me-2">Trrader ®</span>
+              <span className="text-muted font-size-13">© {new Date().getFullYear()} All rights reserved.</span>
             </div>
-          </Row>
-        </Container>
-      </footer>
-    </React.Fragment>
-
+          </Col>
+          <Col md={6}>
+            <div className="text-md-end footer-links">
+              <Link to="/termsandconditions" className="text-muted ms-4 hover-primary transition-all font-size-13">Terms</Link>
+              <Link to="/privacypolicy" className="text-muted ms-4 hover-primary transition-all font-size-13">Privacy</Link>
+              <Link to="/faq" className="text-muted ms-4 hover-primary transition-all font-size-13">FAQ</Link>
+            </div>
+          </Col>
+        </Row>
+      </div>
+    </footer>
   );
 }
 

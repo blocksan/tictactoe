@@ -1,23 +1,23 @@
-import React, { useEffect, useState, useCallback } from "react";
 import PropTypes from "prop-types";
+import React, { useCallback, useEffect, useState } from "react";
 import withRouter from "../../components/Common/withRouter";
 
 //actions
 import {
-  changeLayout,
-  changeTopbarTheme,
-  changeLayoutWidth,
-  showRightSidebarAction,
+    changeLayout,
+    changeLayoutWidth,
+    changeTopbarTheme,
+    showRightSidebarAction,
 } from "../../store/actions";
 
 //redux
-import { useSelector, useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 
 //components
-import Navbar from "./NavBar";
-import Header from "./Header";
-import Footer from "./Footer";
 import RightSidebar from "../../components/Common/RightSideBar";
+import Footer from "./Footer";
+import Header from "./Header";
+import Navbar from "./NavBar";
 
 const Layout = (props) => {
   const dispatch = useDispatch();
@@ -97,8 +97,10 @@ const Layout = (props) => {
           openLeftMenuCallBack={openMenu}
         />
         <Navbar />
-        <div className="main-content">{props.children}</div>
-        <Footer />
+        <div className="main-content">
+          {props.children}
+          <Footer />
+        </div>
       </div>
 
       {showRightSidebar ? <RightSidebar /> : null}
