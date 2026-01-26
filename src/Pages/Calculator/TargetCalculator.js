@@ -37,7 +37,6 @@ import PremiumModal from "../../components/Common/PremiumModal";
 import { DEFAULT_AVERAGE_SL_HIT_TRADE_IN_ONE_DAY, DEFAULT_AVERAGE_TARGET_HIT_TRADE_IN_ONE_DAY, DEFAULT_AVERAGE_TRADING_CHARGES_PER_TRADE, DEFAULT_DESIRED_NUMBER_OF_TRADING_SESSIONS, DEFAULT_MAX_DRAW_DOWN_PERCENTAGE, DEFAULT_MAX_SL_COUNT_ONE_DAY, DEFAULT_MAX_TRADE_AMOUNT_IN_ONE_DAY, DEFAULT_MAX_TRADE_IN_ONE_DAY, DEFAULT_NORMAL_TRADING_DAYS, DEFAULT_PERCENTAGE_OF_TRADING_CAPITAL_IN_ONE_TRADE, DEFAULT_TARGET_RATIO_MULTIPLIER, DEFAULT_TOTAL_TRADES_IN_ONE_DAY, DEFAULT_TRADING_CAPITAL, DEFAULT_ZERO_SL_HIT_TRADE_DAYS, DEFAULT_ZERO_TARGET_HIT_TRADE_DAYS } from "../../constants/calculator";
 import { BANKNIFTY_LOT_SIZE, FINNIFTY_LOT_SIZE, IndexType, NIFTY50_LOT_SIZE } from "../../constants/NSE_index";
 import { getFirebaseBackend } from "../../helpers/firebase_helper";
-import LotSizeCards from "../CommonPages/LotSizeCards";
 import CustomOptionPremiumStackedBar from "./CustomOptionPremiumStackedBar";
 import DayWiseCapitalDrawDown from "./DayWiseCapitalDrawDown";
 const TargetCalculator = (props) => {
@@ -524,11 +523,8 @@ const TargetCalculator = (props) => {
         </Container>
         <Row>
           <Col lg={12}>
-            <Card>
-              {/* <CardHeader className="configuration-header">
-                            <h5 className="card-title mb-0 text-white">Target Configuration</h5>
-              </CardHeader> */}
-              <Nav pills className="navtab-bg nav-justified" style={{ borderBottom: '1px solid #ccc' }}>
+            <div className="d-flex justify-content-center mb-4">
+              <Nav pills className="custom-dashboard-tabs">
                 <NavItem>
                   <NavLink
                     style={{ cursor: "pointer" }}
@@ -545,7 +541,7 @@ const TargetCalculator = (props) => {
                 </NavItem>
                 <NavItem>
                   <NavLink
-                    style={{ cursor: "pointer" }}
+                    style={{ cursor: "pointer", minWidth: "250px" }}
                     className={classnames({
                       active: activeTab === "2",
                     })}
@@ -559,413 +555,372 @@ const TargetCalculator = (props) => {
                 </NavItem>
 
               </Nav>
+            </div>
               <TabContent activeTab={activeTab} className="p-3 text-muted calculator-tab-content">
                 <TabPane tabId="1">
-                  <Row>
-                    <Col sm="12">
-                      <CardBody style={{ background: "rgb(241 241 241 / 7%)" }}>
-                        {/* <CardTitle>Risk Calculator</CardTitle> */}
-                        <br />
-                        <CardSubtitle className="mb-3">
-                          This tool will help you <strong>calculate the target amount</strong> you can <strong style={{ color: "green" }}>target in a trade</strong> based on your capital, percentage of risk per trade, and target hit ratio.
-                        </CardSubtitle>
-                        <br />
-                        <Form
-                          onSubmit={(e) => {
-                            e.preventDefault();
-                            targetCalculatorForm.handleSubmit();
-                            return false;
-                          }}
-                          onChange={handleOnChange}
-                        >
-                          <Row>
-                            <Col xl="6">
-                              <Row>
-                                <Col xl="6">
-                                  <div className="mb-3">
-                                    <Label className="form-label calculator-form-input-label">Trading Capital</Label>
-                                    <Input
-                                      name="tradingCapital"
-                                      label="tradingCapital"
-                                      placeholder="Please provide your Trading Capital"
-                                      type="number"
-                                      className="calculator-form-input"
-                                      onChange={targetCalculatorForm.handleChange}
-                                      onBlur={targetCalculatorForm.handleBlur}
-                                      value={targetCalculatorForm.values.tradingCapital || ""}
-                                      invalid={
-                                        targetCalculatorForm.touched.tradingCapital &&
-                                          targetCalculatorForm.errors.tradingCapital
-                                          ? true
-                                          : false
-                                      }
-                                    />
-                                    {targetCalculatorForm.touched.tradingCapital &&
-                                      targetCalculatorForm.errors.tradingCapital ? (
-                                      <FormFeedback type="invalid">
-                                        {targetCalculatorForm.errors.tradingCapital}
-                                      </FormFeedback>
-                                    ) : null}
-                                  </div>
-                                </Col>
-                                <Col xl="12">
-                                  <Row className="grouped-row">
-                                    <Col xl="5">
-                                      <Label className="form-label calculator-form-input-label">Desired No. of Trading Days</Label>
+                  <Row className="g-4">
+                    <Col lg={8}>
+                      <Card className="shadow-sm border-0 h-100 mb-0" style={{ borderRadius: '16px' }}>
+                        <CardBody className="p-4">
+                          <div className="d-flex justify-content-between align-items-center mb-4">
+                            <h5 className="card-title fw-bold text-dark m-0">Target Configuration</h5>
+                          </div>
+                          <CardSubtitle className="mb-4 text-muted small">
+                            This tool will help you <strong>calculate the target amount</strong> you can <strong className="text-success">target in a trade</strong> based on your capital, percentage of risk per trade, and target hit ratio.
+                          </CardSubtitle>
+
+                          <Form
+                            onSubmit={(e) => {
+                              e.preventDefault();
+                              targetCalculatorForm.handleSubmit();
+                              return false;
+                            }}
+                            onChange={handleOnChange}
+                            className="calculator-form"
+                          >
+                            <Row className="gy-4">
+                              {/* Trading Capital */}
+                              <Col md={12}>
+                                <Label className="calculator-form-input-label">Trading Capital (&#8377;)</Label>
+                                <Input
+                                  name="tradingCapital"
+                                  placeholder="Ex: 50000"
+                                  type="number"
+                                        className="calculator-form-input w-100 bg-light bg-opacity-25"
+                                  onChange={targetCalculatorForm.handleChange}
+                                  onBlur={targetCalculatorForm.handleBlur}
+                                  value={targetCalculatorForm.values.tradingCapital || ""}
+                                  invalid={!!(targetCalculatorForm.touched.tradingCapital && targetCalculatorForm.errors.tradingCapital)}
+                                />
+                                {targetCalculatorForm.touched.tradingCapital && targetCalculatorForm.errors.tradingCapital && (
+                                  <FormFeedback type="invalid">{targetCalculatorForm.errors.tradingCapital}</FormFeedback>
+                                )}
+                              </Col>
+
+                              {/* Grouped Allocation Strategy */}
+                              <Col md={12}>
+                                <div className="p-4 bg-light bg-opacity-50 rounded-4">
+                                  <Label className="fw-bold mb-3 small text-uppercase text-muted" style={{ letterSpacing: '0.05em' }}>Allocation Strategy</Label>
+                                  <Row className="align-items-start g-3">
+                                    <Col md={5}>
+                                      <Label className="calculator-form-input-label small text-muted">Desired Trading Days</Label>
                                       <Input
                                         name="desiredNumberOfTradingSessions"
-                                        label="desiredNumberOfTradingSessions"
-                                        className="calculator-form-input"
-                                        placeholder=""
+                                        className="calculator-form-input w-100 shadow-sm"
                                         type="number"
+                                        placeholder="Ex: 20"
                                         onChange={targetCalculatorForm.handleChange}
                                         onBlur={targetCalculatorForm.handleBlur}
                                         value={targetCalculatorForm.values.desiredNumberOfTradingSessions || ""}
-                                        invalid={
-                                          targetCalculatorForm.touched.desiredNumberOfTradingSessions &&
-                                            targetCalculatorForm.errors.desiredNumberOfTradingSessions
-                                            ? true
-                                            : false
-                                        }
+                                        invalid={!!(targetCalculatorForm.touched.desiredNumberOfTradingSessions && targetCalculatorForm.errors.desiredNumberOfTradingSessions)}
                                       />
-                                      {targetCalculatorForm.touched.desiredNumberOfTradingSessions &&
-                                        targetCalculatorForm.errors.desiredNumberOfTradingSessions ? (
-                                        <FormFeedback type="invalid">
-                                          {targetCalculatorForm.errors.desiredNumberOfTradingSessions}
-                                        </FormFeedback>
-                                      ) : null}
+                                      <FormFeedback>{targetCalculatorForm.errors.desiredNumberOfTradingSessions}</FormFeedback>
                                     </Col>
-                                    <Col className="md-2" style={{
-                                      justifyContent: "center",
-                                      display: "flex",
-                                      alignItems: "center",
-                                      fontWeight: "bold",
-                                      height: "50px",
-                                      marginTop: "25px"
-                                    }} >Or</Col>
-                                    <Col xl="5">
-                                      <Label className="form-label calculator-form-input-label">% of Trading Capital in 1 Trade</Label>
+                                    <Col md={2} className="d-flex align-items-center justify-content-center pt-4">
+                                      <span className="text-muted small fw-bold text-uppercase" style={{ fontSize: '0.75rem', marginTop: '10px' }}>OR</span>
+                                    </Col>
+                                    <Col md={5}>
+                                      <Label className="calculator-form-input-label small text-muted">% Capital per Trade</Label>
                                       <Input
                                         name="percentageOfTradingCapitalInOneTrade"
-                                        label="percentageOfTradingCapitalInOneTrade"
-                                        className="calculator-form-input"
-                                        placeholder=""
+                                        className="calculator-form-input w-100 shadow-sm"
                                         type="number"
+                                        placeholder="Ex: 5"
                                         onChange={targetCalculatorForm.handleChange}
                                         onBlur={targetCalculatorForm.handleBlur}
                                         value={targetCalculatorForm.values.percentageOfTradingCapitalInOneTrade || ""}
-                                        invalid={
-                                          targetCalculatorForm.touched.percentageOfTradingCapitalInOneTrade &&
-                                            targetCalculatorForm.errors.percentageOfTradingCapitalInOneTrade
-                                            ? true
-                                            : false
-                                        }
+                                        invalid={!!(targetCalculatorForm.touched.percentageOfTradingCapitalInOneTrade && targetCalculatorForm.errors.percentageOfTradingCapitalInOneTrade)}
                                       />
-                                      {targetCalculatorForm.touched.percentageOfTradingCapitalInOneTrade &&
-                                        targetCalculatorForm.errors.percentageOfTradingCapitalInOneTrade ? (
-                                        <FormFeedback type="invalid">
-                                          {targetCalculatorForm.errors.percentageOfTradingCapitalInOneTrade}
-                                        </FormFeedback>
-                                      ) : null}
+                                      <FormFeedback>{targetCalculatorForm.errors.percentageOfTradingCapitalInOneTrade}</FormFeedback>
                                     </Col>
                                   </Row>
-                                </Col>
-                              </Row>
-                              <br />
-                              <span className={`${disableTheInputs ? 'show-click-link' : 'hide-click-link'}`}><strong className="underline-click" onClick={disableInputsHandler}>Click to edit</strong> the advance configuration</span>
-                              <Row className={`${disableTheInputs ? 'disable-the-inputs' : 'enable-the-inputs'}`}>
-                                <Col xl="6">
-                                  <div className="mb-3">
-                                    <Label className="form-label calculator-form-input-label">Max SL Count</Label>
-                                    <Input
-                                      name="maxSLCountOneDay"
-                                      label="maxSLCountOneDay"
-                                      placeholder="Maximum number of Stop Loss you want to take in a day (1-3)"
-                                      type="number"
-                                      className="calculator-form-input"
-                                      onChange={targetCalculatorForm.handleChange}
-                                      onBlur={targetCalculatorForm.handleBlur}
-                                      value={targetCalculatorForm.values.maxSLCountOneDay || ""}
-                                      invalid={
-                                        targetCalculatorForm.touched.maxSLCountOneDay &&
-                                          targetCalculatorForm.errors.maxSLCountOneDay
-                                          ? true
-                                          : false
-                                      }
-                                    />
-                                    {targetCalculatorForm.touched.maxSLCountOneDay &&
-                                      targetCalculatorForm.errors.maxSLCountOneDay ? (
-                                      <FormFeedback type="invalid">
-                                        {targetCalculatorForm.errors.maxSLCountOneDay}
-                                      </FormFeedback>
-                                    ) : null}
-                                  </div>
-                                </Col>
-                                <Col xl="6">
-                                  <div className="mb-3">
-                                    <Label className="form-label calculator-form-input-label">Maximum SL Percentage(%) of 1 Trade</Label>
-                                    <Input
-                                      name="maxDrawDownPercentage"
-                                      label="maxDrawDownPercentage"
-                                      placeholder="Maximum SL(Drawdown) percentage of Used Capital i.e 1-30% of Used Capital"
-                                      type="number"
-                                      className="calculator-form-input"
-                                      onChange={targetCalculatorForm.handleChange}
-                                      onBlur={targetCalculatorForm.handleBlur}
-                                      value={targetCalculatorForm.values.maxDrawDownPercentage || ""}
-                                      invalid={
-                                        targetCalculatorForm.touched.maxDrawDownPercentage &&
-                                          targetCalculatorForm.errors.maxDrawDownPercentage
-                                          ? true
-                                          : false
-                                      }
-                                    />
-                                    {targetCalculatorForm.touched.maxDrawDownPercentage &&
-                                      targetCalculatorForm.errors.maxDrawDownPercentage ? (
-                                      <FormFeedback type="invalid">
-                                        {targetCalculatorForm.errors.maxDrawDownPercentage}
-                                      </FormFeedback>
-                                    ) : null}
-                                  </div>
-                                </Col>
+                                </div>
+                              </Col>
 
-                                <Col xl="6">
-                                  <div className="mb-3">
-                                    <Label className="form-label calculator-form-input-label">Target ratio 1: ?</Label>
-                                    <Input
-                                      name="targetRatioMultiplier"
-                                      label="targetRatioMultiplier"
-                                      placeholder="Enter Target multiplier with respect to Loss i.e 1,2,3... etc."
-                                      type="number"
-                                      className="calculator-form-input"
-                                      onChange={targetCalculatorForm.handleChange}
-                                      onBlur={targetCalculatorForm.handleBlur}
-                                      value={targetCalculatorForm.values.targetRatioMultiplier || ""}
-                                      invalid={
-                                        targetCalculatorForm.touched.targetRatioMultiplier &&
-                                          targetCalculatorForm.errors.targetRatioMultiplier
-                                          ? true
-                                          : false
-                                      }
-                                    />
-                                    {targetCalculatorForm.touched.targetRatioMultiplier &&
-                                      targetCalculatorForm.errors.targetRatioMultiplier ? (
-                                      <FormFeedback type="invalid">
-                                        {targetCalculatorForm.errors.targetRatioMultiplier}
-                                      </FormFeedback>
-                                    ) : null}
-                                  </div>
-                                </Col>
-                                <Col xl="6">
-                                  <div className="mb-3">
-                                    <Label className="form-label calculator-form-input-label">Trading Charge of One Trade (Buy & Sell)</Label>
-                                    <Input
-                                      name="averageTradingChargesPerTrade"
-                                      label="averageTradingChargesPerTrade"
-                                      placeholder="Please provide Average Trading Charge of One Trade (Buy & Sell)"
-                                      type="number"
-                                      className="calculator-form-input"
-                                      onChange={targetCalculatorForm.handleChange}
-                                      onBlur={targetCalculatorForm.handleBlur}
-                                      value={targetCalculatorForm.values.averageTradingChargesPerTrade}
-                                      invalid={
-                                        targetCalculatorForm.touched.averageTradingChargesPerTrade &&
-                                          targetCalculatorForm.errors.averageTradingChargesPerTrade
-                                          ? true
-                                          : false
-                                      }
-                                    />
-                                    {targetCalculatorForm.touched.averageTradingChargesPerTrade &&
-                                      targetCalculatorForm.errors.averageTradingChargesPerTrade ? (
-                                      <FormFeedback type="invalid">
-                                        {targetCalculatorForm.errors.averageTradingChargesPerTrade}
-                                      </FormFeedback>
-                                    ) : null}
-                                  </div>
-                                </Col>
+                              {/* Advanced Configuration Toggle */}
+                              <Col md={12}>
+                                <div className="d-flex align-items-center justify-content-between my-2">
+                                  <Label className="fw-bold m-0 text-dark">Advanced Parameters</Label>
+                                  <button
+                                    type="button"
+                                    className="btn btn-md text-primary text-decoration-none fw-semibold p-0"
+                                    onClick={disableInputsHandler}
+                                  >
+                                    {disableTheInputs ? "Edit" : "Lock"}
+                                  </button>
+                                </div>
 
-                                <Col xl="6">
-                                  <div className="mb-3">
-                                    <Label className="form-label calculator-form-input-label">Average SL Hit Trade in One Day</Label>
-                                    <Input
-                                      name="averageSLHitTradeInOneDay"
-                                      label="averageSLHitTradeInOneDay"
-                                      placeholder="Please provide Average SL Hit Trade In One Day"
-                                      type="number"
-                                      className="calculator-form-input"
-                                      onChange={targetCalculatorForm.handleChange}
-                                      onBlur={targetCalculatorForm.handleBlur}
-                                      value={targetCalculatorForm.values.averageSLHitTradeInOneDay}
-                                      invalid={
-                                        targetCalculatorForm.touched.averageSLHitTradeInOneDay &&
-                                          targetCalculatorForm.errors.averageSLHitTradeInOneDay
-                                          ? true
-                                          : false
-                                      }
-                                    />
-                                    {targetCalculatorForm.touched.averageSLHitTradeInOneDay &&
-                                      targetCalculatorForm.errors.averageSLHitTradeInOneDay ? (
-                                      <FormFeedback type="invalid">
-                                        {targetCalculatorForm.errors.averageSLHitTradeInOneDay}
-                                      </FormFeedback>
-                                    ) : null}
-                                  </div>
-                                </Col>
-                                <Col xl="6">
-                                  <div className="mb-3">
-                                    <Label className="form-label calculator-form-input-label">Average Target Hit Trade in One Day</Label>
-                                    <Input
-                                      name="averageTargetHitTradeInOneDay"
-                                      label="averageTargetHitTradeInOneDay"
-                                      placeholder="Please provide Average Target Hit Trade In One Day"
-                                      type="number"
-                                      className="calculator-form-input"
-                                      onChange={targetCalculatorForm.handleChange}
-                                      onBlur={targetCalculatorForm.handleBlur}
-                                      value={targetCalculatorForm.values.averageTargetHitTradeInOneDay}
-                                      invalid={
-                                        targetCalculatorForm.touched.averageTargetHitTradeInOneDay &&
-                                          targetCalculatorForm.errors.averageTargetHitTradeInOneDay
-                                          ? true
-                                          : false
-                                      }
-                                    />
-                                    {targetCalculatorForm.touched.averageTargetHitTradeInOneDay &&
-                                      targetCalculatorForm.errors.averageTargetHitTradeInOneDay ? (
-                                      <FormFeedback type="invalid">
-                                        {targetCalculatorForm.errors.averageTargetHitTradeInOneDay}
-                                      </FormFeedback>
-                                    ) : null}
-                                  </div>
-                                </Col>
+                                <div className={`transition-all ${disableTheInputs ? 'opacity-50 pointer-events-none' : ''}`} style={disableTheInputs ? { pointerEvents: 'none' } : {}}>
+                                  <Row className="g-3">
+                                    <Col md={6}>
+                                      <Label className="calculator-form-input-label small text-muted">Max SL Count (Day)</Label>
+                                      <Input
+                                        name="maxSLCountOneDay"
+                                        type="number"
+                                              className="calculator-form-input w-100 bg-light bg-opacity-25"
+                                        onChange={targetCalculatorForm.handleChange}
+                                        onBlur={targetCalculatorForm.handleBlur}
+                                        value={targetCalculatorForm.values.maxSLCountOneDay || ""}
+                                        invalid={!!(targetCalculatorForm.touched.maxSLCountOneDay && targetCalculatorForm.errors.maxSLCountOneDay)}
+                                      />
+                                      <FormFeedback>{targetCalculatorForm.errors.maxSLCountOneDay}</FormFeedback>
+                                    </Col>
+                                    <Col md={6}>
+                                      <Label className="calculator-form-input-label small text-muted">Max Drawdown %</Label>
+                                      <Input
+                                        name="maxDrawDownPercentage"
+                                        type="number"
+                                              className="calculator-form-input w-100 bg-light bg-opacity-25"
+                                        onChange={targetCalculatorForm.handleChange}
+                                        onBlur={targetCalculatorForm.handleBlur}
+                                        value={targetCalculatorForm.values.maxDrawDownPercentage || ""}
+                                        invalid={!!(targetCalculatorForm.touched.maxDrawDownPercentage && targetCalculatorForm.errors.maxDrawDownPercentage)}
+                                      />
+                                      <FormFeedback>{targetCalculatorForm.errors.maxDrawDownPercentage}</FormFeedback>
+                                    </Col>
 
-                                <Col xl="6">
-                                  <div className="mb-3">
-                                    <Label className="form-label calculator-form-input-label">Zero Stop Loss Days</Label>
-                                    <Input
-                                      name="zeroSLHitTradeDays"
-                                      label="zeroSLHitTradeDays"
-                                      placeholder="Please provide Zero SL Hit Trade Days"
-                                      type="number"
-                                      className="calculator-form-input"
-                                      onChange={targetCalculatorForm.handleChange}
-                                      onBlur={targetCalculatorForm.handleBlur}
-                                      value={targetCalculatorForm.values.zeroSLHitTradeDays}
-                                      invalid={
-                                        targetCalculatorForm.touched.zeroSLHitTradeDays &&
-                                          targetCalculatorForm.errors.zeroSLHitTradeDays
-                                          ? true
-                                          : false
-                                      }
-                                    />
-                                    {targetCalculatorForm.touched.zeroSLHitTradeDays &&
-                                      targetCalculatorForm.errors.zeroSLHitTradeDays ? (
-                                      <FormFeedback type="invalid">
-                                        {targetCalculatorForm.errors.zeroSLHitTradeDays}
-                                      </FormFeedback>
-                                    ) : null}
-                                  </div>
-                                </Col>
-                                <Col xl="6">
-                                  <div className="mb-3">
-                                    <Label className="form-label calculator-form-input-label">Zero Target Hit Trade Days</Label>
-                                    <Input
-                                      name="zeroTargetHitTradeDays"
-                                      label="zeroTargetHitTradeDays"
-                                      placeholder="Please provide Zero Target Hit Trade Days"
-                                      type="number"
-                                      className="calculator-form-input"
-                                      onChange={targetCalculatorForm.handleChange}
-                                      onBlur={targetCalculatorForm.handleBlur}
-                                      value={targetCalculatorForm.values.zeroTargetHitTradeDays}
-                                      invalid={
-                                        targetCalculatorForm.touched.zeroTargetHitTradeDays &&
-                                          targetCalculatorForm.errors.zeroTargetHitTradeDays
-                                          ? true
-                                          : false
-                                      }
-                                    />
-                                    {targetCalculatorForm.touched.zeroTargetHitTradeDays &&
-                                      targetCalculatorForm.errors.zeroTargetHitTradeDays ? (
-                                      <FormFeedback type="invalid">
-                                        {targetCalculatorForm.errors.zeroTargetHitTradeDays}
-                                      </FormFeedback>
-                                    ) : null}
-                                  </div>
-                                </Col>
-                              </Row>
-                            </Col>
-                            <Col xl="5" className="offset-xl-1">
-                              <LotSizeCards></LotSizeCards>
-                            </Col>
-                            <Col>
-                              <div className="d-flex flex-wrap gap-2 justify-content-center">
-                                <Button type="submit" className="btn-lg primary-button" style={{ fontSize: "1.1em", borderRadius: "4px", minWidth: "120px" }}>
-                                  Calculate
-                                </Button>{" "}
-                                <Button type="reset" color="secondary" className="" style={{ fontSize: "1.1em", borderRadius: "4px", minWidth: "120px" }} onClick={handleResetClick}>
-                                  Reset
-                                </Button>
+                                    <Col md={6}>
+                                      <Label className="calculator-form-input-label small text-muted">Target Ratio (1:?)</Label>
+                                      <Input
+                                        name="targetRatioMultiplier"
+                                        type="number"
+                                              className="calculator-form-input w-100 bg-light bg-opacity-25"
+                                        onChange={targetCalculatorForm.handleChange}
+                                        onBlur={targetCalculatorForm.handleBlur}
+                                        value={targetCalculatorForm.values.targetRatioMultiplier || ""}
+                                        invalid={!!(targetCalculatorForm.touched.targetRatioMultiplier && targetCalculatorForm.errors.targetRatioMultiplier)}
+                                      />
+                                      <FormFeedback>{targetCalculatorForm.errors.targetRatioMultiplier}</FormFeedback>
+                                    </Col>
+                                    <Col md={6}>
+                                      <Label className="calculator-form-input-label small text-muted">Trading Charge (Buy & Sell)</Label>
+                                      <Input
+                                        name="averageTradingChargesPerTrade"
+                                        type="number"
+                                        className="calculator-form-input w-100 bg-light bg-opacity-25"
+                                        onChange={targetCalculatorForm.handleChange}
+                                        onBlur={targetCalculatorForm.handleBlur}
+                                        value={targetCalculatorForm.values.averageTradingChargesPerTrade}
+                                        invalid={!!(targetCalculatorForm.touched.averageTradingChargesPerTrade && targetCalculatorForm.errors.averageTradingChargesPerTrade)}
+                                      />
+                                      <FormFeedback>{targetCalculatorForm.errors.averageTradingChargesPerTrade}</FormFeedback>
+                                    </Col>
+
+                                    <Col md={6}>
+                                      <Label className="calculator-form-input-label small text-muted">Avg SL Hit (One Day)</Label>
+                                      <Input
+                                        name="averageSLHitTradeInOneDay"
+                                        type="number"
+                                        className="calculator-form-input w-100 bg-light bg-opacity-25"
+                                        onChange={targetCalculatorForm.handleChange}
+                                        onBlur={targetCalculatorForm.handleBlur}
+                                        value={targetCalculatorForm.values.averageSLHitTradeInOneDay}
+                                        invalid={!!(targetCalculatorForm.touched.averageSLHitTradeInOneDay && targetCalculatorForm.errors.averageSLHitTradeInOneDay)}
+                                      />
+                                      <FormFeedback>{targetCalculatorForm.errors.averageSLHitTradeInOneDay}</FormFeedback>
+                                    </Col>
+                                    <Col md={6}>
+                                      <Label className="calculator-form-input-label small text-muted">Avg Target Hit (One Day)</Label>
+                                      <Input
+                                        name="averageTargetHitTradeInOneDay"
+                                        type="number"
+                                        className="calculator-form-input w-100 bg-light bg-opacity-25"
+                                        onChange={targetCalculatorForm.handleChange}
+                                        onBlur={targetCalculatorForm.handleBlur}
+                                        value={targetCalculatorForm.values.averageTargetHitTradeInOneDay}
+                                        invalid={!!(targetCalculatorForm.touched.averageTargetHitTradeInOneDay && targetCalculatorForm.errors.averageTargetHitTradeInOneDay)}
+                                      />
+                                      <FormFeedback>{targetCalculatorForm.errors.averageTargetHitTradeInOneDay}</FormFeedback>
+                                    </Col>
+
+                                    <Col md={6}>
+                                      <Label className="calculator-form-input-label small text-muted">Zero SL Hit Days</Label>
+                                      <Input
+                                        name="zeroSLHitTradeDays"
+                                        type="number"
+                                        className="calculator-form-input w-100 bg-light bg-opacity-25"
+                                        onChange={targetCalculatorForm.handleChange}
+                                        onBlur={targetCalculatorForm.handleBlur}
+                                        value={targetCalculatorForm.values.zeroSLHitTradeDays}
+                                        invalid={!!(targetCalculatorForm.touched.zeroSLHitTradeDays && targetCalculatorForm.errors.zeroSLHitTradeDays)}
+                                      />
+                                      <FormFeedback>{targetCalculatorForm.errors.zeroSLHitTradeDays}</FormFeedback>
+                                    </Col>
+                                    <Col md={6}>
+                                      <Label className="calculator-form-input-label small text-muted">Zero Target Hit Days</Label>
+                                      <Input
+                                        name="zeroTargetHitTradeDays"
+                                        type="number"
+                                        className="calculator-form-input w-100 bg-light bg-opacity-25"
+                                        onChange={targetCalculatorForm.handleChange}
+                                        onBlur={targetCalculatorForm.handleBlur}
+                                        value={targetCalculatorForm.values.zeroTargetHitTradeDays}
+                                        invalid={!!(targetCalculatorForm.touched.zeroTargetHitTradeDays && targetCalculatorForm.errors.zeroTargetHitTradeDays)}
+                                      />
+                                      <FormFeedback>{targetCalculatorForm.errors.zeroTargetHitTradeDays}</FormFeedback>
+                                    </Col>
+                                  </Row>
+                                </div>
+                              </Col>
+
+                              {/* Action Buttons */}
+                              <Col md={12} className="mt-4 pt-2">
+                                <div className="d-flex justify-content-end gap-3">
+                                  <Button
+                                    type="reset"
+                                    color="white"
+                                    className="btn-lg px-4 fw-normal text-muted border-0"
+                                    style={{ backgroundColor: '#f5f5f5' }}
+                                    onClick={handleResetClick}
+                                  >
+                                    Reset
+                                  </Button>
+                                  <Button
+                                    type="submit"
+                                    className="btn-lg px-5 primary-button fw-normal text-white shadow-lg border-0"
+                                    style={{ borderRadius: '6px', background: 'linear-gradient(135deg, #4747A1 0%, #3a3a85 100%)' }}
+                                    disabled={loading}
+                                  >
+                                    {loading ? <i className="fas fa-circle-notch fa-spin me-2"></i> : null}
+                                    Calculate Target
+                                  </Button>
+                                </div>
+                              </Col>
+                            </Row>
+                            <div
+                              className="position-fixed top-0 end-0 p-3"
+                              style={{ zIndex: "1005" }}
+                            >
+                              <Toast isOpen={invalidFormValueToast}>
+                                <ToastHeader toggle={toggleInvalidFormValueToast}>
+                                  <img src={logoVoiled} alt="" className="me-2" height="18" />
+                                  Trrader.in
+                                </ToastHeader>
+                                <ToastBody>
+                                  Please provide either number of Trading Sessions or Percentage of Trading Capital in 1 Trade.
+                                </ToastBody>
+                              </Toast>
+                            </div>
+                          </Form>
+                        </CardBody>
+                      </Card>
+                    </Col>
+
+                    {/* Right Sidebar: Market Info */}
+                    <Col lg={4}>
+                      <Card className="shadow-sm border-0 h-100 mb-0" style={{ borderRadius: '16px', backgroundColor: '#f5f5f5' }}>
+                        <CardBody className="p-4">
+                          <h5 className="card-title fw-bold text-dark mb-4">Market Lot Sizes</h5>
+                          <div className="d-flex flex-column gap-3">
+                            {/* Bank Nifty */}
+                            <div className="d-flex justify-content-between align-items-center p-3 rounded-4" style={{ backgroundColor: '#f8fafc' }}>
+                              <div>
+                                <h6 className="mb-1 fw-bold text-dark">BANKNIFTY</h6>
+                                <small className="text-muted">1 Lot Size</small>
                               </div>
-                              <div
-                                className="position-fixed top-0 left-0 end-0 p-3"
-                                style={{ zIndex: "1005" }}
-                              >
-                                <Toast isOpen={invalidFormValueToast}>
-                                  <ToastHeader toggle={setInvalidFormValueToast}>
-                                    <img
-                                      src={logoVoiled}
-                                      alt=""
-                                      className="me-2"
-                                      height="18"
-                                    />
-                                    Trrader.in
-                                  </ToastHeader>
-                                  <ToastBody color="warning">
-                                    Please provide either number of Trading Sessions or Percentage of Trading Capital in 1 Trade
-                                  </ToastBody>
-                                </Toast>
+                              <div className="text-end">
+                                <h3 className="mb-0 fw-bold" style={{ color: '#4747A1' }}>{BANKNIFTY_LOT_SIZE}</h3>
+                                <small className="text-muted fw-medium">Qty</small>
                               </div>
-                            </Col>
-                          </Row>
-                        </Form>
+                            </div>
 
+                            {/* Fin Nifty */}
+                            <div className="d-flex justify-content-between align-items-center p-3 rounded-4" style={{ backgroundColor: '#f8fafc' }}>
+                              <div>
+                                <h6 className="mb-1 fw-bold text-dark">FINNIFTY</h6>
+                                <small className="text-muted">1 Lot Size</small>
+                              </div>
+                              <div className="text-end">
+                                <h3 className="mb-0 fw-bold" style={{ color: '#4747A1' }}>{FINNIFTY_LOT_SIZE}</h3>
+                                <small className="text-muted fw-medium">Qty</small>
+                              </div>
+                            </div>
 
-                      </CardBody>
+                            {/* Nifty 50 */}
+                            <div className="d-flex justify-content-between align-items-center p-3 rounded-4" style={{ backgroundColor: '#f8fafc' }}>
+                              <div>
+                                <h6 className="mb-1 fw-bold text-dark">NIFTY 50</h6>
+                                <small className="text-muted">1 Lot Size</small>
+                              </div>
+                              <div className="text-end">
+                                <h3 className="mb-0 fw-bold" style={{ color: '#4747A1' }}>{NIFTY50_LOT_SIZE}</h3>
+                                <small className="text-muted fw-medium">Qty</small>
+                              </div>
+                            </div>
+
+                            <div className="mt-auto pt-4 text-center">
+                              <small className="text-muted opacity-75" style={{ fontSize: '0.8rem' }}>
+                                *Lot sizes are standard NSE contract sizes used for calculations.
+                              </small>
+                            </div>
+                          </div>
+                        </CardBody>
+                      </Card>
                     </Col>
                   </Row>
                 </TabPane>
                 <TabPane tabId="2">
                   <Row>
                     <Col sm="12">
-                      <div className="table-responsive">
-                        {targetCalculatorConfigs && targetCalculatorConfigs.length > 0 && <table className="table mb-0">
-                          <thead>
-                            <tr>
-                              <th>#</th>
-                              <th>Config Name</th>
-                              <th>Created On</th>
-                            </tr>
-                          </thead>
-                          <tbody>
-                            {targetCalculatorConfigs.map(function (config, index) {
-                              return (
-                                <tr onClick={() => loadSavedConfiguration(config)} className="row-hover">
-                                  <th scope="row">{index + 1}</th>
-                                  <td>{config.configName}</td>
-                                  <td>{config.createdOn.toLocaleString()}</td>
-                                  <Button className="btn-sm row-button" color="secondary">Click to load</Button>
-                                </tr>)
-                            })}
-                          </tbody>
-                        </table>}
-                        {!targetCalculatorConfigs || targetCalculatorConfigs.length == 0 && <div className="text-center" style={{ minHeight: "200px", alignItems: "center", display: "flex", justifyContent: "center" }}>No saved configurations found</div>}
-                      </div>
+                      <Card className="shadow-sm border-0 h-100 mb-0" style={{ borderRadius: '16px' }}>
+                        <CardBody className="p-4">
+                          <div className="d-flex justify-content-between align-items-center mb-4">
+                            <h5 className="card-title fw-bold text-dark m-0">Saved Configurations</h5>
+                          </div>
+                          <div className="table-responsive">
+                            {targetCalculatorConfigs && targetCalculatorConfigs.length > 0 ? (
+                              <table className="table table-hover align-middle mb-0">
+                                <thead className="bg-light bg-opacity-50">
+                                  <tr>
+                                    <th className="border-0 text-muted small text-uppercase ps-4" style={{ borderRadius: '8px 0 0 8px' }}>#</th>
+                                    <th className="border-0 text-muted small text-uppercase">Config Name</th>
+                                    <th className="border-0 text-muted small text-uppercase">Created On</th>
+                                    <th className="border-0 text-muted small text-uppercase text-end pe-4" style={{ borderRadius: '0 8px 8px 0' }}>Action</th>
+                                  </tr>
+                                </thead>
+                                <tbody>
+                                  {targetCalculatorConfigs.map(function (config, index) {
+                                    return (
+                                      <tr key={index} className="cursor-pointer" style={{ transition: 'all 0.2s' }}>
+                                        <th scope="row" className="ps-4 text-muted">{index + 1}</th>
+                                        <td className="fw-medium text-dark">{config.configName}</td>
+                                        <td className="text-muted">{config.createdOn.toLocaleString()}</td>
+                                        <td className="text-end pe-4">
+                                          <Button
+                                            size="sm"
+                                            color="primary"
+                                            className="px-3 rounded-pill shadow-sm"
+                                            style={{ background: 'linear-gradient(135deg, #4747A1 0%, #3a3a85 100%)', border: 'none' }}
+                                            onClick={(e) => {
+                                              e.stopPropagation();
+                                              loadSavedConfiguration(config);
+                                            }}
+                                          >
+                                            Load <i className="mdi mdi-arrow-right ms-1"></i>
+                                          </Button>
+                                        </td>
+                                      </tr>
+                                    )
+                                  })}
+                                </tbody>
+                              </table>
+                            ) : (
+                              <div className="text-center py-5">
+                                <div className="mb-3">
+                                  <i className="mdi mdi-folder-open-outline display-4 text-light"></i>
+                                </div>
+                                <h5 className="text-muted">No saved configurations found</h5>
+                                <p className="text-muted small">Save your risk calculations to access them here later.</p>
+                              </div>
+                            )}
+                          </div>
+                        </CardBody>
+                      </Card>
                     </Col>
                   </Row>
                 </TabPane>
               </TabContent>
-            </Card>
+
           </Col>
         </Row>
         <br />

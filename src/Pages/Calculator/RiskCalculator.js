@@ -36,7 +36,6 @@ import Breadcrumbs from "../../components/Common/Breadcrumb";
 import PremiumModal from "../../components/Common/PremiumModal";
 import { BANKNIFTY_LOT_SIZE, FINNIFTY_LOT_SIZE, IndexType, NIFTY50_LOT_SIZE } from "../../constants/NSE_index";
 import { getFirebaseBackend } from "../../helpers/firebase_helper";
-import LotSizeCards from "../CommonPages/LotSizeCards";
 import CustomOptionPremiumStackedBar from "./CustomOptionPremiumStackedBar";
 import DayWiseCapitalDrawDown from "./DayWiseCapitalDrawDown";
 
@@ -473,8 +472,8 @@ const RiskCalculator = (props) => {
                 </Container>
                 <Row>
                     <Col xl={12}>
-                        <Card>
-                        <Nav pills className="navtab-bg nav-justified" style={{borderBottom:'1px solid #ccc'}}>
+                        <div className="d-flex justify-content-center mb-4">
+                            <Nav pills className="custom-dashboard-tabs">
                     <NavItem>
                       <NavLink
                         style={{ cursor: "pointer" }}
@@ -482,7 +481,7 @@ const RiskCalculator = (props) => {
                           active: activeTab === "1",
                         })}
                         onClick={() => {
-                          toggle2("1");
+                          toggle2("1")
                         }}
                       >
                         <i className="mdi mdi-calculator-variant me-1 align-middle"> </i>{" "}
@@ -491,7 +490,7 @@ const RiskCalculator = (props) => {
                     </NavItem>
                     <NavItem>
                       <NavLink
-                        style={{ cursor: "pointer" }}
+                        style={{ cursor: "pointer", minWidth: "250px" }}
                         className={classnames({
                           active: activeTab === "2",
                         })}
@@ -505,279 +504,308 @@ const RiskCalculator = (props) => {
                     </NavItem>
                     
                   </Nav>
+                </div>
                             {/* <CardHeader className="configuration-header">
                                 <h5 className="card-title mb-0 text-white"></h5>
                             </CardHeader> */}
                     <TabContent activeTab={activeTab} className="p-3 text-muted calculator-tab-content">
                     <TabPane tabId="1">
-                      <Row>
-                        <Col sm="12">
-                        <CardBody style={{ background: "rgb(241 241 241 / 7%)" }}>
-                                {/* <CardTitle>Risk Calculator</CardTitle> */}
-                                <br />
-                                <CardSubtitle className="mb-3">
-                                    This tool will help you <strong>calculate the approximate amount</strong> you can <strong style={{ color: "Red" }}>risk in a trade</strong>  based on your capital, stop loss per trade, and money management.
-                                </CardSubtitle>
-                                <br />
-                                <Form
-                                    onSubmit={(e) => {
-                                        e.preventDefault();
-                                        riskCalculatorForm.handleSubmit();
-                                        return false;
-                                    }}
-                                    onChange={handleOnChange}
-                                    className="calculator-form"
+                      <Row className="g-4">
+                        <Col lg={8}>
+                          <Card className="shadow-sm border-0 h-100 mb-0" style={{ borderRadius: '16px' }}>
+                            <CardBody className="p-4">
+                              <div className="d-flex justify-content-between align-items-center mb-4">
+                                <h5 className="card-title fw-bold text-dark m-0">Risk Configuration</h5>
+                              </div>
+                              <CardSubtitle className="mb-4 text-muted small">
+                                Calculate your risk capital based on your trading style and stop-loss preferences.
+                              </CardSubtitle>
+
+                              <Form
+                                onSubmit={(e) => {
+                                  e.preventDefault();
+                                  riskCalculatorForm.handleSubmit();
+                                  return false;
+                                }}
+                                onChange={handleOnChange}
+                                className="calculator-form"
+                              >
+                                <Row className="gy-4">
+                                  {/* Trading Capital */}
+                                  <Col md={12}>
+                                    <Label className="calculator-form-input-label">Trading Capital (&#8377;)</Label>
+                                    <Input
+                                      name="tradingCapital"
+                                      placeholder="Ex: 50000"
+                                      type="number"
+                                      className="calculator-form-input w-100 bg-light bg-opacity-25"
+                                      onChange={riskCalculatorForm.handleChange}
+                                      onBlur={riskCalculatorForm.handleBlur}
+                                      value={riskCalculatorForm.values.tradingCapital || ""}
+                                      invalid={!!(riskCalculatorForm.touched.tradingCapital && riskCalculatorForm.errors.tradingCapital)}
+                                    />
+                                    {riskCalculatorForm.touched.tradingCapital && riskCalculatorForm.errors.tradingCapital && (
+                                      <FormFeedback type="invalid">{riskCalculatorForm.errors.tradingCapital}</FormFeedback>
+                                    )}
+                                  </Col>
+
+                                  {/* Grouped Allocation Strategy */}
+                                  <Col md={12}>
+                                    <div className="p-4 bg-light bg-opacity-50 rounded-4">
+                                      <Label className="fw-bold mb-3 small text-uppercase text-muted" style={{letterSpacing: '0.05em'}}>Allocation Strategy</Label>
+                                      <Row className="align-items-start g-3">
+                                        <Col md={5}>
+                                          <Label className="calculator-form-input-label small text-muted">Desired Trading Days</Label>
+                                          <Input
+                                            name="desiredNumberOfTradingSessions"
+                                            className="calculator-form-input w-100 shadow-sm"
+                                            type="number"
+                                            placeholder="Ex: 20"
+                                            onChange={riskCalculatorForm.handleChange}
+                                            onBlur={riskCalculatorForm.handleBlur}
+                                            value={riskCalculatorForm.values.desiredNumberOfTradingSessions || ""}
+                                            invalid={!!(riskCalculatorForm.touched.desiredNumberOfTradingSessions && riskCalculatorForm.errors.desiredNumberOfTradingSessions)}
+                                          />
+                                          <FormFeedback>{riskCalculatorForm.errors.desiredNumberOfTradingSessions}</FormFeedback>
+                                        </Col>
+                                        <Col md={2} className="d-flex align-items-center justify-content-center pt-4">
+                                          <span className="text-muted small fw-bold text-uppercase" style={{fontSize: '0.75rem', marginTop: '10px'}}>OR</span>
+                                        </Col>
+                                        <Col md={5}>
+                                          <Label className="calculator-form-input-label small text-muted">% Capital per Trade</Label>
+                                          <Input
+                                            name="percentageOfTradingCapitalInOneTrade"
+                                            className="calculator-form-input w-100 shadow-sm"
+                                            type="number"
+                                            placeholder="Ex: 5"
+                                            onChange={riskCalculatorForm.handleChange}
+                                            onBlur={riskCalculatorForm.handleBlur}
+                                            value={riskCalculatorForm.values.percentageOfTradingCapitalInOneTrade || ""}
+                                            invalid={!!(riskCalculatorForm.touched.percentageOfTradingCapitalInOneTrade && riskCalculatorForm.errors.percentageOfTradingCapitalInOneTrade)}
+                                          />
+                                          <FormFeedback>{riskCalculatorForm.errors.percentageOfTradingCapitalInOneTrade}</FormFeedback>
+                                        </Col>
+                                      </Row>
+                                    </div>
+                                  </Col>
+
+                                  {/* Advanced Configuration Toggle */}
+                                  <Col md={12}>
+                                    <div className="d-flex align-items-center justify-content-between my-2">
+                                      <Label className="fw-bold m-0 text-dark">Advanced Parameters</Label>
+                                      <button
+                                        type="button"
+                                        className="btn btn-md text-primary text-decoration-none fw-semibold p-0"
+                                        onClick={disableInputsHandler}
+                                      >
+                                        {disableTheInputs ? "Edit" : "Lock"}
+                                      </button>
+                                    </div>
+
+                                    <div className={`transition-all ${disableTheInputs ? 'opacity-50 pointer-events-none' : ''}`} style={disableTheInputs ? { pointerEvents: 'none' } : {}}>
+                                      <Row className="g-3">
+                                        <Col md={4}>
+                                          <Label className="calculator-form-input-label small text-muted">Max SL Count (Day)</Label>
+                                          <Input
+                                            name="maxSLCountOneDay"
+                                            type="number"
+                                            className="calculator-form-input w-100 bg-light bg-opacity-25"
+                                            onChange={riskCalculatorForm.handleChange}
+                                            onBlur={riskCalculatorForm.handleBlur}
+                                            value={riskCalculatorForm.values.maxSLCountOneDay || ""}
+                                            invalid={!!(riskCalculatorForm.touched.maxSLCountOneDay && riskCalculatorForm.errors.maxSLCountOneDay)}
+                                          />
+                                          <FormFeedback>{riskCalculatorForm.errors.maxSLCountOneDay}</FormFeedback>
+                                        </Col>
+                                        <Col md={4}>
+                                          <Label className="calculator-form-input-label small text-muted">Max Drawdown %</Label>
+                                          <Input
+                                            name="maxDrawDownPercentage"
+                                            type="number"
+                                            className="calculator-form-input w-100 bg-light bg-opacity-25"
+                                            onChange={riskCalculatorForm.handleChange}
+                                            onBlur={riskCalculatorForm.handleBlur}
+                                            value={riskCalculatorForm.values.maxDrawDownPercentage || ""}
+                                            invalid={!!(riskCalculatorForm.touched.maxDrawDownPercentage && riskCalculatorForm.errors.maxDrawDownPercentage)}
+                                          />
+                                          <FormFeedback>{riskCalculatorForm.errors.maxDrawDownPercentage}</FormFeedback>
+                                        </Col>
+                                        <Col md={4}>
+                                          <Label className="calculator-form-input-label small text-muted">Reward Ratio (1:?)</Label>
+                                          <Input
+                                            name="targetRatioMultiplier"
+                                            type="number"
+                                            className="calculator-form-input w-100 bg-light bg-opacity-25"
+                                            onChange={riskCalculatorForm.handleChange}
+                                            onBlur={riskCalculatorForm.handleBlur}
+                                            value={riskCalculatorForm.values.targetRatioMultiplier || ""}
+                                            invalid={!!(riskCalculatorForm.touched.targetRatioMultiplier && riskCalculatorForm.errors.targetRatioMultiplier)}
+                                          />
+                                          <FormFeedback>{riskCalculatorForm.errors.targetRatioMultiplier}</FormFeedback>
+                                        </Col>
+                                      </Row>
+                                    </div>
+                                  </Col>
+
+                                  {/* Action Buttons */}
+                                  <Col md={12} className="mt-4 pt-2">
+                                    <div className="d-flex justify-content-end gap-3">
+                                      <Button
+                                        type="reset"
+                                        color="white"
+                                        className="btn-lg px-4 fw-normal text-muted border-1"
+                                        style={{backgroundColor: '#f5f5f5'}}
+                                        onClick={handleResetClick}
+                                      >
+                                        Reset
+                                      </Button>
+                                      <Button
+                                        type="submit"
+                                        className="btn-lg px-4 primary-button fw-normal text-white shadow-lg border-0"
+                                        style={{borderRadius: '6px', background: 'linear-gradient(135deg, #4747A1 0%, #3a3a85 100%)'}}
+                                        disabled={loading}
+                                      >
+                                        {loading ? <i className="fas fa-circle-notch fa-spin me-2"></i> : null}
+                                        Calculate Risk
+                                      </Button>
+                                    </div>
+                                  </Col>
+                                </Row>
+                                <div
+                                  className="position-fixed top-0 end-0 p-3"
+                                  style={{ zIndex: "1005" }}
                                 >
-                                    <Row>
-                                        <Col xl="6">
-                                            <Row>
-                                                <Col xl="6">
-                                                    <div className="mb-3">
-                                                        <Label className="form-label calculator-form-input-label">Trading Capital</Label>
-                                                        <Input
-                                                            name="tradingCapital"
-                                                            label="tradingCapital"
-                                                            placeholder="Please provide your Trading Capital"
-                                                            type="number"
-                                                            className="calculator-form-input"
-                                                            onChange={riskCalculatorForm.handleChange}
-                                                            onBlur={riskCalculatorForm.handleBlur}
-                                                            value={riskCalculatorForm.values.tradingCapital || ""}
-                                                            invalid={
-                                                                riskCalculatorForm.touched.tradingCapital &&
-                                                                    riskCalculatorForm.errors.tradingCapital
-                                                                    ? true
-                                                                    : false
-                                                            }
-                                                        />
-                                                        {riskCalculatorForm.touched.tradingCapital &&
-                                                            riskCalculatorForm.errors.tradingCapital ? (
-                                                            <FormFeedback type="invalid">
-                                                                {riskCalculatorForm.errors.tradingCapital}
-                                                            </FormFeedback>
-                                                        ) : null}
-                                                    </div>
-                                                </Col>
-                                                <Col xl="12">
-                                                    <Row className="grouped-row">
-                                                        <Col xl="5">
-                                                            <Label className="form-label calculator-form-input-label">Desired No. of Trading Days</Label>
-                                                            <Input
-                                                                name="desiredNumberOfTradingSessions"
-                                                                label="desiredNumberOfTradingSessions"
-                                                                className="calculator-form-input"
-                                                                placeholder=""
-                                                                type="number"
-                                                                onChange={riskCalculatorForm.handleChange}
-                                                                onBlur={riskCalculatorForm.handleBlur}
-                                                                value={riskCalculatorForm.values.desiredNumberOfTradingSessions || ""}
-                                                                invalid={
-                                                                    riskCalculatorForm.touched.desiredNumberOfTradingSessions &&
-                                                                        riskCalculatorForm.errors.desiredNumberOfTradingSessions
-                                                                        ? true
-                                                                        : false
-                                                                }
-                                                            />
-                                                            {riskCalculatorForm.touched.desiredNumberOfTradingSessions &&
-                                                                riskCalculatorForm.errors.desiredNumberOfTradingSessions ? (
-                                                                <FormFeedback type="invalid">
-                                                                    {riskCalculatorForm.errors.desiredNumberOfTradingSessions}
-                                                                </FormFeedback>
-                                                            ) : null}
-                                                        </Col>
-                                                        <Col className="md-2" style={{
-                                                            justifyContent: "center",
-                                                            display: "flex",
-                                                            alignItems: "center",
-                                                            fontWeight: "bold",
-                                                            height: "50px",
-                                                            marginTop: "25px"
-                                                        }} >Or</Col>
-                                                        <Col xl="5">
-                                                            <Label className="form-label calculator-form-input-label">% of Trading Capital in 1 Trade</Label>
-                                                            <Input
-                                                                name="percentageOfTradingCapitalInOneTrade"
-                                                                label="percentageOfTradingCapitalInOneTrade"
-                                                                className="calculator-form-input"
-                                                                placeholder=""
-                                                                type="number"
-                                                                onChange={riskCalculatorForm.handleChange}
-                                                                onBlur={riskCalculatorForm.handleBlur}
-                                                                value={riskCalculatorForm.values.percentageOfTradingCapitalInOneTrade || ""}
-                                                                invalid={
-                                                                    riskCalculatorForm.touched.percentageOfTradingCapitalInOneTrade &&
-                                                                        riskCalculatorForm.errors.percentageOfTradingCapitalInOneTrade
-                                                                        ? true
-                                                                        : false
-                                                                }
-                                                            />
-                                                            {riskCalculatorForm.touched.percentageOfTradingCapitalInOneTrade &&
-                                                                riskCalculatorForm.errors.percentageOfTradingCapitalInOneTrade ? (
-                                                                <FormFeedback type="invalid">
-                                                                    {riskCalculatorForm.errors.percentageOfTradingCapitalInOneTrade}
-                                                                </FormFeedback>
-                                                            ) : null}
-                                                        </Col>
-                                                    </Row>
-                                                </Col>
-                                            </Row>
-                                            <br />
-                                            <span className={`${disableTheInputs ? 'show-click-link' : 'hide-click-link'}`}><strong className="underline-click" onClick={disableInputsHandler}>Click to edit</strong> the advance configuration</span>
-                                            <Row className={`${disableTheInputs ? 'disable-the-inputs' : 'enable-the-inputs'}`}>
-                                                <Col xl="6">
-                                                    <div className="mb-3">
-                                                        <Label className="form-label calculator-form-input-label">Max SL Count</Label>
-                                                        <Input
-                                                            name="maxSLCountOneDay"
-                                                            label="maxSLCountOneDay"
-                                                            placeholder="Maximum number of Stop Loss you want to take in a day (1-3)"
-                                                            className="calculator-form-input"
-                                                            type="number"
-                                                            onChange={riskCalculatorForm.handleChange}
-                                                            onBlur={riskCalculatorForm.handleBlur}
-                                                            value={riskCalculatorForm.values.maxSLCountOneDay || ""}
-                                                            invalid={
-                                                                riskCalculatorForm.touched.maxSLCountOneDay &&
-                                                                    riskCalculatorForm.errors.maxSLCountOneDay
-                                                                    ? true
-                                                                    : false
-                                                            }
-                                                        />
-                                                        {riskCalculatorForm.touched.maxSLCountOneDay &&
-                                                            riskCalculatorForm.errors.maxSLCountOneDay ? (
-                                                            <FormFeedback type="invalid">
-                                                                {riskCalculatorForm.errors.maxSLCountOneDay}
-                                                            </FormFeedback>
-                                                        ) : null}
-                                                    </div>
-                                                </Col>
-                                                <Col xl="6">
-                                                    <div className="mb-3">
-                                                        <Label className="form-label calculator-form-input-label">Maximum SL Percentage(%) of 1 Trade</Label>
-                                                        <Input
-                                                            name="maxDrawDownPercentage"
-                                                            label="maxDrawDownPercentage"
-                                                            placeholder="Maximum SL(Drawdown) percentage of Used Capital i.e 1-30% of Used Capital"
-                                                            className="calculator-form-input"
-                                                            type="number"
-                                                            onChange={riskCalculatorForm.handleChange}
-                                                            onBlur={riskCalculatorForm.handleBlur}
-                                                            value={riskCalculatorForm.values.maxDrawDownPercentage || ""}
-                                                            invalid={
-                                                                riskCalculatorForm.touched.maxDrawDownPercentage &&
-                                                                    riskCalculatorForm.errors.maxDrawDownPercentage
-                                                                    ? true
-                                                                    : false
-                                                            }
-                                                        />
-                                                        {riskCalculatorForm.touched.maxDrawDownPercentage &&
-                                                            riskCalculatorForm.errors.maxDrawDownPercentage ? (
-                                                            <FormFeedback type="invalid">
-                                                                {riskCalculatorForm.errors.maxDrawDownPercentage}
-                                                            </FormFeedback>
-                                                        ) : null}
-                                                    </div>
-                                                </Col>
-                                                <Col xl="6">
-                                                    <div className="mb-3">
-                                                        <Label className="form-label calculator-form-input-label">Target ratio 1: ?</Label>
-                                                        <Input
-                                                            name="targetRatioMultiplier"
-                                                            label="targetRatioMultiplier"
-                                                            placeholder="Enter Target multiplier with respect to Loss i.e 1,2,3... etc."
-                                                            className="calculator-form-input"
-                                                            type="number"
-                                                            onChange={riskCalculatorForm.handleChange}
-                                                            onBlur={riskCalculatorForm.handleBlur}
-                                                            value={riskCalculatorForm.values.targetRatioMultiplier || ""}
-                                                            invalid={
-                                                                riskCalculatorForm.touched.targetRatioMultiplier &&
-                                                                    riskCalculatorForm.errors.targetRatioMultiplier
-                                                                    ? true
-                                                                    : false
-                                                            }
-                                                        />
-                                                        {riskCalculatorForm.touched.targetRatioMultiplier &&
-                                                            riskCalculatorForm.errors.targetRatioMultiplier ? (
-                                                            <FormFeedback type="invalid">
-                                                                {riskCalculatorForm.errors.targetRatioMultiplier}
-                                                            </FormFeedback>
-                                                        ) : null}
-                                                    </div>
-                                                </Col>
-                                            </Row>
-                                        </Col>
-                                        <Col xl="5" className="offset-xl-1">
-                                            <LotSizeCards></LotSizeCards>
-                                        </Col>
-                                        <Col>
-                                            <div className="d-flex flex-wrap gap-2 justify-content-center">
-                                                <Button type="submit" className="btn-lg primary-button cta-button">
-                                                    {loading && <i class="fas fa-circle-notch fa-spin"></i>}&nbsp;
-                                                    Calculate
-                                                </Button>{" "}
-                                                <Button type="reset" className="btn btn-outline-primary waves-effect cta-button reset-button" onClick={handleResetClick}>
-                                                    Reset
-                                                </Button>
-                                            </div>
-                                            <div
-                                                className="position-fixed top-0 left-0 end-0 p-3"
-                                                style={{ zIndex: "1005" }}
-                                            >
-                                                <Toast isOpen={invalidFormValueToast}>
-                                                    <ToastHeader toggle={setInvalidFormValueToast}>
-                                                        <img
-                                                            src={logoVoiled}
-                                                            alt=""
-                                                            className="me-2"
-                                                            height="18"
-                                                        />
-                                                        Trrader.in
-                                                    </ToastHeader>
-                                                    <ToastBody color="warning">
-                                                        Please provide either number of Trading Sessions or Percentage of Trading Capital in 1 Trade
-                                                    </ToastBody>
-                                                </Toast>
-                                            </div>
-                                        </Col>
-                                    </Row>
-                                </Form>
+                                  <Toast isOpen={invalidFormValueToast}>
+                                    <ToastHeader toggle={toggleInvalidFormValueToast}>
+                                      <img src={logoVoiled} alt="" className="me-2" height="18" />
+                                      Trrader.in
+                                    </ToastHeader>
+                                    <ToastBody>
+                                      Please provide either number of Trading Sessions or Percentage of Trading Capital in 1 Trade.
+                                    </ToastBody>
+                                  </Toast>
+                                </div>
+                              </Form>
                             </CardBody>
+                          </Card>
+                        </Col>
+
+                        {/* Right Sidebar: Market Info */}
+                        <Col lg={4}>
+                          <Card className="shadow-sm border-0 h-100 mb-0" style={{ borderRadius: '16px', backgroundColor: '#f5f5f5' }}>
+                            <CardBody className="p-4">
+                              <h5 className="card-title fw-bold text-dark mb-4">Market Lot Sizes</h5>
+                              <div className="d-flex flex-column gap-3">
+                                {/* Bank Nifty */}
+                                <div className="d-flex justify-content-between align-items-center p-3 rounded-4" style={{backgroundColor: '#f8fafc'}}>
+                                  <div>
+                                    <h6 className="mb-1 fw-bold text-dark">BANKNIFTY</h6>
+                                    <small className="text-muted">1 Lot Size</small>
+                                  </div>
+                                  <div className="text-end">
+                                    <h3 className="mb-0 fw-bold" style={{color: '#4747A1'}}>{BANKNIFTY_LOT_SIZE}</h3>
+                                    <small className="text-muted fw-medium">Qty</small>
+                                  </div>
+                                </div>
+
+                                {/* Fin Nifty */}
+                                <div className="d-flex justify-content-between align-items-center p-3 rounded-4" style={{backgroundColor: '#f8fafc'}}>
+                                  <div>
+                                    <h6 className="mb-1 fw-bold text-dark">FINNIFTY</h6>
+                                    <small className="text-muted">1 Lot Size</small>
+                                  </div>
+                                  <div className="text-end">
+                                    <h3 className="mb-0 fw-bold" style={{color: '#4747A1'}}>{FINNIFTY_LOT_SIZE}</h3>
+                                    <small className="text-muted fw-medium">Qty</small>
+                                  </div>
+                                </div>
+
+                                {/* Nifty 50 */}
+                                <div className="d-flex justify-content-between align-items-center p-3 rounded-4" style={{backgroundColor: '#f8fafc'}}>
+                                  <div>
+                                    <h6 className="mb-1 fw-bold text-dark">NIFTY 50</h6>
+                                    <small className="text-muted">1 Lot Size</small>
+                                  </div>
+                                  <div className="text-end">
+                                    <h3 className="mb-0 fw-bold" style={{color: '#4747A1'}}>{NIFTY50_LOT_SIZE}</h3>
+                                    <small className="text-muted fw-medium">Qty</small>
+                                  </div>
+                                </div>
+                                
+                                <div className="mt-auto pt-4 text-center">
+                                    <small className="text-muted opacity-75" style={{fontSize: '0.8rem'}}>
+                                        *Lot sizes are standard NSE contract sizes used for calculations.
+                                    </small>
+                                </div>
+                              </div>
+                            </CardBody>
+                          </Card>
                         </Col>
                       </Row>
                     </TabPane>
                     <TabPane tabId="2">
                       <Row>
                         <Col sm="12">
-                        <div className="table-responsive">
-                    {riskCalculatorConfigs && riskCalculatorConfigs.length > 0 && <table className="table mb-0">
-                      <thead>
-                        <tr>
-                          <th>#</th>
-                          <th>Config Name</th>
-                          <th>Created On</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {riskCalculatorConfigs && riskCalculatorConfigs.map(function(config, index){ return (
-                        <tr onClick={() => loadSavedConfiguration(config)} className="row-hover">
-                          <th scope="row">{index+1}</th>
-                          <td>{config.configName}</td>
-                          <td>{config.createdOn.toLocaleString()}</td>
-                          <Button className="btn-sm row-button" color="secondary">Click to load</Button>
-                        </tr>)
-                    })}
-                      </tbody>
-                    </table>}
-
-                    {!riskCalculatorConfigs || riskCalculatorConfigs.length == 0 && <div className="text-center" style={{minHeight:"200px", alignItems:"center", display:"flex", justifyContent:"center"}}>No saved configurations found</div>}
-                  </div>
+                          <Card className="shadow-sm border-0 h-100 mb-0" style={{ borderRadius: '16px' }}>
+                            <CardBody className="p-4">
+                              <div className="d-flex justify-content-between align-items-center mb-4">
+                                <h5 className="card-title fw-bold text-dark m-0">Saved Configurations</h5>
+                              </div>
+                              <div className="table-responsive">
+                                {riskCalculatorConfigs && riskCalculatorConfigs.length > 0 ? (
+                                  <table className="table table-hover align-middle mb-0">
+                                    <thead className="bg-light bg-opacity-50">
+                                      <tr>
+                                        <th className="border-0 text-muted small text-uppercase ps-4" style={{ borderRadius: '8px 0 0 8px' }}>#</th>
+                                        <th className="border-0 text-muted small text-uppercase">Config Name</th>
+                                        <th className="border-0 text-muted small text-uppercase">Created On</th>
+                                        <th className="border-0 text-muted small text-uppercase text-end pe-4" style={{ borderRadius: '0 8px 8px 0' }}>Action</th>
+                                      </tr>
+                                    </thead>
+                                    <tbody>
+                                      {riskCalculatorConfigs.map(function (config, index) {
+                                        return (
+                                          <tr key={index} className="cursor-pointer" style={{ transition: 'all 0.2s' }}>
+                                            <th scope="row" className="ps-4 text-muted">{index + 1}</th>
+                                            <td className="fw-medium text-dark">{config.configName}</td>
+                                            <td className="text-muted">{config.createdOn.toLocaleString()}</td>
+                                            <td className="text-end pe-4">
+                                              <Button
+                                                size="sm"
+                                                color="primary"
+                                                className="px-3 rounded-pill shadow-sm"
+                                                style={{ background: 'linear-gradient(135deg, #4747A1 0%, #3a3a85 100%)', border: 'none' }}
+                                                onClick={(e) => {
+                                                  e.stopPropagation();
+                                                  loadSavedConfiguration(config);
+                                                }}
+                                              >
+                                                Load <i className="mdi mdi-arrow-right ms-1"></i>
+                                              </Button>
+                                            </td>
+                                          </tr>
+                                        )
+                                      })}
+                                    </tbody>
+                                  </table>
+                                ) : (
+                                  <div className="text-center py-5">
+                                    <div className="mb-3">
+                                      <i className="mdi mdi-folder-open-outline display-4 text-light"></i>
+                                    </div>
+                                    <h5 className="text-muted">No saved configurations found</h5>
+                                    <p className="text-muted small">Save your risk calculations to access them here later.</p>
+                                  </div>
+                                )}
+                              </div>
+                            </CardBody>
+                          </Card>
                         </Col>
                       </Row>
                     </TabPane>
                   </TabContent>
                             
-                        </Card>
+
                     </Col>
                 </Row>
                 <br />

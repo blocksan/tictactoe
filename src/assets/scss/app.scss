@@ -202,7 +202,7 @@ $button-active-blue: #1669F2;
   color: #1e293b;
   font-weight: 500;
   background-color: #fff;
-  border: 1px solid #e2e8f0;
+  border: 1px solid #ced4da;
   border-radius: 0.5rem;
   transition: all 0.2s ease;
   font-size: 0.95rem;
@@ -1156,3 +1156,39 @@ box-shadow: rgba(255,255,255, 0.75) 1.5em 0 0 0, rgba(255,255,255, 0.75) 1.1em 1
 .bg-soft-warning { background-color: rgba(241, 180, 76, 0.15); }
 .text-warning { color: #f1b44c !important; }
 .hover-primary:hover { color: #4747A1 !important; }
+// Custom Dashboard Tabs (Pill Style)
+.custom-dashboard-tabs {
+  background-color: #f1f5f9;
+  border-radius: 12px;
+  padding: 0.5rem;
+  display: inline-flex;
+  gap: 0.5rem;
+  min-width: 400px;
+  margin: 0 auto; // Center it
+
+  .nav-item {
+    flex: 1;
+  }
+
+  .nav-link {
+    border-radius: 8px !important;
+    font-weight: 600;
+    color: #64748b;
+    padding: 0.75rem 1.5rem;
+    transition: all 0.2s ease;
+    border: none !important;
+    text-align: center;
+    background: transparent;
+    
+    &:hover {
+       color: #334155; 
+       background: rgba(255,255,255,0.5);
+    }
+
+    &.active {
+        background-color: #fff !important;
+        color: #4747A1 !important; // Theme primary color
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    }
+  }
+}
