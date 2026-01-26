@@ -1,5 +1,5 @@
 import classnames from "classnames";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
     Button,
     Card,
@@ -97,12 +97,13 @@ const RiskCalculator = (props) => {
     const [selectedIndex, setSelectedIndex] = useState(IndexType.BANKNIFTY);
     const [selectedIndexCalculatedRisk, setSelectedIndexCalculatedRisk] = useState({});
 
-    const resultContainerRef = useRef(null);
     const scrollTop = () => {
-        window.scrollTo({
-            top: window.innerHeight,
-            behavior: 'smooth',
-        });
+        setTimeout(() => {
+            const tabContent = document.querySelector('.calculator-tab-content');
+            if(tabContent) {
+                window.scrollBy({ top: tabContent.offsetHeight + 100, behavior: 'smooth' });
+            }
+        }, 100);
     };
 
     const [tradeIndexes, setTradeIndexes] = useState([{
@@ -497,7 +498,7 @@ const RiskCalculator = (props) => {
                             {/* <CardHeader className="configuration-header">
                                 <h5 className="card-title mb-0 text-white"></h5>
                             </CardHeader> */}
-                    <TabContent activeTab={activeTab} className="p-3 text-muted">
+                    <TabContent activeTab={activeTab} className="p-3 text-muted calculator-tab-content">
                     <TabPane tabId="1">
                       <Row>
                         <Col sm="12">
@@ -779,7 +780,7 @@ const RiskCalculator = (props) => {
 
 {loading && <div class="full-page-loading"></div>}
                 <Row>
-                    <Col md={12} className="result-container" ref={resultContainerRef}>
+                    <Col md={12} className="result-container">
                         {!loading && activeTab === "1" && calculatedRiskRows && calculatedRiskRows.length > 0 && (
                             <Card xl="2" style={{ margin: 0 }}>
 
@@ -862,7 +863,7 @@ const RiskCalculator = (props) => {
                                                     }
                                                     {
                                                         selectedIndexCalculatedRisk.totalTradableLots > 10 && selectedIndexCalculatedRisk.totalTradableLots < 20 && (
-                                                            <UncontrolledAlert color="light" role="alert" className="card border p-0 mb-0">
+                                                            <UncontrolledAlert color="light" role="alert" className="card border p-0 mb-0" >
                                                                 <CardBody>
                                                                     <div className="text-center">
                                                                         <h4 className="alert-heading"><i className="mdi mdi-checkbox-marked-circle-outline display-4 text-success"></i>Well done!</h4>
@@ -919,20 +920,22 @@ const RiskCalculator = (props) => {
                                                     }
                                                 </Col>
                                                 <Col xl="12" className="mt-4">
-                                                    <Card className="metrics-card metrics-card-white-info option-premium-stacked-container" xl="2">
-                                                        <CardBody>
-                                                            <p className="mb-4 card-info-header">Option Premium</p>
+                                                    <div>
+                                                        <Card className="metrics-card metrics-card-white-info option-premium-stacked-container" xl="2">
+                                                            <CardBody>
+                                                                <p className="mb-4 card-info-header">Option Premium</p>
 
-                                                            <CustomOptionPremiumStackedBar chartData={{
-                                                                SLAmountInOptionPremium: selectedIndexCalculatedRisk.SLAmountInOptionPremium,
-                                                                TargetAmountInOptionPremium: selectedIndexCalculatedRisk.TargetAmountInOptionPremium,
-                                                                EntryAmountInOptionPremium: selectedIndexCalculatedRisk.optionPremium,
-                                                                optionPremiumTargetPrice: selectedIndexCalculatedRisk.optionPremiumTargetPrice,
-                                                                optionPremiumExitPrice: selectedIndexCalculatedRisk.optionPremiumExitPrice,
-                                                            }} />
+                                                                <CustomOptionPremiumStackedBar chartData={{
+                                                                    SLAmountInOptionPremium: selectedIndexCalculatedRisk.SLAmountInOptionPremium,
+                                                                    TargetAmountInOptionPremium: selectedIndexCalculatedRisk.TargetAmountInOptionPremium,
+                                                                    EntryAmountInOptionPremium: selectedIndexCalculatedRisk.optionPremium,
+                                                                    optionPremiumTargetPrice: selectedIndexCalculatedRisk.optionPremiumTargetPrice,
+                                                                    optionPremiumExitPrice: selectedIndexCalculatedRisk.optionPremiumExitPrice,
+                                                                }} />
 
-                                                        </CardBody>
-                                                    </Card>
+                                                            </CardBody>
+                                                        </Card>
+                                                    </div>
                                                 </Col>
                                             </Row>
                                         </Col>
@@ -997,7 +1000,7 @@ const RiskCalculator = (props) => {
                                                     <Card className="card metrics-card metrics-card-raw-info" xl="2">
 
                                                         <CardBody>
-                                                            <p className="mb-4 card-info-header">SL of 1 Trade</p>
+                                                            <p className="mb-4 card-info-header" >SL of 1 Trade</p>
 
                                                             <CardText className="metric-number">
                                                                 <i className="mdi mdi-trending-down" style={{ fontSize: "32px", color: "red" }}></i> &nbsp;

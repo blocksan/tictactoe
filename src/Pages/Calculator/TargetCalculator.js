@@ -1,48 +1,44 @@
-import React, { useEffect, useRef, useState } from "react";
 import classnames from "classnames";
+import React, { useEffect, useRef, useState } from "react";
 import {
-  Row,
-  Col,
-  Card,
-  CardBody,
-  FormGroup,
-  Button,
-  CardTitle,
-  CardSubtitle,
-  Label,
-  Input,
-  Container,
-  FormFeedback,
-  Form,
-  CardText,
-  CardHeader,
-  UncontrolledAlert,
-  Progress,
-  Toast,
-  ToastHeader,
-  ToastBody,
-  NavItem,
-  NavLink,
-  TabContent,
-  TabPane,
-  Modal,
-  Nav,
+    Button,
+    Card,
+    CardBody,
+    CardHeader,
+    CardSubtitle,
+    CardText,
+    Col,
+    Container,
+    Form,
+    FormFeedback,
+    Input,
+    Label,
+    Modal,
+    Nav,
+    NavItem,
+    NavLink,
+    Row,
+    TabContent,
+    TabPane,
+    Toast,
+    ToastBody,
+    ToastHeader,
+    UncontrolledAlert
 } from "reactstrap";
 
 //Import Breadcrumb
-import logoVoiled from "../../assets/images/OnlyLogoVoiled.png";
-import Breadcrumbs from "../../components/Common/Breadcrumb";
-import * as Yup from "yup";
 import { useFormik } from "formik";
-import calculator from "../../assets/images/calculator.gif";
-import DayWiseCapitalDrawDown from "./DayWiseCapitalDrawDown";
-import { IndexType, BANKNIFTY_LOT_SIZE, FINNIFTY_LOT_SIZE, NIFTY50_LOT_SIZE } from "../../constants/NSE_index";
-import CustomOptionPremiumStackedBar from "./CustomOptionPremiumStackedBar";
-import LotSizeCards from "../CommonPages/LotSizeCards";
 import { connect } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
-import { getFirebaseBackend } from "../../helpers/firebase_helper";
+import * as Yup from "yup";
+import logoVoiled from "../../assets/images/OnlyLogoVoiled.png";
+import Breadcrumbs from "../../components/Common/Breadcrumb";
 import { DEFAULT_AVERAGE_SL_HIT_TRADE_IN_ONE_DAY, DEFAULT_AVERAGE_TARGET_HIT_TRADE_IN_ONE_DAY, DEFAULT_AVERAGE_TRADING_CHARGES_PER_TRADE, DEFAULT_DESIRED_NUMBER_OF_TRADING_SESSIONS, DEFAULT_MAX_DRAW_DOWN_PERCENTAGE, DEFAULT_MAX_SL_COUNT_ONE_DAY, DEFAULT_MAX_TRADE_AMOUNT_IN_ONE_DAY, DEFAULT_MAX_TRADE_IN_ONE_DAY, DEFAULT_NORMAL_TRADING_DAYS, DEFAULT_PERCENTAGE_OF_TRADING_CAPITAL_IN_ONE_TRADE, DEFAULT_TARGET_RATIO_MULTIPLIER, DEFAULT_TOTAL_TRADES_IN_ONE_DAY, DEFAULT_TRADING_CAPITAL, DEFAULT_ZERO_SL_HIT_TRADE_DAYS, DEFAULT_ZERO_TARGET_HIT_TRADE_DAYS } from "../../constants/calculator";
+import { BANKNIFTY_LOT_SIZE, FINNIFTY_LOT_SIZE, IndexType, NIFTY50_LOT_SIZE } from "../../constants/NSE_index";
+import { getFirebaseBackend } from "../../helpers/firebase_helper";
+import LotSizeCards from "../CommonPages/LotSizeCards";
+import CustomOptionPremiumStackedBar from "./CustomOptionPremiumStackedBar";
+import DayWiseCapitalDrawDown from "./DayWiseCapitalDrawDown";
 const TargetCalculator = (props) => {
   const navigate = useNavigate()
   document.title = "Target Calculator";
@@ -92,10 +88,12 @@ const TargetCalculator = (props) => {
 
   const resultContainerRef = useRef(null);
   const scrollTop = () => {
-    window.scrollTo({
-      top: window.innerHeight,
-      behavior: 'smooth',
-    });
+    setTimeout(() => {
+        const tabContent = document.querySelector('.calculator-tab-content');
+        if(tabContent) {
+            window.scrollBy({ top: tabContent.offsetHeight + 100, behavior: 'smooth' });
+        }
+    }, 100);
   };
   // const bringResultContainerToTop = () => {
   //   resultContainerRef.current.scrollTop = -500;
@@ -546,7 +544,7 @@ const TargetCalculator = (props) => {
                 </NavItem>
 
               </Nav>
-              <TabContent activeTab={activeTab} className="p-3 text-muted">
+              <TabContent activeTab={activeTab} className="p-3 text-muted calculator-tab-content">
                 <TabPane tabId="1">
                   <Row>
                     <Col sm="12">
