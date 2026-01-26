@@ -439,7 +439,7 @@ class FirebaseAuthBackend {
       }
 
       // If we reach here, user is NOT premium. Update local state to sync.
-      await this.updateAuthUser({ isPremiumUser: false, freeTrialConfig: freeTrialConfig });
+      await this.updateAuthUser({ isPremiumUser: false, freeTrialConfig: freeTrialConfig, planId: null });
       return { isPremium: false, freeTrialConfig: freeTrialConfig };
 
     } catch (err) {

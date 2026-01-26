@@ -131,7 +131,12 @@ const TargetCalculator = (props) => {
   const [calculatedRiskRows, setCalculatedRiskRows] = useState([]);
 
   const disableInputsHandler = () => {
-    setDisableTheInputs(!disableTheInputs);
+    if (loggedInUser && !loggedInUser.isPremiumUser) {
+      setPurchasePremiumModal(true);
+      return;
+    } else {
+      setDisableTheInputs(!disableTheInputs);
+    }
   }
 
 

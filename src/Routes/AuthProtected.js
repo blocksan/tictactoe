@@ -37,7 +37,7 @@ const AuthProtected = (props) => {
     };
 
     checkPremiumStatus();
-  }, [dispatch, props.user]);
+  }, [dispatch, props.user?.uid]);
 
   if (!props.user) {
     return (

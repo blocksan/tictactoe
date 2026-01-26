@@ -6,9 +6,9 @@ import { apiError, loginSuccess, logoutUserSuccess } from "./actions";
 
 //Include Both Helper File with needed methods
 import {
-  postFakeLogin,
-  postJwtLogin,
-  postSocialLogin,
+    postFakeLogin,
+    postJwtLogin,
+    postSocialLogin,
 } from "../../../helpers/fakebackend_helper";
 import { getFirebaseBackend } from "../../../helpers/firebase_helper";
 
@@ -79,7 +79,8 @@ function* socialLogin({ payload: { data, history, type } }) {
           ...firestoreUser,
           isPremiumUser: premiumStatus.isPremium,
           subscriptionEndDate: premiumStatus.endDate,
-          freeTrialConfig: premiumStatus.freeTrialConfig
+          freeTrialConfig: premiumStatus.freeTrialConfig,
+          planId: premiumStatus.planId
       };
       
       localStorage.setItem("authUser", JSON.stringify(mergedData));
