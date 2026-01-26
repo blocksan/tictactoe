@@ -1,16 +1,16 @@
-import React, { useCallback, useEffect, useRef, useState } from "react";
 import PropTypes from "prop-types";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import sidebarData from "./SidebarData";
 //Simple bar
 import SimpleBar from "simplebar-react";
 // MetisMenu
 import MetisMenu from "metismenujs";
-import withRouter from "../../components/Common/withRouter";
 import { Link } from "react-router-dom";
+import withRouter from "../../components/Common/withRouter";
 //i18n
 import { withTranslation } from "react-i18next";
-import { Button } from "reactstrap";
 import { connect } from "react-redux";
+import { Button } from "reactstrap";
 const Sidebar = (props) => {
   const ref = useRef();
   const [loggedInUser, setLoggedInUser] = useState(null)
@@ -198,7 +198,7 @@ const Sidebar = (props) => {
                 </React.Fragment>
               ))}
             </ul>
-            {loggedInUser && !loggedInUser.isPremiumOrTrial && 
+            {loggedInUser && !loggedInUser.isPremiumUser && 
              <div className="free-plan-sidebar-button">
               You are on FREE Plan
               <Link to={"/pricing"} style={{color:"white"}}>

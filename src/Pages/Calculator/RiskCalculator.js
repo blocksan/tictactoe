@@ -124,7 +124,7 @@ const RiskCalculator = (props) => {
     ])
 
     const disableInputsHandler = () => {
-        if (loggedInUser && !loggedInUser.isPremiumOrTrial) {
+        if (loggedInUser && !loggedInUser.isPremiumUser) {
             setPurchasePremiumModal(true);
             return;
         } else {
@@ -202,7 +202,7 @@ const RiskCalculator = (props) => {
     });
 
     const validatePremiumInputs = (formValues) => {
-        if (loggedInUser && !loggedInUser.isPremiumOrTrial) {
+        if (loggedInUser && !loggedInUser.isPremiumUser) {
             for (let i = 0; i < premiumOnlyInputs.length; i++) {
                 if (premiumOnlyInputs[i] === 'maxSLCountOneDay' && formValues.maxSLCountOneDay != DEFAULT_MAX_SL_COUNT_ONE_DAY) {
                     formValues.maxSLCountOneDay = DEFAULT_MAX_SL_COUNT_ONE_DAY
@@ -437,7 +437,7 @@ const RiskCalculator = (props) => {
 
     const saveConfiguration = async () => {
 
-        // if (loggedInUser && !loggedInUser.isPremiumOrTrial) {
+        // if (loggedInUser && !loggedInUser.isPremiumUser) {
         //     setPurchasePremiumModal(true);
         //     return
         // }

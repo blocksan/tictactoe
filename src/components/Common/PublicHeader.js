@@ -1,13 +1,13 @@
 import { getAuth, GoogleAuthProvider, signInWithPopup } from 'firebase/auth';
 import React from "react";
-import { useDispatch } from "react-redux";
+import { connect, useDispatch } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
 import logoVoiled from "../../assets/images/OnlyLogoVoiled.png";
 import { getFirebaseApp } from "../../helpers/firebase_helper";
 import { socialLogin } from "../../store/actions";
 import GoogleButton from "./GoogleButton";
 
-const PublicHeader = () => {
+const PublicHeader = (props) => {
     const dispatch = useDispatch();
     const navigate = useNavigate();
 
@@ -23,6 +23,7 @@ const PublicHeader = () => {
                 name: user.displayName,
                 email: user.email,
                 picture: user.photoURL,
+                uid: user.uid,
             };
             dispatch(socialLogin(postData, navigate, "google"));
         } catch (error) {
@@ -41,7 +42,11 @@ const PublicHeader = () => {
                             <img src={logoVoiled} alt="" style={{ width: 60 }} />
                             <div>
                                 <h4 style={{ color: "white", marginBottom: 0 }}>Trrader.in</h4>
-                                <h6 style={{ color: "white", fontSize: "0.9em", fontWeight: "normal" }}>Built by Trrader, for Trrader</h6>
+                                {props.user?.isPremiumUser ? (
+                                     <h6 style={{ color: "#FFD700", fontSize: "0.9em", fontWeight: "bold", textTransform: "uppercase", marginTop: "5px" }}>(Premium)</h6>
+                                ) : (
+                                    <h6 style={{ color: "white", fontSize: "0.9em", fontWeight: "normal" }}>Built by Trrader, for Trrader</h6>
+                                )}
                             </div>
                         </Link>
                     </ul>
@@ -60,4 +65,8 @@ const PublicHeader = () => {
     );
 };
 
-export default PublicHeader;
+const mapStateToProps = state => {
+    return { ...state.login };
+  };
+
+export default connect(mapStateToProps,{})(PublicHeader);

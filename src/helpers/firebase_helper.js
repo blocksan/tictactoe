@@ -1,8 +1,8 @@
 import { initializeApp } from "firebase/app";
 import { getAuth } from 'firebase/auth';
-import { addDoc, collection, getDocs, getFirestore, query, updateDoc, where } from "firebase/firestore";
-import { RISK_CALCULATOR_COLLECTION, TARGET_CALCULATOR_COLLECTION } from "../constants/firebase";
-import { getPremiumStatus } from "./stripe/premiumStatus";
+import { addDoc, collection, doc, getDocs, getFirestore, query, updateDoc, where } from "firebase/firestore";
+import { RISK_CALCULATOR_COLLECTION, SUBSCRIPTIONS_COLLECTION, TARGET_CALCULATOR_COLLECTION } from "../constants/firebase";
+import { cancelSubscription } from "./cashfree_helper";
 import { stripePortalUrl } from "./stripe/stripePayment";
 
 // import { getAuth, signInWithPopup, GoogleAuthProvider } from "firebase/auth";
@@ -157,14 +157,17 @@ class FirebaseAuthBackend {
     // });
   };
 
-  isPremiumOrTrial = async (includeTrial) => {
-    return new Promise((resolve, reject) => {
-      try {
-        resolve(getPremiumStatus(firebaseApp, includeTrial));
-      } catch (err) {
-        reject(false)
-      }
-    })
+  isPremiumUser = async (includeTrial) => {
+    try {
+      // Check Firestore premium status
+      console.log("Checking premium status...", includeTrial);
+      const status = await this.currentPremiumStatus();
+      console.log("Premium status:", status);
+      return status; 
+    } catch (err) {
+      console.log("Error checking premium user:", err);
+      return { isPremium: false };
+    }
   };
 
   getStripePortalUrl = async () => {
@@ -187,6 +190,7 @@ class FirebaseAuthBackend {
         createdOn: new Date(),
         lastAccessedOn: new Date(),
         viaGooleSignIn: true,
+        uid: user.uid,
       };
 
       // await collection(db, "users").id(user.uid).set(dbUser);
@@ -212,7 +216,7 @@ class FirebaseAuthBackend {
   addOrUpdateRiskCalculatorConfigToFirestore = async (config, configName, isUpdateQuery) => {
     try {
       const db = getFirestore(firebaseApp);
-      const user = this.getAuthenticatedUser();
+      const user = await this.waitForCurrentUser();
       if (!user) {
         return {
           status: false,
@@ -264,7 +268,7 @@ class FirebaseAuthBackend {
   addOrUpdateTargetCalculatorConfigToFirestore = async (config, configName, isUpdateQuery) => {
     try {
       const db = getFirestore(firebaseApp);
-      const user = this.getAuthenticatedUser();
+      const user = await this.waitForCurrentUser();
       if (!user) {
         return {
           status: false,
@@ -314,9 +318,201 @@ class FirebaseAuthBackend {
     }
   }
 
+  saveSubscription = async (paymentData, providedUser = null) => {
+    try {
+      const db = getFirestore(firebaseApp);
+      let user = providedUser;
+      
+      if (!user) {
+         user = await this.waitForCurrentUser();
+      }
+      
+      if (!user) {
+        return { status: false, error: "User not found" };
+      }
+
+      // Calculate subscription duration
+      const startDate = new Date();
+      const endDate = new Date();
+      const isYearly = paymentData.planId && paymentData.planId.includes('YEARLY');
+      // Add 365 days for yearly, 30 days for monthly (default)
+      endDate.setDate(startDate.getDate() + (isYearly ? 365 : 30));
+
+      let userId = user.uid || user.id;
+      if (!userId) {
+          const authUser = await this.waitForCurrentUser();
+          if (authUser) userId = authUser.uid;
+      }
+
+      const subscriptionData = {
+        userId: userId || user.email,
+        email: user.email,
+        paymentId: paymentData.id || "manual",
+        orderId: paymentData.order_id || "manual",
+        amount: paymentData.amount || 0,
+        currency: paymentData.currency || "INR",
+        status: "active",
+        startDate: startDate,
+        endDate: endDate,
+        createdOn: new Date(),
+        updatedOn: new Date(),
+        planId: paymentData.planId || "unknown",
+        planType: isYearly ? "Yearly" : "Monthly",
+      };
+
+      // Save to subscriptions collection
+      await addDoc(collection(db, SUBSCRIPTIONS_COLLECTION), subscriptionData);
+
+
+
+      // Update local auth object
+      await this.updateAuthUser({
+        ...user,
+        isPremiumUser: true,
+        subscriptionEndDate: endDate
+      });
+
+      return { status: true, data: subscriptionData };
+
+    } catch (err) {
+      console.log("Error in saveSubscription:", err);
+      return { status: false, error: err.message };
+    }
+  }
+
+  currentPremiumStatus = async () => {
+    try {
+      const db = getFirestore(firebaseApp);
+      // Wait for user session to initialize
+      const user = await this.waitForCurrentUser();
+      
+      console.log("currentPremiumStatus user", user);
+
+      if (!user) {
+        return { isPremium: false };
+      }
+
+      // Check subscriptions collection for active subscription
+      // Check subscriptions collection for active subscription
+      // Query by email only to avoid composite index requirement
+      const subscriptionsQuery = query(
+        collection(db, SUBSCRIPTIONS_COLLECTION), 
+        where("email", "==", user.email)
+      );
+      
+      const querySnapshot = await getDocs(subscriptionsQuery);
+
+      console.log("querySnapshot", querySnapshot.docs);
+
+      // Filter in memory for active subscriptions
+      const activeSubscriptions = querySnapshot.docs
+        .map(doc => doc.data())
+        .filter(sub => {
+            const endDate = sub.endDate.toDate();
+            // Check if active AND not expired
+            return sub.status === 'active' && endDate > new Date();
+        });
+
+      if (activeSubscriptions.length > 0) {
+        // Found at least one active subscription
+        // We can pick the one with the latest end date if multiple exist
+        const latestSubscription = activeSubscriptions
+          .sort((a, b) => b.endDate.toDate() - a.endDate.toDate())[0];
+          
+         const endDate = latestSubscription.endDate.toDate();
+         const planId = latestSubscription.planId;
+
+         await this.updateAuthUser({ isPremiumUser: true, subscriptionEndDate: endDate, planId: planId });
+         return { isPremium: true, endDate: endDate, planId: planId };
+      }
+
+      // If we reach here, user is NOT premium. Update local state to sync.
+      await this.updateAuthUser({ isPremiumUser: false });
+      return { isPremium: false };
+
+    } catch (err) {
+      console.log("Error in currentPremiumStatus:", err);
+      return { isPremium: false, error: err.message };
+    }
+  }
+
+  getUserSubscriptions = async () => {
+    try {
+      const db = getFirestore(firebaseApp);
+      // Wait for user session to initialize
+      const user = await this.waitForCurrentUser();
+      
+      if (!user) {
+        return { status: false, error: "User not found" };
+      }
+
+      const subscriptionsQuery = query(
+        collection(db, SUBSCRIPTIONS_COLLECTION), 
+        where("email", "==", user.email)
+      );
+      
+      const querySnapshot = await getDocs(subscriptionsQuery);
+      
+      const subscriptions = querySnapshot.docs.map(doc => {
+          const data = doc.data();
+          return {
+              ...data,
+              id: doc.id,
+              startDate: data.startDate ? data.startDate.toDate() : null,
+              endDate: data.endDate ? data.endDate.toDate() : null,
+          };
+      }).sort((a, b) => b.startDate - a.startDate);
+
+      return { status: true, data: subscriptions };
+
+    } catch (err) {
+      console.error("Error fetching subscriptions:", err);
+      return { status: false, error: err.message };
+    }
+  }
+
+  cancelUserSubscription = async (subscriptionId, orderId) => {
+    try {
+        // 1. Call payment gateway cancel (dummy)
+        const cancelResult = await cancelSubscription(orderId);
+        if (cancelResult.status !== 'success') {
+             return { status: false, error: cancelResult.message };
+        }
+
+        // 2. Update Firestore
+        const db = getFirestore(firebaseApp);
+        const subRef = doc(db, SUBSCRIPTIONS_COLLECTION, subscriptionId);
+        await updateDoc(subRef, {
+            status: "cancelled",
+            updatedOn: new Date()
+        });
+        
+        // 3. Update local premium status
+        await this.currentPremiumStatus();
+
+        return { status: true };
+    } catch (err) {
+        console.error("Error cancelling subscription:", err);
+        return { status: false, error: err.message };
+    }
+  }
+
+  updateAuthUser = async (updatedUser) => {
+    try {
+       // Update localStorage
+       const currentAuthUser = JSON.parse(localStorage.getItem("authUser")) || {};
+       const newAuthUser = { ...currentAuthUser, ...updatedUser };
+       localStorage.setItem("authUser", JSON.stringify(newAuthUser));
+       return newAuthUser;
+    } catch (err) {
+      console.log("Error updating user object:", err);
+      return null;
+    }
+  }
+
   fetchRiskCalculatorConfigFromFirestore = async (customerId) => {
     try {
-      const user = this.getAuthenticatedUser();
+      const user = await this.waitForCurrentUser();
       if (!user) {
         return {
           status: false,
@@ -357,7 +553,7 @@ class FirebaseAuthBackend {
 
   fetchTargetCalculatorConfigFromFirestore = async (customerId) => {
     try {
-      const user = this.getAuthenticatedUser();
+      const user = await this.waitForCurrentUser();
       if (!user) {
         return {
           status: false,
@@ -403,6 +599,9 @@ class FirebaseAuthBackend {
   /**
    * Returns the authenticated user
    */
+  /**
+   * Returns the authenticated user
+   */
   getAuthenticatedUser = () => {
     if (!firebaseApp) {
       return null;
@@ -410,6 +609,20 @@ class FirebaseAuthBackend {
     const auth = getAuth(firebaseApp);
     return auth.currentUser
   };
+
+  waitForCurrentUser = async () => {
+    return new Promise((resolve) => {
+        const auth = getAuth(firebaseApp);
+        if (auth.currentUser) {
+            resolve(auth.currentUser);
+            return;
+        }
+        const unsubscribe = auth.onAuthStateChanged(user => {
+            unsubscribe();
+            resolve(user);
+        });
+    });
+  }
 
   /**
    * Handle the error

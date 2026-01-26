@@ -1,15 +1,15 @@
-import React from 'react'
+import React from 'react';
 import {
-    Row,
-    Col,
     Card,
     CardBody,
-    CardFooter
+    CardFooter,
+    Col,
+    Row
 } from "reactstrap";
-import { getFirebaseApp } from '../../helpers/firebase_helper';
-import { getCheckoutUrl } from '../../helpers/stripe/stripePayment';
+import { getFirebaseBackend } from '../../helpers/firebase_helper';
 // import OffLogo33 from "../../assets/images/OffLogo33Compressed.png";
 import OffLogo50 from "../../assets/images/OffLogo50Compressed.png";
+import { createPaymentIntent, fetchPaymentStatus } from '../../helpers/cashfree_helper';
 const PRICING_PLANS = ["Free", "Monthly", "Yearly"];
 function PricingContent(props) {
     const PricingData = [
@@ -19,6 +19,7 @@ function PricingContent(props) {
             icon: "mdi mdi-hand-heart-outline",
             price: "0",
             pricingPlan: PRICING_PLANS[0],
+            planId: "FREE",
             isChild: [
                 { id: "1", features: "Perform Unlimited Calculation" },
             ],
@@ -28,7 +29,8 @@ function PricingContent(props) {
             title: "Monthly",
             caption: "Small payment for a big change",
             icon: "bx bx-calendar-star",
-            price: "49",
+            price: "99",
+            planId: "MONTHLY99",
             pricingPlan: PRICING_PLANS[1],
             isChild: [
                 { id: "1", features: "Perform Unlimited Calculation" },
@@ -41,9 +43,10 @@ function PricingContent(props) {
             title: "Yearly",
             caption: "Best suited, if don't want to pay monthly",
             icon: "bx bx-calendar",
-            price: "588",
-            discountedPrice: "299",
+            price: "1199",
+            discountedPrice: "599",
             yearly: true,
+            planId: "YEARLY599",
             pricingPlan: PRICING_PLANS[2],
             isChild: [
                 { id: "1", features: "Perform Unlimited Calculation" },
@@ -80,35 +83,57 @@ function PricingContent(props) {
 
     const [loading, setLoading] = React.useState(false);
 
-    const firebaseApp = getFirebaseApp();
 
-    const monthlySubscriptionHandler = async () => {
 
+    const handleSubscription = async (pricingPlan) => {
         try {
             if (!checkIfUserIsLoggedIn()) {
                 return;
             }
+            
+            const selectedPlan = PricingData.find(p => p.pricingPlan === pricingPlan);
+            if (!selectedPlan) return;
+
             setLoading(true);
-            const monthlyPriceId = process.env.REACT_APP_STRIPE_MONTHLY_PRICE_ID;
-            const checkoutUrl = await getCheckoutUrl(firebaseApp, monthlyPriceId);
-            window.location.replace(checkoutUrl);
-            setLoading(false);
-        } catch (err) {
-            alert(err.message)
-        }
-    }
-    const yearlySubscriptionHandler = async () => {
-        try {
-            if (!checkIfUserIsLoggedIn()) {
-                return;
+            
+            // 1. Create Payment Intent
+            const amount = selectedPlan.yearly ? selectedPlan.discountedPrice : selectedPlan.price;
+            const paymentIntent = await createPaymentIntent(amount, "INR");
+            
+            if (paymentIntent.status === "success") {
+                // 2. Fetch Payment Status (Simulating payment completion)
+                const paymentStatus = await fetchPaymentStatus(paymentIntent.order_id);
+                
+                if (paymentStatus.status === "success" && paymentStatus.payment_status === "PAID") {
+                    // 3. Save Subscription
+                    const firebaseBackend = getFirebaseBackend();
+                    const saveResult = await firebaseBackend.saveSubscription({
+                        id: paymentStatus.payment_session_id, // using session id as payment id for now
+                        order_id: paymentStatus.order_id,
+                        amount: amount,
+                        currency: "INR",
+                        planId: selectedPlan.planId
+                    }, props.user);
+
+                    if (saveResult.status) {
+                        alert("Subscription successful! You are now a Premium member.");
+                        // Optionally refresh page or updatestate
+                         window.location.reload();
+                    } else {
+                        alert("Payment successful but failed to save subscription: " + saveResult.error);
+                    }
+                } else {
+                    alert("Payment failed or pending.");
+                }
+            } else {
+                alert("Failed to initiate payment.");
             }
-            setLoading(true);
-            const yearlyPriceId = process.env.REACT_APP_STRIPE_YEARLY_PRICE_ID;
-            const checkoutUrl = await getCheckoutUrl(firebaseApp, yearlyPriceId);
+            
             setLoading(false);
-            window.location.replace(checkoutUrl);
         } catch (err) {
-            alert(err.message)
+            console.error(err);
+            alert("Something went wrong: " + err.message);
+            setLoading(false);
         }
     }
 
@@ -160,15 +185,15 @@ function PricingContent(props) {
                                         <sup>
                                             <small>&#8377;</small>
                                         </sup>{" "}
-                                        {item.pricingPlan == PRICING_PLANS[2] && <><span className='strikediag' style={{ fontSize: "0.9em", }}>{item.price}</span> &nbsp; <strong>{item.discountedPrice}</strong>/<span className="font-size-14"> Yearly</span></>}
-                                        {item.pricingPlan == PRICING_PLANS[1] && <><strong>{item.price}</strong>/ <span className="font-size-14"> Monthly</span></>}
-                                        {item.pricingPlan == PRICING_PLANS[0] && <><strong>{item.price}</strong> </>}
+                                        {item.pricingPlan === PRICING_PLANS[2] && <><span className='strikediag' style={{ fontSize: "0.9em", }}>{item.price}</span> &nbsp; <strong>{item.discountedPrice}</strong>/<span className="font-size-14"> Yearly</span></>}
+                                        {item.pricingPlan === PRICING_PLANS[1] && <><strong>{item.price}</strong>/ <span className="font-size-14"> Monthly</span></>}
+                                        {item.pricingPlan === PRICING_PLANS[0] && <><strong>{item.price}</strong> </>}
 
 
                                     </h4>
                                 </div>
                                 <div className="plan-features mt-4" style={{ minHeight: "150px", position: "relative" }}>
-                                    {item.yearly && <img src={OffLogo50} className="offer-image" />}
+                                    {item.yearly && <img src={OffLogo50} className="offer-image" alt="offer" />}
                                     <h5 className="text-left font-size-15 mb-4" style={{ color: "#444" }}>
                                         Plan Features :
                                     </h5>
@@ -183,13 +208,21 @@ function PricingContent(props) {
                             {item.pricingPlan !== PRICING_PLANS[0] &&
                                 <CardFooter className='text-center'>
                                     <div className="float-centre plan-btn">
-                                        <button
-                                        disabled
-                                            // onClick={item.yearly ? yearlySubscriptionHandler : monthlySubscriptionHandler}
-                                            className="btn metrics-card-primary-2 btn-sm waves-effect waves-light"
-                                        >
-                                            Coming Soon...
-                                        </button>
+                                        {props.user && props.user.planId === item.planId ? (
+                                            <button
+                                                className="btn btn-success btn-sm waves-effect waves-light"
+                                                disabled
+                                            >
+                                                Active Plan
+                                            </button>
+                                        ) : (
+                                            <button
+                                                onClick={() => handleSubscription(item.pricingPlan)}
+                                                className="btn metrics-card-primary-2 btn-sm waves-effect waves-light"
+                                            >
+                                                Subscribe Now
+                                            </button>
+                                        )}
                                     </div>
                                 </CardFooter>}
                         </Card>

@@ -1,25 +1,19 @@
-import React from "react";
-import { Navigate } from "react-router-dom";
 
 //Dashboard
-import Dashboard from "../Pages/Dashboard";
 
 // Import Authentication pages
-import Login from "../Pages/Authentication/Login";
-import ForgetPasswordPage from "../Pages/Authentication/ForgetPassword";
 import Logout from "../Pages/Authentication/Logout";
-import Register from "../Pages/Authentication/Register";
-import UserProfile from "../Pages/Authentication/user-profile";
+import CapitalCalculator from "../Pages/Calculator/CapitalCalculator";
 import RiskCalculator from "../Pages/Calculator/RiskCalculator";
 import TargetCalculator from "../Pages/Calculator/TargetCalculator";
-import CapitalCalculator from "../Pages/Calculator/CapitalCalculator";
-import Landing from './../Pages/Landing/landing'
-import Referral from "../Pages/Settings/Referral";
-import Pricing from "../Pages/Pricing/Pricing";
-import TermsNConditions from "../Pages/DocPages/TermsNConditions";
 import Faq from "../Pages/DocPages/Faq";
 import PrivacyPolicy from "../Pages/DocPages/PrivacyPolicy";
+import TermsNConditions from "../Pages/DocPages/TermsNConditions";
 import OpenPricing from "../Pages/Pricing/OpenPricing";
+import Pricing from "../Pages/Pricing/Pricing";
+import Referral from "../Pages/Settings/Referral";
+import MySubscription from "../Pages/Subscription/MySubscription";
+import Landing from './../Pages/Landing/landing';
 
 const authProtectedRoutes = [
   //dashboard
@@ -32,6 +26,7 @@ const authProtectedRoutes = [
   { path: "/riskcalculator", component: <RiskCalculator /> },
   { path: "/capitalcalculator", component: <CapitalCalculator /> },
   { path: "/pricing", component: <Pricing /> },
+  { path: "/my-subscription", component: <MySubscription /> },
 
 
   // this route should be at the end of all other routes
