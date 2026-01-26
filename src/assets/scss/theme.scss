@@ -21,10 +21,23 @@
 // @import "./custom/rtl/pages-rtl";
 
 
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
 body {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif !important;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
   * {
     outline: none;
   }
+}
+
+:root {
+  --tr-glass-bg: rgba(255, 255, 255, 0.7);
+  --tr-glass-border: rgba(255, 255, 255, 0.3);
+  --tr-shadow-sm: 0 2px 4px rgba(0,0,0,0.05);
+  --tr-shadow-md: 0 4px 12px rgba(0,0,0,0.08);
+  --tr-shadow-lg: 0 12px 24px rgba(0,0,0,0.12);
 }
 
 .close {

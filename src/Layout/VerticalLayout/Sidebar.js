@@ -199,15 +199,23 @@ const Sidebar = (props) => {
               ))}
             </ul>
             {loggedInUser && !loggedInUser.isPremiumUser && 
-             <div className="free-plan-sidebar-button">
-              You are on FREE Plan
-              <Link to={"/pricing"} style={{color:"white"}}>
-              <Button className="btn primary-button mt-2" style={{background:"#f610ffbf"}}> 
-                                Upgrade
-                              </Button>
-                              </Link>
+             <div className="sidebar-upgrade-card mx-3 my-4 p-3 rounded-3 shadow-sm">
+                <div className="d-flex align-items-center mb-2">
+                  <div className="upgrade-icon-bg me-2">
+                    <i className="bx bxs-crown text-warning"></i>
+                  </div>
+                  <h6 className="mb-0 text-white font-size-13 fw-semibold">Free Edition</h6>
+                </div>
+                <p className="text-white text-opacity-50 small mb-3" style={{ fontSize: "0.75rem", lineHeight: "1.4" }}>
+                  Unlock unlimited professional tools and cloud backups.
+                </p>
+                <Link to={"/pricing"}>
+                  <Button className="btn btn-primary btn-sm w-100 fw-bold upgrade-sidebar-btn border-0 shadow-sm">
+                    Upgrade Now
+                  </Button>
+                </Link>
               </div>
-              }
+            }
           </div>
         </SimpleBar>
       </div>

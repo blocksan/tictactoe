@@ -2,57 +2,57 @@ import React from 'react';
 import {
     Card,
     CardBody,
-    CardFooter,
     Col,
     Row
 } from "reactstrap";
 import { getFirebaseBackend } from '../../helpers/firebase_helper';
 // import OffLogo33 from "../../assets/images/OffLogo33Compressed.png";
-import OffLogo50 from "../../assets/images/OffLogo50Compressed.png";
 import { createPaymentIntent, fetchPaymentStatus } from '../../helpers/cashfree_helper';
 const PRICING_PLANS = ["Free", "Monthly", "Yearly"];
 function PricingContent(props) {
     const PricingData = [
         {
-            title: "Forever Free",
-            caption: "Free for lifetime",
-            icon: "mdi mdi-hand-heart-outline",
+            title: "Free",
+            caption: "Precision planning for every trader",
+            icon: "bx bx-rocket",
             price: "0",
             pricingPlan: PRICING_PLANS[0],
             planId: "FREE",
             isChild: [
-                { id: "1", features: "Perform Unlimited Calculation" },
+                { id: "1", features: "10 Calculations" },
+                { id: "2", features: "Standard Risk Tools" },
+                { id: "3", features: "Basic Position Sizing" },
             ],
         },
 
         {
-            title: "Monthly",
-            caption: "Small payment for a big change",
-            icon: "bx bx-calendar-star",
+            title: "Professional",
+            caption: "Advanced tools for active traders",
+            icon: "bx bx-trending-up",
             price: "99",
             planId: "MONTHLY99",
             pricingPlan: PRICING_PLANS[1],
             isChild: [
-                { id: "1", features: "Perform Unlimited Calculation" },
-                { id: "2", features: "Advance Configurations" },
-                { id: "3", features: "Save Calculation" },
-                { id: "4", features: "Free Support over Email" },
+                { id: "1", features: "Unlimited Calculations" },
+                { id: "2", features: "Custom Risk Configurations" },
+                { id: "3", features: "Secure Cloud Backups" },
+                { id: "4", features: "Priority Email Support" },
             ],
         },
         {
-            title: "Yearly",
-            caption: "Best suited, if don't want to pay monthly",
-            icon: "bx bx-calendar",
+            title: "Expert",
+            caption: "Maximum efficiency and best value",
+            icon: "bx bx-diamond",
             price: "1199",
             discountedPrice: "599",
             yearly: true,
             planId: "YEARLY599",
             pricingPlan: PRICING_PLANS[2],
             isChild: [
-                { id: "1", features: "Perform Unlimited Calculation" },
-                { id: "2", features: "Advance Configurations" },
-                { id: "3", features: "Save Calculation" },
-                { id: "4", features: "Free Support over Email" },
+                { id: "1", features: "All Professional Features" },
+                { id: "2", features: "50% Annual Cost Savings" },
+                { id: "3", features: "Advanced Support Access" },
+                { id: "4", features: "Priority Feature Access" },
             ],
         },
         // {
@@ -150,81 +150,83 @@ function PricingContent(props) {
         <>
             <Row className="justify-content-center">
             {loading && <div class="full-page-loading"></div>}
-                <Col lg={5}>
+                <Col lg={7}>
                     <div className="text-center mb-5">
-                        <h4>Choose your Pricing plan</h4>
-                        {/* <p className="text-muted">
-                            To achieve this, it would be necessary to have uniform
-                            grammar, pronunciation and more common words If several
-                            languages coalesce
-                        </p> */}
+                        <h2 className="fw-bold mb-3 text-dark">Professional Risk Management for Every Trader</h2>
+                        <p className="text-muted font-size-17 px-lg-5">
+                            Scale your trading strategy with institutional-grade risk management tools. 
+                            Choose the professional edge that aligns with your performance goals.
+                        </p>
                     </div>
                 </Col>
             </Row>
-            <Row style={{ justifyContent: "center" }}>
+            <Row className="justify-content-center gx-4">
                 {PricingData.map((item, key) => (
-                    <Col xl={3} md={3} lg={3} key={key}>
-                        <Card>
-                            <CardBody className="p-4">
-                                <div className="d-flex mb-1">
-                                    {/* <div className="flex-shrink-0 me-3">
-                                        <div className="avatar-sm">
-                                            <span className="avatar-title rounded-circle metrics-card-primary-2">
-                                                <i className={item.icon + " font-size-20"}></i>
-                                            </span>
-                                        </div>
-                                    </div> */}
-                                    <div className="flex-grow-1 text-center" style={{ minHeight: "85px" }}>
-                                        <h5 className="font-size-18" style={{ color: "#444" }}>{item.title}</h5>
-                                        <p className="text-muted">{item.caption}</p>
+                    <Col xl={3} md={6} className="mb-4" key={key}>
+                        <Card className={`pricing-card h-100 border-0 ${item.yearly ? 'pricing-card-highlight' : ''}`}>
+                            <CardBody className="p-4 d-flex flex-column">
+                                {item.yearly && (
+                                    <div className="pricing-badge">
+                                        <span className="badge rounded-pill bg-danger shadow-sm">50% OFF</span>
                                     </div>
+                                )}
+                                
+                                <div className="text-center mb-4">
+                                    <div className="pricing-icon-bg mb-3">
+                                        <i className={`${item.icon} font-size-24 text-primary`}></i>
+                                    </div>
+                                    <h5 className="fw-bold text-dark mb-1">{item.title}</h5>
+                                    <p className="text-muted small mb-0">{item.caption}</p>
                                 </div>
-                                <div className="py-2 border-bottom pt-2 text-center">
 
-                                    <h4>
-                                        <sup>
-                                            <small>&#8377;</small>
-                                        </sup>{" "}
-                                        {item.pricingPlan === PRICING_PLANS[2] && <><span className='strikediag' style={{ fontSize: "0.9em", }}>{item.price}</span> &nbsp; <strong>{item.discountedPrice}</strong>/<span className="font-size-14"> Yearly</span></>}
-                                        {item.pricingPlan === PRICING_PLANS[1] && <><strong>{item.price}</strong>/ <span className="font-size-14"> Monthly</span></>}
-                                        {item.pricingPlan === PRICING_PLANS[0] && <><strong>{item.price}</strong> </>}
-
-
-                                    </h4>
+                                <div className="pricing-price-container py-3 mb-4 border-top border-bottom border-light text-center">
+                                    <h2 className="mb-0 fw-bold text-dark">
+                                        <span className="font-size-18 fw-normal me-1">&#8377;</span>
+                                        {item.yearly ? (
+                                            <>
+                                                <span className="text-muted text-decoration-line-through font-size-16 me-2 fw-normal">{item.price}</span>
+                                                <span className="text-primary">{item.discountedPrice}</span>
+                                            </>
+                                        ) : (
+                                            <span>{item.price}</span>
+                                        )}
+                                        <span className="font-size-14 text-muted fw-normal ms-1">
+                                            {item.pricingPlan === PRICING_PLANS[0] ? '/ Lifetime' : `/ ${item.pricingPlan}`}
+                                        </span>
+                                    </h2>
                                 </div>
-                                <div className="plan-features mt-4" style={{ minHeight: "150px", position: "relative" }}>
-                                    {item.yearly && <img src={OffLogo50} className="offer-image" alt="offer" />}
-                                    <h5 className="text-left font-size-15 mb-4" style={{ color: "#444" }}>
-                                        Plan Features :
-                                    </h5>
-                                    {item.isChild.map((subitem, key) => (
-                                        <p key={key}>
-                                            <i className="mdi mdi-checkbox-marked-circle-outline font-size-16 align-middle text-primary me-2"></i>{" "}
-                                            {subitem.features}
-                                        </p>
-                                    ))}
+
+                                <div className="flex-grow-1">
+                                    <h6 className="text-dark fw-bold mb-3 font-size-13 text-uppercase tracking-wider">Strategic Features</h6>
+                                    <ul className="list-unstyled mb-0">
+                                        {item.isChild.map((subitem, key) => (
+                                            <li key={key} className="d-flex align-items-start mb-3">
+                                                <i className="bx bx-check text-success font-size-18 me-2 mt-0"></i>
+                                                <span className="text-muted font-size-14" style={{ lineHeight: "1.4" }}>{subitem.features}</span>
+                                            </li>
+                                        ))}
+                                    </ul>
+                                </div>
+
+                                <div className="mt-4">
+                                    {props.user && props.user.planId === item.planId ? (
+                                        <button className="btn btn-soft-success w-100 fw-bold py-2 border-0" disabled>
+                                            <i className="bx bx-check-double me-1"></i> Active Plan
+                                        </button>
+                                    ) : item.pricingPlan === PRICING_PLANS[0] ? (
+                                        <button className="btn btn-light w-100 fw-bold py-2 disabled" style={{ backgroundColor: "#f8f9fa" }}>
+                                            {props.user && props.user.planId ? "Standard Access" : "Current Plan"}
+                                        </button>
+                                    ) : (
+                                        <button 
+                                            onClick={() => handleSubscription(item.pricingPlan)}
+                                            className="btn btn-primary w-100 fw-bold py-2 shadow-sm premium-cta-btn"
+                                        >
+                                            Upgrade Now
+                                        </button>
+                                    )}
                                 </div>
                             </CardBody>
-                            {item.pricingPlan !== PRICING_PLANS[0] &&
-                                <CardFooter className='text-center'>
-                                    <div className="float-centre plan-btn">
-                                        {props.user && props.user.planId === item.planId ? (
-                                            <button
-                                                className="btn btn-success btn-sm waves-effect waves-light"
-                                                disabled
-                                            >
-                                                Active Plan
-                                            </button>
-                                        ) : (
-                                            <button
-                                                onClick={() => handleSubscription(item.pricingPlan)}
-                                                className="btn metrics-card-primary-2 btn-sm waves-effect waves-light"
-                                            >
-                                                Subscribe Now
-                                            </button>
-                                        )}
-                                    </div>
-                                </CardFooter>}
                         </Card>
                     </Col>
                 ))}

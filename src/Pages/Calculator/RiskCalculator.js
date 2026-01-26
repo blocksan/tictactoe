@@ -29,10 +29,11 @@ import {
 //Import Breadcrumb
 import { useFormik } from "formik";
 import { connect } from "react-redux";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import * as Yup from "yup";
 import logoVoiled from "../../assets/images/OnlyLogoVoiled.png";
 import Breadcrumbs from "../../components/Common/Breadcrumb";
+import PremiumModal from "../../components/Common/PremiumModal";
 import { BANKNIFTY_LOT_SIZE, FINNIFTY_LOT_SIZE, IndexType, NIFTY50_LOT_SIZE } from "../../constants/NSE_index";
 import { getFirebaseBackend } from "../../helpers/firebase_helper";
 import LotSizeCards from "../CommonPages/LotSizeCards";
@@ -1161,63 +1162,10 @@ const RiskCalculator = (props) => {
                 </Row>
 
             </div>
-            <Modal
-                size="sm"
-                centered
-                isOpen={purchasePremiumModal}
-                toggle={() => {
-                    setPurchasePremiumModal(false);
-                }}
-            >
-                <div className="modal-header">
-                    <h5
-                        className="modal-title mt-0"
-                        id="mySmallModalLabel"
-                    >
-                        Ohh No !!!
-                    </h5>
-                    <button
-                        onClick={() => {
-                            setPurchasePremiumModal(false);
-                        }}
-                        type="button"
-                        className="close"
-                        data-dismiss="modal"
-                        aria-label="Close"
-                    >
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div className="modal-body">
-                    <p>
-                        You are not a Premium Trrader.
-                    </p>
-                    <p>
-                        Please purchase and become a <strong>Premium Trrader </strong> to access this feature at ONLY <strong style={{ color: "#4747A1" }}>less than ₹2 per day</strong>.
-                    </p>
-                </div>
-                <div className="modal-footer">
-                    <button
-                        className="btn btn-light"
-                        onClick={() => {
-                            setPurchasePremiumModal(false);
-                        }}
-                    >
-                        Cancel
-                    </button>
-                    <Link
-                        to="/pricing"
-                        className="btn btn-primary"
-                        style={{
-                            background: "#4747A1",
-                            borderColor: "#4747A1",
-                        }}
-                    >
-                        Check Plans
-                    </Link>
-                </div>
-
-            </Modal>
+            <PremiumModal 
+                isOpen={purchasePremiumModal} 
+                toggle={() => setPurchasePremiumModal(false)} 
+            />
 
             <Modal
                 centered
