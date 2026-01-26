@@ -981,7 +981,7 @@ const RiskCalculator = (props) => {
                                         <Col xl="12">
                                             <Row>
                                                 <Col xl="3">
-                                                    <Card className={`metrics-card ${selectedIndexCalculatedRisk.totalTradableLots > 0 ? 'metrics-card-success' : 'metrics-card-danger'} calculated-risk-card`} xl="2">
+                                                    <Card className={`metrics-card ${selectedIndexCalculatedRisk.totalTradableLots > 0 ? 'metrics-card-success' : 'metrics-card-danger'} calculated-risk-card`} xl="2" style={{color:"white"}}>
 
                                                         <CardBody>
                                                             <p className="mb-4 card-info-header">Tradable Lots in 1 Trade</p>

@@ -1020,7 +1020,6 @@ const TargetCalculator = (props) => {
                           label="optionPremium"
                           placeholder={selectedIndexCalculatedRisk.optionPremium}
                           value={selectedIndexCalculatedRisk.optionPremium}
-                          className="calculator-form-input"
                           type="number"
                           onChange={(e) => optionPremiumChangeHandler(e, selectedIndexCalculatedRisk.indexName)}
                         />
@@ -1256,10 +1255,10 @@ const TargetCalculator = (props) => {
                         </Col>
                         <Col xl="3">
                           {/* //TODO: change the color of the card based on the Target. Blue if target > tradingCapital, yellow if (target > 50% of tradingCapital && target < tradingCapital) and red if target < 50% of tradingCapital */}
-                          <Card color="" className="card metrics-card metrics-card-primary" xl="2">
+                          <Card color="" className="card metrics-card metrics-card-primary" xl="2" style={{ color: "white" }}>
                             <CardBody>
                               <p className="mb-4 card-info-header">Final Capital after Trading Charges</p>
-                              <CardText className="metric-number">
+                              <CardText className="metric-number white" >
                                 &#8377; {selectedIndexCalculatedRisk.finalTargetCapitalAfterTradingCharges}
                               </CardText>
                             </CardBody>

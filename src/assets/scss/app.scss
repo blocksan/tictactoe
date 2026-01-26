@@ -9,6 +9,7 @@ File: Main Css File
 
 //Fonts
 @import "custom/fonts/fonts";
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
 
 //Core files
 @import "./node_modules/bootstrap/scss/functions";
@@ -68,6 +69,12 @@ File: Main Css File
 @import "custom/pages/timeline";
 @import "custom/pages/extras-pages";
 @import url(https://fonts.googleapis.com/css?family=Roboto:500);
+
+// Global Font Update
+body {
+  font-family: 'Inter', sans-serif !important;
+  color: #344767;
+}
 
 $white: #fff;
 $google-blue: #4285f4;
@@ -158,10 +165,11 @@ $button-active-blue: #1669F2;
 // @import url(https://fonts.googleapis.com/css?family=Roboto:500);
 
 .grouped-row{
-  border: 1px solid #ddd;
-  padding: 1em;
+  border: 1px solid #e2e8f0; // Softer border
+  background: #f8f9fa; // Slight bg distinction
+  padding: 1.5em;
   margin-left: 0px;
-  border-radius: 5px;
+  border-radius: 12px; // More rounded
 }
 
 .result-container{
@@ -178,17 +186,37 @@ $button-active-blue: #1669F2;
   }
 }
 
+// Modern Label Styles
 .calculator-form-input-label{
-  font-weight: normal;
-  color: black;
+  font-weight: 600;
+  color: #344767;
+  font-size: 0.85rem;
+  margin-bottom: 0.5rem;
+  letter-spacing: 0.01em;
 }
 
+// Modern Input Styles
 .calculator-form-input{
   min-width: 50%;
-  // max-width: 160px;
-  padding:0.7rem 0.75rem;
-  color: black;
-  font-weight: bold;
+  padding: 0.75rem 1rem;
+  color: #1e293b;
+  font-weight: 500;
+  background-color: #fff;
+  border: 1px solid #e2e8f0;
+  border-radius: 0.5rem;
+  transition: all 0.2s ease;
+  font-size: 0.95rem;
+
+  &:focus {
+    border-color: #4285f4;
+    box-shadow: 0 0 0 3px rgba(66, 133, 244, 0.15);
+    outline: none;
+  }
+
+  &::placeholder {
+    color: #94a3b8;
+    font-weight: 400;
+  }
 }
 
 .option-premium-candle-container{
@@ -364,6 +392,7 @@ $button-active-blue: #1669F2;
   box-shadow: var(--tr-shadow-sm);
   transition: transform 0.2s ease, box-shadow 0.2s ease;
   overflow: hidden;
+  min-height: 150px;
   
   &:hover {
     transform: translateY(-2px);
