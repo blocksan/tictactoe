@@ -1,29 +1,29 @@
 import classnames from "classnames";
 import React, { useEffect, useRef, useState } from "react";
 import {
-    Button,
-    Card,
-    CardBody,
-    CardHeader,
-    CardSubtitle,
-    CardText,
-    Col,
-    Container,
-    Form,
-    FormFeedback,
-    Input,
-    Label,
-    Modal,
-    Nav,
-    NavItem,
-    NavLink,
-    Row,
-    TabContent,
-    TabPane,
-    Toast,
-    ToastBody,
-    ToastHeader,
-    UncontrolledAlert
+  Button,
+  Card,
+  CardBody,
+  CardHeader,
+  CardSubtitle,
+  CardText,
+  Col,
+  Container,
+  Form,
+  FormFeedback,
+  Input,
+  Label,
+  Modal,
+  Nav,
+  NavItem,
+  NavLink,
+  Row,
+  TabContent,
+  TabPane,
+  Toast,
+  ToastBody,
+  ToastHeader,
+  UncontrolledAlert
 } from "reactstrap";
 
 //Import Breadcrumb
@@ -460,10 +460,10 @@ const TargetCalculator = (props) => {
 
   const saveConfiguration = async () => {
 
-    if (loggedInUser && !loggedInUser.isPremiumOrTrial) {
-      setPurchasePremiumModal(true);
-      return
-    }
+    // if (loggedInUser && !loggedInUser.isPremiumOrTrial) {
+    //   setPurchasePremiumModal(true);
+    //   return
+    // }
 
     if (!configName) {
       alert("Please provide a name for the configuration");
@@ -960,20 +960,12 @@ const TargetCalculator = (props) => {
           <Col md={12} className="result-container" ref={resultContainerRef} >
             {!loading && activeTab === "1" && calculatedRiskRows && calculatedRiskRows.length > 0 && (
               <Card xl="2" style={{ margin: 0 }}>
-                <div className="text-left" style={{
-                  height: "60px",
-                  fontSize: "1.4em",
-                  fontWeight: "normal",
-                  paddingTop: "15px",
-                  paddingLeft: "20px",
-                }}>Calculated Risk</div>
                 <div className="text-left extra-card-header">
-                  <span>Calculated Risk</span>
+                  <span>Calculated Profit</span>
                   <Button onClick={() => {
                     setConfigNameModal(true)
                   }} 
-                  disabled
-                  style={{ float: "right", opacity:"0.2" }}> Save Configuration</Button>
+                  style={{ float: "right" }}> Save Configuration</Button>
 
 
                 </div>
