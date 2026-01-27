@@ -1119,6 +1119,7 @@ const TargetCalculator = (props) => {
                               <p className="mb-4 card-info-header">Tradable Lots in 1 Trade</p>
 
                               <CardText className="metric-number">
+                                <i className="mdi mdi-layers-outline" style={{ fontSize: "32px", color: "#0bb197" }}></i> &nbsp;
                                 {selectedIndexCalculatedRisk.totalTradableLots} <span className="sub-metric-number">{`Lot${selectedIndexCalculatedRisk.totalTradableLots > 1 ? 's' : ''}`}</span>
                               </CardText>
                               <p className="sub-max-sl-text text-black" style={{ fontSize: "1.1em" }}>Tradable Quantity: <strong>{selectedIndexCalculatedRisk.totalTradableQuantity}</strong></p>
@@ -1130,6 +1131,7 @@ const TargetCalculator = (props) => {
                             <CardBody>
                               <p className="mb-3 card-info-header">Actual Trading Days</p>
                               <CardText className="metric-number">
+                                <i className="mdi mdi-calendar-clock" style={{ fontSize: "32px", color: "#0bb197" }}></i> &nbsp;
                                 {selectedIndexCalculatedRisk.normalTradingDays} <span className="sub-metric-number"> {`Day${selectedIndexCalculatedRisk.normalTradingDays > 1 ? 's' : ''}`}</span>
                               </CardText>
                               <p className="sub-max-sl-text text-black" style={{ fontSize: "1.1em" }}>Max Trades in 1 Day: <strong>{selectedIndexCalculatedRisk.totalTradesInOneDay}</strong></p>
@@ -1172,6 +1174,7 @@ const TargetCalculator = (props) => {
                               <p className="mb-4 card-info-header">Single Trade Amount</p>
 
                               <CardText className="metric-number">
+                                <i className="mdi mdi-cash" style={{ fontSize: "32px", color: "#0bb197" }}></i> &nbsp;
                                 &#8377; {selectedIndexCalculatedRisk.singleTradeAmount}
 
                               </CardText>
@@ -1183,6 +1186,7 @@ const TargetCalculator = (props) => {
                             <CardBody>
                               <p className="mb-4 card-info-header">Profit after all Trading Sessions</p>
                               <CardText className="metric-number">
+                                <i className="mdi mdi-chart-line" style={{ fontSize: "32px", color: "#0bb197" }}></i> &nbsp;
                                 &#8377; {selectedIndexCalculatedRisk.profitAfterAllTradingSessions}
                               </CardText>
                             </CardBody>
@@ -1193,6 +1197,7 @@ const TargetCalculator = (props) => {
                             <CardBody>
                               <p className="mb-4 card-info-header">Total Trading Charges</p>
                               <CardText className="metric-number">
+                                <i className="mdi mdi-bank-transfer-out" style={{ fontSize: "32px", color: "#f1b44c" }}></i> &nbsp;
                                 &#8377; {selectedIndexCalculatedRisk.totalTradingCharges}
                               </CardText>
                             </CardBody>
@@ -1203,6 +1208,7 @@ const TargetCalculator = (props) => {
                             <CardBody>
                               <p className="mb-4 card-info-header">Target After Trading Charges</p>
                               <CardText className="metric-number">
+                                <i className="mdi mdi-wallet-plus" style={{ fontSize: "32px", color: "#0bb197" }}></i> &nbsp;
                                 &#8377; {selectedIndexCalculatedRisk.targetAfterTradingCharges}
                               </CardText>
                             </CardBody>
@@ -1214,6 +1220,7 @@ const TargetCalculator = (props) => {
                             <CardBody>
                               <p className="mb-4 card-info-header">Final Capital after Trading Charges</p>
                               <CardText className="metric-number white" >
+                                <i className="mdi mdi-safe" style={{ fontSize: "32px", color: "white" }}></i> &nbsp;
                                 &#8377; {selectedIndexCalculatedRisk.finalTargetCapitalAfterTradingCharges}
                               </CardText>
                             </CardBody>
@@ -1338,6 +1345,7 @@ const TargetCalculator = (props) => {
                               <p className="mb-4 card-info-header">Profit in Successful Days</p>
 
                               <CardText className="metric-number">
+                                <i className="mdi mdi-arrow-up-bold-circle" style={{ fontSize: "32px", color: "#34c38f" }}></i> &nbsp;
                                 &#8377; {selectedIndexCalculatedRisk.profitInSuccessfulDays}
 
                               </CardText>
@@ -1351,6 +1359,7 @@ const TargetCalculator = (props) => {
                               <p className="mb-4 card-info-header">Loss in Failure Days</p>
 
                               <CardText className="metric-number">
+                                <i className="mdi mdi-arrow-down-bold-circle" style={{ fontSize: "32px", color: "#f46a6a" }}></i> &nbsp;
                                 &#8377; {selectedIndexCalculatedRisk.lossInUnsuccessfulDays}
 
                               </CardText>

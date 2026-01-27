@@ -1015,6 +1015,7 @@ const RiskCalculator = (props) => {
                                                             <p className="mb-4 card-info-header">Tradable Lots in 1 Trade</p>
 
                                                             <CardText className="metric-number">
+                                                                <i className="mdi mdi-layers-outline" style={{ fontSize: "32px", color: "#0bb197" }}></i> &nbsp;
                                                                 {selectedIndexCalculatedRisk.totalTradableLots} <span className="sub-metric-number">{`Lot${selectedIndexCalculatedRisk.totalTradableLots > 1 ? 's' : ''}`}</span>
                                                             </CardText>
                                                         </CardBody>
@@ -1027,6 +1028,7 @@ const RiskCalculator = (props) => {
                                                             <p className="mb-4 card-info-header">Total Tradable Quantity</p>
 
                                                             <CardText className="metric-number">
+                                                                <i className="mdi mdi-package-variant-closed" style={{ fontSize: "32px", color: "#0bb197" }}></i> &nbsp;
                                                                 {selectedIndexCalculatedRisk.totalTradableQuantity} <span className="sub-metric-number">Qty</span>
 
                                                             </CardText>
@@ -1158,6 +1160,7 @@ const RiskCalculator = (props) => {
                                                         <CardBody>
                                                             <p className="mb-4 card-info-header">Single Trade Amount</p>
                                                             <CardText className="metric-number">
+                                                                <i className="mdi mdi-cash" style={{ fontSize: "32px", color: "#0bb197" }}></i> &nbsp;
                                                                 &#8377; {selectedIndexCalculatedRisk.singleTradeAmount}
 
                                                             </CardText>
