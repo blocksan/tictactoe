@@ -373,7 +373,7 @@ const Landing = (props) => {
                                         <div className="position-relative group-hover-zoom">
                                             <img 
                                                 src={riskcalculator} 
-                                                alt="Risk Calculator" 
+                                                alt="Drawdown Calculator" 
                                                 className="img-fluid rounded-3 shadow-lg transform-rotate-left animate-float" 
                                                 style={{ transform: "perspective(1000px) rotateY(-5deg) scale(0.95)", transition: "transform 0.3s", boxShadow: "0 25px 50px -12px rgba(0, 0, 0, 0.5)", cursor: "zoom-in" }} 
                                                 onClick={() => setSelectedImage(riskcalculator)}

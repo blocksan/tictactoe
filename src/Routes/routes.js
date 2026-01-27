@@ -4,7 +4,7 @@
 // Import Authentication pages
 import Logout from "../Pages/Authentication/Logout";
 import CapitalCalculator from "../Pages/Calculator/CapitalCalculator";
-import RiskCalculator from "../Pages/Calculator/RiskCalculator";
+import DrawdownCalculator from "../Pages/Calculator/DrawdownCalculator";
 import TargetCalculator from "../Pages/Calculator/TargetCalculator";
 import Faq from "../Pages/DocPages/Faq";
 import PrivacyPolicy from "../Pages/DocPages/PrivacyPolicy";
@@ -23,7 +23,7 @@ const authProtectedRoutes = [
   // { path: "/userprofile", component: <UserProfile /> },
   { path: "/referrallink", component: <Referral /> },
   { path: "/targetcalculator", component: <TargetCalculator /> },
-  { path: "/riskcalculator", component: <RiskCalculator /> },
+  { path: "/drawdown-calculator", component: <DrawdownCalculator /> },
   { path: "/capitalcalculator", component: <CapitalCalculator /> },
   { path: "/pricing", component: <Pricing /> },
   { path: "/my-subscription", component: <MySubscription /> },

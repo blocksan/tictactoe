@@ -32,9 +32,9 @@ const SidebarData = [
         
     },
     {
-        label: "Risk Calculator",
+        label: "Drawdown Calculator",
         icon: "mdi mdi-calculator-variant",
-        url: "/riskcalculator",
+        url: "/drawdown-calculator",
         isHasArrow: true,
     },
     {

@@ -14,9 +14,9 @@ import logoVoiled from "../../assets/images/OnlyLogoVoiled.png";
 // Redux Store
 import ProfileMenu from "../../components/Common/TopbarDropdown/ProfileMenu";
 import {
-  changeSidebarType,
-  showRightSidebarAction,
-  toggleLeftmenu,
+    changeSidebarType,
+    showRightSidebarAction,
+    toggleLeftmenu,
 } from "../../store/actions";
 // import AppsDropdown from "../../components/Common/TopbarDropdown/AppsDropdown";
 
@@ -77,7 +77,7 @@ const Header = (props) => {
         <div className="navbar-header">
           <div className="d-flex">
             <div className="navbar-brand-box text-left">
-              <Link to="/riskcalculator" className="logo logo-dark text-left" style={{
+              <Link to="/drawdown-calculator" className="logo logo-dark text-left" style={{
                 color:"black"
               
               }}>
@@ -90,7 +90,7 @@ const Header = (props) => {
                 </span>
               </Link>
 
-              <Link to="/riskcalculator" className="logo logo-light text-left">
+              <Link to="/drawdown-calculator" className="logo logo-light text-left">
                 <span className="logo-sm">
                   <img src={logoVoiled} alt="logo-sm-light" width={40} />
                 </span>

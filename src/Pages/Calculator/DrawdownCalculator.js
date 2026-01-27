@@ -45,13 +45,13 @@ const DEFAULT_TARGET_RATIO_MULTIPLIER = 2;
 
 const RiskCalculator = (props) => {
     const navigate = useNavigate()
-    document.title = "Risk Calculator";
+    document.title = "Drawdown Calculator";
     const premiumOnlyInputs = ['maxSLCountOneDay', 'maxDrawDownPercentage', 'targetRatioMultiplier']
     const [loggedInUser, setLoggedInUser] = useState(null)
     const [purchasePremiumModal, setPurchasePremiumModal] = useState(false);
     const [configNameModal, setConfigNameModal] = useState(false);
     const [activeTab, setactiveTab] = useState("1");
-    const [riskCalculatorConfigs, setRiskCalculatorConfigs] = useState([]);
+    const [drawdownCalculatorConfigs, setDrawdownCalculatorConfigs] = useState([]);
     const [configName, setConfigName] = useState("");
     useEffect(() => {
         if (props.user) {
@@ -62,27 +62,31 @@ const RiskCalculator = (props) => {
         }
     }, [props.user])
 
-    const toggle2 = async (tab) => {
-        if (activeTab !== tab) {
-          if(tab == "2"){
-            const response = await fetchRiskCalculatorConfigs();
-           
-          }
-          setactiveTab(tab);
-        }
-      };
-    
-
-    const fetchRiskCalculatorConfigs = async () => {
-        const response = await getFirebaseBackend().fetchRiskCalculatorConfigFromFirestore();
-        if(response.status){
-            setRiskCalculatorConfigs([...response.data]);
+    const dashBoardToggle = () => {
+        if(activeTab === '1') {
+            toggle2("2")
+        } else {
+            toggle2("1")
         }
     }
 
-    // useEffect(() => { 
-    //     console.log("riskCalculatorConfigs", riskCalculatorConfigs)
-    //  },[riskCalculatorConfigs]) 
+    const toggle2 = async (tab) => {
+        if (activeTab !== tab) {
+            if(tab == "2"){
+            const response = await fetchDrawdownCalculatorConfigs();
+            
+            }
+            setactiveTab(tab);
+        }
+    };
+    
+
+    const fetchDrawdownCalculatorConfigs = async () => {
+        const response = await getFirebaseBackend().fetchDrawdownCalculatorConfigFromFirestore();
+        if(response.status){
+            setDrawdownCalculatorConfigs([...response.data]);
+        }
+    }
 
 
     const [invalidFormValueToast, setInvalidFormValueToast] = React.useState(false);
@@ -194,7 +198,7 @@ const RiskCalculator = (props) => {
             setLoading(true)
 
             const backend = getFirebaseBackend();
-            const trialStatus = await backend.checkAndIncrementTrialCount("RiskCalculator");
+            const trialStatus = await backend.checkAndIncrementTrialCount("DrawdownCalculator");
             if (!trialStatus.allowed) {
                  setLoading(false);
                  setPurchasePremiumModal(true);
@@ -456,8 +460,8 @@ const RiskCalculator = (props) => {
             return;
         }
       setLoading(true);
-      const response = await getFirebaseBackend().addOrUpdateRiskCalculatorConfigToFirestore(riskCalculatorForm.values, configName);
-        if(response.status){
+      const response = await getFirebaseBackend().addOrUpdateDrawdownCalculatorConfigToFirestore(riskCalculatorForm.values, configName);
+      if (response.status) {
             setConfigNameModal(false);
             setConfigName("");
         }
@@ -468,7 +472,7 @@ const RiskCalculator = (props) => {
         <React.Fragment>
             <div className="page-content landing-header-main">
                 <Container fluid={true}>
-                    <Breadcrumbs title="F&O Calculator" breadcrumbItem="Risk Calculator" />
+                    <Breadcrumbs title="F&O Calculator" breadcrumbItem="Drawdown Calculator" />
                 </Container>
                 <Row>
                     <Col xl={12}>
@@ -485,7 +489,7 @@ const RiskCalculator = (props) => {
                         }}
                       >
                         <i className="mdi mdi-calculator-variant me-1 align-middle"> </i>{" "}
-                        Risk Configuration
+                        Drawdown Calculator
                       </NavLink>
                     </NavItem>
                     <NavItem>
@@ -515,7 +519,7 @@ const RiskCalculator = (props) => {
                           <Card className="shadow-sm border-0 h-100 mb-0" style={{ borderRadius: '16px' }}>
                             <CardBody className="p-4">
                               <div className="d-flex justify-content-between align-items-center mb-4">
-                                <h5 className="card-title fw-bold text-dark m-0">Risk Configuration</h5>
+                                <h1 className="card-title fw-bold text-dark m-0 fs-5">Drawdown Calculator</h1>
                               </div>
                               <CardSubtitle className="mb-4 text-muted small">
                                 Calculate your risk capital based on your trading style and stop-loss preferences.
@@ -666,7 +670,7 @@ const RiskCalculator = (props) => {
                                         disabled={loading}
                                       >
                                         {loading ? <i className="fas fa-circle-notch fa-spin me-2"></i> : null}
-                                        Calculate Risk
+                                        Calculate Drawdown
                                       </Button>
                                     </div>
                                   </Col>
@@ -752,7 +756,7 @@ const RiskCalculator = (props) => {
                                 <h5 className="card-title fw-bold text-dark m-0">Saved Configurations</h5>
                               </div>
                               <div className="table-responsive">
-                                {riskCalculatorConfigs && riskCalculatorConfigs.length > 0 ? (
+                                {drawdownCalculatorConfigs && drawdownCalculatorConfigs.length > 0 ? (
                                   <table className="table table-hover align-middle mb-0">
                                     <thead className="bg-light bg-opacity-50">
                                       <tr>
@@ -763,7 +767,7 @@ const RiskCalculator = (props) => {
                                       </tr>
                                     </thead>
                                     <tbody>
-                                      {riskCalculatorConfigs.map(function (config, index) {
+                                      {drawdownCalculatorConfigs.map(function (config, index) {
                                         return (
                                           <tr key={index} className="cursor-pointer" style={{ transition: 'all 0.2s' }}>
                                             <th scope="row" className="ps-4 text-muted">{index + 1}</th>
@@ -823,7 +827,7 @@ const RiskCalculator = (props) => {
                             <Card xl="2" style={{ margin: 0 }}>
 
                                 <div className="text-left extra-card-header">
-                                    <span>Calculated Risk</span>
+                                    <span>Calculated Drawdown</span>
                                     <Button onClick={()=> {
                                         setConfigNameModal(true)
                                     } }

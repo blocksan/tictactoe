@@ -90,7 +90,7 @@ function* socialLogin({ payload: { data, history, type } }) {
       localStorage.setItem("authUser", JSON.stringify(response));
       yield put(loginSuccess(response));
     }
-    history("/riskcalculator");
+    history("/drawdown-calculator");
   } catch (error) {
     yield put(apiError(error));
   }

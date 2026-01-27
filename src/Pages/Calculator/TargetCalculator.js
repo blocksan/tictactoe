@@ -536,7 +536,7 @@ const TargetCalculator = (props) => {
                     }}
                   >
                     <i className="mdi mdi-calculator-variant me-1 align-middle"> </i>{" "}
-                    Target Configuration
+                    Target Calculator
                   </NavLink>
                 </NavItem>
                 <NavItem>
@@ -563,7 +563,7 @@ const TargetCalculator = (props) => {
                       <Card className="shadow-sm border-0 h-100 mb-0" style={{ borderRadius: '16px' }}>
                         <CardBody className="p-4">
                           <div className="d-flex justify-content-between align-items-center mb-4">
-                            <h5 className="card-title fw-bold text-dark m-0">Target Configuration</h5>
+                            <h1 className="card-title fw-bold text-dark m-0 fs-5">Target Calculator</h1>
                           </div>
                           <CardSubtitle className="mb-4 text-muted small">
                             This tool will help you <strong>calculate the target amount</strong> you can <strong className="text-success">target in a trade</strong> based on your capital, percentage of risk per trade, and target hit ratio.

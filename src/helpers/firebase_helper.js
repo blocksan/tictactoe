@@ -1,7 +1,7 @@
 import { initializeApp } from "firebase/app";
 import { getAuth } from 'firebase/auth';
 import { addDoc, collection, doc, getDocs, getFirestore, query, updateDoc, where } from "firebase/firestore";
-import { RISK_CALCULATOR_COLLECTION, SUBSCRIPTIONS_COLLECTION, TARGET_CALCULATOR_COLLECTION } from "../constants/firebase";
+import { DRAWDOWN_CALCULATOR_COLLECTION, SUBSCRIPTIONS_COLLECTION, TARGET_CALCULATOR_COLLECTION } from "../constants/firebase";
 import { loginSuccess } from "../store/actions";
 import { cancelSubscription } from "./cashfree_helper";
 import { getStore } from "./redux_store_helper";
@@ -217,7 +217,7 @@ class FirebaseAuthBackend {
     }
   };
 
-  addOrUpdateRiskCalculatorConfigToFirestore = async (config, configName, isUpdateQuery) => {
+  addOrUpdateDrawdownCalculatorConfigToFirestore = async (config, configName, isUpdateQuery) => {
     try {
       const db = getFirestore(firebaseApp);
       const user = await this.waitForCurrentUser();
@@ -230,27 +230,27 @@ class FirebaseAuthBackend {
       const riskConfigDoc = {
         createdOn: new Date(),
         updatedOn: new Date(),
-        riskConfig: JSON.stringify(config),
+        drawdownConfig: JSON.stringify(config),
         customerEmail: user.email,
         configName: configName
       };
 
       if (isUpdateQuery) {
-        const userQuery = query(collection(db, RISK_CALCULATOR_COLLECTION), where("customerEmail", "==", user.email));
+        const userQuery = query(collection(db, DRAWDOWN_CALCULATOR_COLLECTION), where("customerEmail", "==", user.email));
         const querySnapshot = await getDocs(userQuery);
         if (!querySnapshot.empty) {
           await updateDoc(querySnapshot.docs[0].ref, {
-            riskConfig: riskConfigDoc.riskConfig,
+            drawdownConfig: riskConfigDoc.drawdownConfig,
             updatedOn: riskConfigDoc.updatedOn,
             configName: riskConfigDoc.configName
           });
         } else {
-          await addDoc(collection(db, RISK_CALCULATOR_COLLECTION), {
+          await addDoc(collection(db, DRAWDOWN_CALCULATOR_COLLECTION), {
             ...riskConfigDoc
           });
         }
       } else {
-        await addDoc(collection(db, RISK_CALCULATOR_COLLECTION), {
+        await addDoc(collection(db, DRAWDOWN_CALCULATOR_COLLECTION), {
           ...riskConfigDoc
         });
       }
@@ -582,7 +582,7 @@ class FirebaseAuthBackend {
     }
   }
 
-  fetchRiskCalculatorConfigFromFirestore = async (customerId) => {
+  fetchDrawdownCalculatorConfigFromFirestore = async (customerId) => {
     try {
       const user = await this.waitForCurrentUser();
       if (!user) {
@@ -592,7 +592,7 @@ class FirebaseAuthBackend {
         };
       }
       const db = getFirestore(firebaseApp);
-      const userQuery = query(collection(db, RISK_CALCULATOR_COLLECTION), where("customerEmail", "==", user.email));
+      const userQuery = query(collection(db, DRAWDOWN_CALCULATOR_COLLECTION), where("customerEmail", "==", user.email));
       const querySnapshot = await getDocs(userQuery);
       if (!querySnapshot.empty) {
         let data = querySnapshot.docs.map(doc => {
@@ -600,7 +600,7 @@ class FirebaseAuthBackend {
             ...doc.data(),
             createdOn: doc.data().createdOn.toDate(),
             updatedOn: doc.data().updatedOn.toDate(),
-            parsedConfig: JSON.parse(doc.data().riskConfig)
+            parsedConfig: JSON.parse(doc.data().drawdownConfig)
           }}).sort((a, b) => b.createdOn - a.createdOn)
         return {
           status: true,
