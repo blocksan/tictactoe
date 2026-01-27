@@ -223,13 +223,77 @@ const Landing = (props) => {
                     </Container>
                 </section>
 
-                {/* How It Works Section - LIGHT SECTION */}
-                <section className="py-5 position-relative section-light">
+                {/* Problem Definition & Metrics Section */}
+                <section className="py-5 position-relative overflow-hidden" style={{ background: "#0b0d12" }}>
+                    <Container className="position-relative z-1">
+                        <AnimatedSection className="text-center mb-5">
+                            <h2 className="fw-bold display-6 text-white mb-4">Why 90% of Traders Fail <span className="text-secondary opacity-50 fst-italic h4">(It’s Not the Strategy)</span></h2>
+                            <p className="lead text-secondary max-width-800 mx-auto">
+                                Most traders enter the market with a setup but without a survival plan. They focus entirely on <em>entry signals</em> while ignoring the mathematical reality of ruin. 
+                            </p>
+                        </AnimatedSection>
+
+                        <Row className="g-4 justify-content-center">
+                            <Col md={4} className="d-flex">
+                                <AnimatedSection delay="delay-100" className="w-100">
+                                <div className="p-4 rounded-3 h-100 position-relative overflow-hidden d-flex flex-column transition-all hover-border-danger" 
+                                     style={{ background: "#11141c", border: "1px solid rgba(255,255,255,0.08)", borderTop: "4px solid #ef4444" }}>
+                                    
+                                    <h3 className="fw-bold text-white mb-1">5% Risk</h3>
+                                    <h6 className="text-danger mb-3 text-uppercase small letter-spacing-1 fw-bold">Gambler's Ruin</h6>
+                                    <p className="text-secondary mb-4 border-bottom border-white border-opacity-10 pb-3 flex-grow-1">A losing streak of 5 trades reduces capital by <strong className="text-white">~23%</strong>.</p>
+                                    <div className="d-flex align-items-center gap-2 text-secondary small">
+                                        <i className="mdi mdi-alert-circle text-danger"></i>
+                                        <span>Need <strong className="text-danger">30% gain</strong> to break even.</span>
+                                    </div>
+                                </div>
+                                </AnimatedSection>
+                            </Col>
+                            <Col md={4} className="d-flex">
+                                <AnimatedSection delay="delay-200" className="w-100">
+                                <div className="p-4 rounded-3 h-100 position-relative overflow-hidden d-flex flex-column transition-all hover-border-warning"
+                                     style={{ background: "#11141c", border: "1px solid rgba(255,255,255,0.08)", borderTop: "4px solid #f59e0b" }}>
+                                    
+                                    <h3 className="fw-bold text-white mb-1">2% Risk</h3>
+                                    <h6 className="text-warning mb-3 text-uppercase small letter-spacing-1 fw-bold">Aggressive</h6>
+                                    <p className="text-secondary mb-4 border-bottom border-white border-opacity-10 pb-3 flex-grow-1">A losing streak of 5 trades reduces capital by <strong className="text-white">~9.6%</strong>.</p>
+                                    <div className="d-flex align-items-center gap-2 text-secondary small">
+                                        <i className="mdi mdi-alert text-warning"></i>
+                                        <span>Need <strong className="text-warning">11% gain</strong> to break even.</span>
+                                    </div>
+                                </div>
+                                </AnimatedSection>
+                            </Col>
+                            <Col md={4} className="d-flex">
+                                <AnimatedSection delay="delay-300" className="w-100">
+                                <div className="p-4 rounded-3 h-100 position-relative overflow-hidden d-flex flex-column transition-all hover-border-success"
+                                     style={{ background: "#11141c", border: "1px solid rgba(255,255,255,0.08)", borderTop: "4px solid #10b981" }}>
+                                    
+                                    <h3 className="fw-bold text-white mb-1">1% Risk</h3>
+                                    <h6 className="text-success mb-3 text-uppercase small letter-spacing-1 fw-bold">Professional</h6>
+                                    <p className="text-secondary mb-4 border-bottom border-white border-opacity-10 pb-3 flex-grow-1">A losing streak of 5 trades reduces capital by only <strong className="text-white">~4.9%</strong>.</p>
+                                    <div className="d-flex align-items-center gap-2 text-secondary small">
+                                        <i className="mdi mdi-check-circle text-success"></i>
+                                        <span>Need only <strong className="text-success">5.1% gain</strong> to break even.</span>
+                                    </div>
+                                </div>
+                                </AnimatedSection>
+                            </Col>
+                        </Row>
+                        
+                        <div className="text-center mt-5">
+                            <p className="text-secondary small font-monospace text-uppercase letter-spacing-2">Trrader.in Risk Architecture</p>
+                        </div>
+                    </Container>
+                </section>
+
+                {/* How It Works Section - DARK SECTION */}
+                <section className="py-5 position-relative" style={{ background: "#0b0d12" }}>
                     <Container>
                         <AnimatedSection className="text-center mb-5 pb-4">
                             <h6 className="text-primary fw-bold text-uppercase letter-spacing-2 mb-3">Workflow</h6>
-                            <h2 className="fw-bold display-6 text-high-contrast">Precision in Three Steps</h2>
-                            <p className="text-medium-contrast max-width-600 mx-auto mt-3">
+                            <h2 className="fw-bold display-6 text-white">Precision in Three Steps</h2>
+                            <p className="text-white opacity-75 max-width-600 mx-auto mt-3">
                                 Stop calculating risk on napkins. Integrate a standardized, mathematical approach to every single trade you take.
                             </p>
                         </AnimatedSection>
@@ -239,35 +303,36 @@ const Landing = (props) => {
                                 { 
                                     icon: "mdi-bullseye-arrow", 
                                     title: "Define Parameters", 
-                                    desc: "Input your total equity, risk tolerance percentage, and trade-specific stop-loss levels.",
+                                    desc: "Input your total trading capital, maximum risk tolerance percentage (e.g., 1% or 2%), and trade-specific stop-loss levels.",
                                     step: "01",
                                     iconColor: "#3b82f6"
                                 },
                                 { 
                                     icon: "mdi-calculator-variant", 
                                     title: "Automated Calculation", 
-                                    desc: "Our engine instantly computes the exact lot size to match your risk profile—down to the decimal.",
+                                    desc: "The system instantly computes the maximum permissible lot size. It factors in instrument lot sizes (NIFTY, BANKNIFTY) to ensure compliance with your risk rules.",
                                     step: "02",
                                     iconColor: "#8b5cf6"
                                 },
                                 { 
                                     icon: "mdi-chart-timeline-variant", 
-                                    title: "Execute & Protect", 
-                                    desc: "Enter the market with confidence, knowing your downside is mathematically capped before the chart moves.",
+                                    title: "Execution", 
+                                    desc: "Enter the market knowing your downside is mathematically capped. If the numbers don't align, the system flags the trade as unsafe.",
                                     step: "03",
                                     iconColor: "#10b981"
                                 }
                             ].map((item, index) => (
-                                <Col lg={4} key={index}>
-                                    <AnimatedSection delay={`delay-${index * 100 + 100}`}>
-                                        <div className="card h-100 step-card p-4 border-0 position-relative overflow-hidden" style={{minHeight: "275px"}}>
-                                            <div className="step-number">{item.step}</div>
+                                <Col lg={4} key={index} className="d-flex">
+                                    <AnimatedSection delay={`delay-${index * 100 + 100}`} className="w-100">
+                                        <div className="card h-100 step-card p-4 border-0 position-relative overflow-hidden d-flex flex-column" 
+                                             style={{ background: "#161b22", border: "1px solid rgba(255,255,255,0.05)" }}>
+                                            <div className="step-number" style={{ color: "rgba(255,255,255,0.03)" }}>{item.step}</div>
                                             <div className="d-inline-flex align-items-center justify-content-center p-3 rounded-circle mb-4 position-relative z-1 shadow-sm" 
-                                                 style={{ background: item.iconColor, width: "64px", height: "64px" }}>
-                                                <i className={`mdi ${item.icon} text-white fs-2`}></i>
+                                                 style={{ background: "rgba(255,255,255,0.05)", border: `1px solid ${item.iconColor}`, width: "64px", height: "64px" }}>
+                                                <i className={`mdi ${item.icon} fs-2`} style={{ color: item.iconColor }}></i>
                                             </div>
-                                            <h4 className="fw-bold text-high-contrast mb-3 position-relative z-1">{item.title}</h4>
-                                            <p className="text-medium-contrast lh-lg mb-0 position-relative z-1">{item.desc}</p>
+                                            <h4 className="fw-bold text-white mb-3 position-relative z-1">{item.title}</h4>
+                                            <p className="text-white opacity-75 lh-lg mb-0 position-relative z-1 flex-grow-1">{item.desc}</p>
                                         </div>
                                     </AnimatedSection>
                                 </Col>
@@ -289,7 +354,7 @@ const Landing = (props) => {
                                     </div>
                                     <h3 className="fw-bold mb-3 text-high-contrast">Dynamic Position Sizing</h3>
                                     <p className="text-medium-contrast mb-4 lh-lg">
-                                        Most traders fail because of inconsistent bet sizing. Trrader normalizes your risk across different assets and volatility levels. 
+                                        Stop guessing lot sizes. Our engine calculates the exact quantity to trade based on your stop-loss width and total account equity. Whether the volatility is high or low, your monetary risk remains constant.
                                     </p>
                                     <ul className="list-unstyled text-medium-contrast mb-0 d-flex flex-column gap-3">
                                         <li className="d-flex align-items-center gap-3">
@@ -335,7 +400,7 @@ const Landing = (props) => {
                                     </div>
                                     <h3 className="fw-bold mb-3 text-high-contrast">Drawdown Simulation</h3>
                                     <p className="text-medium-contrast mb-4 lh-lg">
-                                        Understand your strategy's breaking point. Our simulation engine stresses your account balance against consecutive losses to help you visualize risk.
+                                        Visualize the worst-case scenarios before they happen. Input your win rates and risk-reward ratios to simulate capital erosion during losing streaks.
                                     </p>
                                     <ul className="list-unstyled text-medium-contrast mb-0 d-flex flex-column gap-3">
                                         <li className="d-flex align-items-center gap-3">
@@ -368,45 +433,188 @@ const Landing = (props) => {
                     </Container>
                 </section>
 
+                        {/* Feature 3 */}
+                        <AnimatedSection delay="delay-300">
+                        <div className="card mb-0 rounded-4" style={{ background: "#11141c", border: "1px solid rgba(255,255,255,0.08)" }}>
+                            <Row className="g-0 align-items-center">
+                                <Col lg={6} className="p-5">
+                                    <div className="icon-box d-inline-flex align-items-center justify-content-center p-3 rounded-3 mb-4" style={{ background: "rgba(245, 158, 11, 0.1)" }}>
+                                        <i className="mdi mdi-scale-balance text-warning fs-3"></i>
+                                    </div>
+                                    <h3 className="fw-bold mb-3 text-white">Capital Allocation Logic</h3>
+                                    <p className="text-secondary mb-4 lh-lg">
+                                        Define your maximum daily loss limits. Trrader acts as a pre-trade checks and balances system, preventing you from over-leveraging on high-conviction days.
+                                    </p>
+                                    <ul className="list-unstyled text-secondary mb-0 d-flex flex-column gap-3">
+                                        <li className="d-flex align-items-center gap-3">
+                                            <i className="mdi mdi-check-circle text-warning fs-5"></i> 
+                                            <span><strong>Discipline Enforcement:</strong> Hard stops on daily risk limits.</span>
+                                        </li>
+                                        <li className="d-flex align-items-center gap-3">
+                                            <i className="mdi mdi-check-circle text-warning fs-5"></i> 
+                                            <span><strong>Objective Sizing:</strong> Removes emotions from the moment of execution.</span>
+                                        </li>
+                                    </ul>
+                                </Col>
+                                <Col lg={6} className="bg-dark bg-opacity-50 h-100 position-relative overflow-hidden">
+                                     {/* Use a different image or reuse desktop one */}
+                                    <div className="position-absolute top-0 end-0 w-100 h-100" style={{ background: "linear-gradient(45deg, transparent 40%, rgba(245, 158, 11, 0.05) 100%)" }}></div>
+                                    <div className="p-4 h-100 d-flex align-items-center justify-content-center" style={{ minHeight: "400px" }}>
+                                        <div className="position-relative group-hover-zoom">
+                                            <img 
+                                                src={tradingdesktops} 
+                                                alt="Capital Logic" 
+                                                className="img-fluid rounded-3 shadow-lg transform-rotate-left animate-float" 
+                                                style={{ transform: "perspective(1000px) rotateY(-5deg) scale(0.95)", transition: "transform 0.3s", boxShadow: "0 25px 50px -12px rgba(0, 0, 0, 0.5)", cursor: "zoom-in", opacity: 0.8 }} 
+                                                onClick={() => setSelectedImage(tradingdesktops)}
+                                            />
+                                        </div>
+                                    </div>
+                                </Col>
+                            </Row>
+                        </div>
+                        </AnimatedSection>
+
+                {/* Who It Is For Section */}
+                <section className="py-5 position-relative overflow-hidden" style={{ background: "#0b0d12" }}>
+                    <Container className="position-relative z-1">
+                        <AnimatedSection className="text-center mb-5">
+                            <h2 className="fw-bold display-6 text-white mb-3">Built For Discipline, Not Speculation</h2>
+                        </AnimatedSection>
+                        <Row className="g-4 justify-content-center">
+                            <Col md={5} className="d-flex">
+                                <AnimatedSection delay="delay-100" className="w-100">
+                                <div className="card h-100 p-5 rounded-3 border-0 position-relative overflow-hidden d-flex flex-column" 
+                                     style={{ background: "#11141c", borderLeft: "4px solid #10b981", boxShadow: "0 10px 30px -15px rgba(0,0,0,0.5)" }}>
+                                    <h3 className="fw-bold text-white mb-4"><i className="mdi mdi-check-decagram text-success me-2"></i>This is for you if:</h3>
+                                    <ul className="list-unstyled d-flex flex-column gap-3 text-secondary fs-5 flex-grow-1">
+                                        <li className="d-flex align-items-center gap-3">
+                                            <i className="mdi mdi-check-circle text-success fs-5"></i>
+                                            <span>You view trading as a business of probability.</span>
+                                        </li>
+                                        <li className="d-flex align-items-center gap-3">
+                                            <i className="mdi mdi-check-circle text-success fs-5"></i>
+                                            <span>You have capital between ₹50k and ₹5L.</span>
+                                        </li>
+                                        <li className="d-flex align-items-center gap-3">
+                                            <i className="mdi mdi-check-circle text-success fs-5"></i>
+                                            <span>You are tired of uncontrolled drawdowns.</span>
+                                        </li>
+                                    </ul>
+                                </div>
+                                </AnimatedSection>
+                            </Col>
+                            <Col md={5} className="d-flex">
+                                <AnimatedSection delay="delay-200" className="w-100">
+                                <div className="card h-100 p-5 rounded-3 border-0 position-relative overflow-hidden d-flex flex-column"
+                                     style={{ background: "#11141c", borderLeft: "4px solid #ef4444", boxShadow: "0 10px 30px -15px rgba(0,0,0,0.5)" }}>
+                                    <h3 className="fw-bold text-white mb-4"><i className="mdi mdi-close-octagon text-danger me-2"></i>This is NOT for you if:</h3>
+                                    <ul className="list-unstyled d-flex flex-column gap-3 text-secondary fs-5 flex-grow-1">
+                                        <li className="d-flex align-items-center gap-3">
+                                            <i className="mdi mdi-close-circle text-danger fs-5"></i>
+                                            <span>You are looking for "hot tips" or buy/sell signals.</span>
+                                        </li>
+                                        <li className="d-flex align-items-center gap-3">
+                                            <i className="mdi mdi-close-circle text-danger fs-5"></i>
+                                            <span>You want to double your money in a month.</span>
+                                        </li>
+                                        <li className="d-flex align-items-center gap-3">
+                                            <i className="mdi mdi-close-circle text-danger fs-5"></i>
+                                            <span>You believe risk management is "boring."</span>
+                                        </li>
+                                    </ul>
+                                </div>
+                                </AnimatedSection>
+                            </Col>
+                        </Row>
+                    </Container>
+                </section>
+
+                {/* Pricing Section */}
+                {/* <section className="py-5 position-relative" style={{ background: "#06070a" }}>
+                    <Container>
+                        <AnimatedSection className="text-center mb-5">
+                            <h2 className="fw-bold display-6 text-white mb-4">Transparent Access</h2>
+                            <p className="text-secondary max-width-600 mx-auto">Professional tools. Simple pricing.</p>
+                        </AnimatedSection>
+                        <Row className="justify-content-center g-4">
+                            <Col md={5} lg={4}>
+                                <AnimatedSection delay="delay-100">
+                                <div className="card h-100 p-4 rounded-3 border border-secondary border-opacity-10 bg-transparent text-center">
+                                    <h4 className="fw-bold text-white mb-3">Free Tier</h4>
+                                    <h2 className="display-4 fw-bold text-white mb-4">₹0<span className="fs-5 text-secondary fw-normal">/mo</span></h2>
+                                    <p className="text-secondary mb-4 small font-monospace">ENTRY LEVEL</p>
+                                    <ul className="list-unstyled text-start text-secondary d-inline-block mx-auto mb-4 d-flex flex-column gap-2 small">
+                                        <li><i className="mdi mdi-check text-success me-2"></i> Basic Position Sizing</li>
+                                        <li><i className="mdi mdi-check text-success me-2"></i> Single Instrument Support</li>
+                                    </ul>
+                                    <div onClick={signInWithGoogle} className="btn btn-outline-secondary w-100 rounded-1 py-2 cursor-pointer text-white border-opacity-25 hover-bg-dark">Get Started</div>
+                                </div>
+                                </AnimatedSection>
+                            </Col>
+                            <Col md={5} lg={4}>
+                                <AnimatedSection delay="delay-200">
+                                <div className="card h-100 p-4 rounded-3 position-relative text-center overflow-hidden" 
+                                     style={{ background: "#11141c", border: "1px solid #4f46e5" }}>
+                                    
+                                    <h4 className="fw-bold text-white mb-3">Pro Membership</h4>
+                                    <h2 className="display-4 fw-bold text-white mb-4">₹499<span className="fs-5 text-white opacity-50 fw-normal">/mo</span></h2>
+                                    <p className="text-primary mb-4 small font-monospace fw-bold">PROFESSIONAL</p>
+                                    <ul className="list-unstyled text-start text-secondary d-inline-block mx-auto mb-4 d-flex flex-column gap-2 small">
+                                        <li><i className="mdi mdi-check text-primary me-2"></i> Advanced Risk Modelling</li>
+                                        <li><i className="mdi mdi-check text-primary me-2"></i> Save & Load Configurations</li>
+                                        <li><i className="mdi mdi-check text-primary me-2"></i> Multi-Instrument Support</li>
+                                        <li><i className="mdi mdi-check text-primary me-2"></i> Drawdown Simulation Tools</li>
+                                    </ul>
+                                    <div onClick={signInWithGoogle} className="btn btn-primary w-100 rounded-1 fw-bold py-2 shadow-sm cursor-pointer border-0">Upgrade to Pro</div>
+                                </div>
+                                </AnimatedSection>
+                            </Col>
+                        </Row>
+                        <br />
+                        <br />
+                    </Container>
+                </section> */}
+
                 {/* FAQ Section */}
-                <section className="py-5 bg-opacity-50">
+                <section className="py-5 bg-dark">
                     <Container style={{ maxWidth: "800px" }}>
                         <AnimatedSection className="text-center mb-5">
-                            <h2 className="fw-bold display-6 text-high-contrast">Frequently Asked Questions</h2>
+                            <h2 className="fw-bold display-6 text-white">Frequently Asked Questions</h2>
                         </AnimatedSection>
                         
                         <AnimatedSection delay="delay-100">
-                            <div className="landing-accordion">
+                            <div className="landing-accordion dark-accordion">
                                 <UncontrolledAccordion defaultOpen="1">
-                                    <AccordionItem>
-                                        <AccordionHeader targetId="1">
-                                            Is Trrader suitable for absolute beginners?
+                                    <AccordionItem className="bg-transparent border-bottom border-white border-opacity-10">
+                                        <AccordionHeader targetId="1" className="bg-transparent">
+                                            <span className="text-white fs-5 fw-medium">Is Trrader suitable for absolute beginners?</span>
                                         </AccordionHeader>
-                                        <AccordionBody accordionId="1">
+                                        <AccordionBody accordionId="1" className="text-white opacity-75 lh-lg">
                                             Absolutely. In fact, it is crucial for beginners to start with proper risk management habits. Trrader simplifies complex calculations so you can focus on learning market dynamics without blowing your account.
                                         </AccordionBody>
                                     </AccordionItem>
-                                    <AccordionItem>
-                                        <AccordionHeader targetId="2">
-                                            Does it work for Indian Stocks and F&O?
+                                    <AccordionItem className="bg-transparent border-bottom border-white border-opacity-10">
+                                        <AccordionHeader targetId="2" className="bg-transparent">
+                                            <span className="text-white fs-5 fw-medium">Does it work for Indian Stocks and F&O?</span>
                                         </AccordionHeader>
-                                        <AccordionBody accordionId="2">
+                                        <AccordionBody accordionId="2" className="text-white opacity-75 lh-lg">
                                             Yes. Our calculator is optimized for the Indian Stock Market, covering NSE/BSE stocks and Index Options like NIFTY and BANKNIFTY.
                                         </AccordionBody>
                                     </AccordionItem>
-                                    <AccordionItem>
-                                        <AccordionHeader targetId="3">
-                                            Is my trading data secure?
+                                    <AccordionItem className="bg-transparent border-bottom border-white border-opacity-10">
+                                        <AccordionHeader targetId="3" className="bg-transparent">
+                                            <span className="text-white fs-5 fw-medium">Is my trading data secure?</span>
                                         </AccordionHeader>
-                                        <AccordionBody accordionId="3">
+                                        <AccordionBody accordionId="3" className="text-white opacity-75 lh-lg">
                                             We prioritize your privacy. Trrader does not connect directly to your broker account, so we never have access to your funds. All calculations are performed on our secure platform.
                                         </AccordionBody>
                                     </AccordionItem>
-                                    <AccordionItem>
-                                        <AccordionHeader targetId="4">
-                                            Is Trrader free to use?
+                                    <AccordionItem className="bg-transparent border-bottom border-white border-opacity-10">
+                                        <AccordionHeader targetId="4" className="bg-transparent">
+                                            <span className="text-white fs-5 fw-medium">Is Trrader free to use?</span>
                                         </AccordionHeader>
-                                        <AccordionBody accordionId="4">
+                                        <AccordionBody accordionId="4" className="text-white opacity-75 lh-lg">
                                             We offer a comprehensive free tier that includes essential risk calculation tools. Advanced analytics and historical tracking features are available in our Pro plan.
                                         </AccordionBody>
                                     </AccordionItem>
@@ -417,18 +625,18 @@ const Landing = (props) => {
                 </section>
 
                 {/* Dashboard Showcase - Full Width */}
-                <section className="py-5 my-5 position-relative overflow-hidden">
+                <section className="py-5 my-5 position-relative overflow-hidden" style={{ background: "#0b0d12" }}>
                      {/* Background Glow */}
-                    <div className="position-absolute w-100 h-100 top-0 start-0" style={{ background: "linear-gradient(180deg, rgba(71,71,161,0.05) 0%, rgba(15,17,26,0) 100%)" }}></div>
+                    <div className="position-absolute w-100 h-100 top-0 start-0" style={{ background: "radial-gradient(circle at center, rgba(71,71,161,0.1) 0%, rgba(11,13,18,0) 70%)" }}></div>
                     <Container className="position-relative z-1">
                         <AnimatedSection className="text-center max-width-800 mx-auto mb-5">
-                            <h2 className="fw-bold display-5 mb-3 text-high-contrast">Unified Command Center</h2>
-                            <p className="text-medium-contrast fs-5">
+                            <h2 className="fw-bold display-5 mb-3 text-white">Unified Command Center</h2>
+                            <p className="text-white opacity-75 fs-5">
                                 Stop switching between spreadhseets and charts. Manage your entire risk profile from a single, intuitive dashboard.
                             </p>
                         </AnimatedSection>
                         
-                        <AnimatedSection delay="delay-200" className="position-relative p-2 rounded-4 mx-auto" style={{ maxWidth: "1100px", background: "linear-gradient(to bottom, rgba(255,255,255,0.1), rgba(255,255,255,0.01))", backdropFilter: "blur(20px)" }}>
+                        <AnimatedSection delay="delay-200" className="position-relative p-2 rounded-4 mx-auto" style={{ maxWidth: "1100px", background: "linear-gradient(to bottom, rgba(255,255,255,0.05), rgba(255,255,255,0.01))", backdropFilter: "blur(20px)", border: "1px solid rgba(255,255,255,0.05)" }}>
                              <div className="position-relative group-hover-zoom">
                                 <img 
                                     src={productOverview} 
@@ -442,25 +650,30 @@ const Landing = (props) => {
                     </Container>
                 </section>
 
-                {/* Quote Section - Light Accent */}
-                <section className="py-5 position-relative overflow-hidden">
+                {/* Quote Section - Dark Accent */}
+                <section className="py-5 position-relative overflow-hidden" style={{ background: "#0f111a" }}>
                     <Container>
                         <AnimatedSection>
-                        <div className="p-5 rounded-4 position-relative overflow-hidden" style={{ background: "#fff", color: "#0f111a" }}>
+                        <div className="p-5 rounded-4 position-relative overflow-hidden" 
+                             style={{ 
+                                 background: "linear-gradient(135deg, #1f2937 0%, #111827 100%)", 
+                                 border: "1px solid rgba(255,255,255,0.1)",
+                                 boxShadow: "0 20px 40px -10px rgba(0,0,0,0.5)"
+                             }}>
                             <Row className="align-items-center">
                                 <Col lg={7}>
                                     <span className="text-primary fw-bold text-uppercase letter-spacing-2 mb-2 d-block small">The Disciplined Mindset</span>
-                                    <h2 className="display-6 fw-bold mb-4 font-serif fst-italic">"The goal of a successful trader is to make the best trades. Money is secondary."</h2>
+                                    <h2 className="display-6 fw-bold mb-4 font-serif fst-italic text-white">"The goal of a successful trader is to make the best trades. Money is secondary."</h2>
                                     <div className="d-flex align-items-center gap-3">
-                                        <div className="bg-primary text-white rounded-circle d-flex align-items-center justify-content-center fw-bold" style={{ width: "48px", height: "48px" }}>A</div>
+                                        <div className="bg-primary text-white rounded-circle d-flex align-items-center justify-content-center fw-bold shadow-sm" style={{ width: "48px", height: "48px" }}>A</div>
                                         <div>
-                                            <h5 className="mb-0 fw-bold">Alexander Elder</h5>
-                                            <small className="text-muted">Trading for a Living</small>
+                                            <h5 className="mb-0 fw-bold text-white">Alexander Elder</h5>
+                                            <small className="text-white opacity-50">Trading for a Living</small>
                                         </div>
                                     </div>
                                 </Col>
                                 <Col lg={5} className="text-center mt-4 mt-lg-0">
-                                    <img src={tradingdesktops} className="img-fluid rounded-3 shadow-lg" alt="Trading setup" style={{ transform: "rotate(3deg) scale(1.05)" }} />
+                                    <img src={tradingdesktops} className="img-fluid rounded-3 shadow-lg opacity-75 hover-opacity-100 transition-opacity" alt="Trading setup" style={{ transform: "rotate(3deg) scale(1.05)", border: "1px solid rgba(255,255,255,0.1)" }} />
                                 </Col>
                             </Row>
                         </div>
@@ -505,8 +718,9 @@ const Landing = (props) => {
                                     <img src={logoVoiled} alt="Logo" width="32" />
                                     <h5 className="text-high-contrast m-0 fw-bold">Trrader.in</h5>
                                 </div>
-                                <p className="text-medium-contrast small lh-lg mb-4">
-                                    Trrader provides institutional-grade risk management analytics for the retail trader. Our mission is to promote longevity through discipline.
+                                <h6 className="text-high-contrast fw-bold mb-3">Important Disclosure</h6>
+                                <p className="text-medium-contrast small lh-lg mb-4" style={{fontSize: "0.8rem", opacity: 0.7}}>
+                                    Trrader.in is a software tool for calculation and risk modelling only. We are not a SEBI registered investment advisor. We do not provide trading tips, stock recommendations, or financial advice. All projections are based on mathematical models and hypothetical scenarios. Trading in Future & Options (F&O) involves high risk and can lead to the loss of your entire capital. Users are responsible for their own trading decisions.
                                 </p>
                                 <div className="d-flex gap-3 social-links">
                                     <a href="#" className="text-medium-contrast hover-text-white"><i className="mdi mdi-twitter fs-4"></i></a>
