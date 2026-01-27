@@ -294,7 +294,7 @@ const Landing = (props) => {
                                     <ul className="list-unstyled text-medium-contrast mb-0 d-flex flex-column gap-3">
                                         <li className="d-flex align-items-center gap-3">
                                             <i className="mdi mdi-check-circle text-primary fs-5"></i> 
-                                            <span><strong>Asset Agnostic:</strong> Works seamlessly for XAUUSD, BTCUSD, and Major Pairs.</span>
+                                            <span><strong>Asset Agnostic:</strong> Works seamlessly for NIFTY, BANKNIFTY, and Indian Stocks.</span>
                                         </li>
                                         <li className="d-flex align-items-center gap-3">
                                             <i className="mdi mdi-check-circle text-primary fs-5"></i> 
@@ -388,10 +388,10 @@ const Landing = (props) => {
                                     </AccordionItem>
                                     <AccordionItem>
                                         <AccordionHeader targetId="2">
-                                            Does it work for Crypto and Forex?
+                                            Does it work for Indian Stocks and F&O?
                                         </AccordionHeader>
                                         <AccordionBody accordionId="2">
-                                            Yes. Our calculator supports all major asset classes including Forex pairs, Cryptocurrencies, Indices, and Commodities. You can customize the contract size and currency.
+                                            Yes. Our calculator is optimized for the Indian Stock Market, covering NSE/BSE stocks and Index Options like NIFTY and BANKNIFTY.
                                         </AccordionBody>
                                     </AccordionItem>
                                     <AccordionItem>
