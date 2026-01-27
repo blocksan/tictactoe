@@ -798,7 +798,7 @@ const RiskCalculator = (props) => {
                                       <i className="mdi mdi-folder-open-outline display-4 text-light"></i>
                                     </div>
                                     <h5 className="text-muted">No saved configurations found</h5>
-                                    <p className="text-muted small">Save your risk calculations to access them here later.</p>
+                                    <p className="text-muted small">Save your drawdown calculations to access them here later.</p>
                                   </div>
                                 )}
                               </div>

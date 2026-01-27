@@ -38,9 +38,9 @@ const SidebarData = [
         isHasArrow: true,
     },
     {
-        label: "Target Calculator",
-        icon: "mdi mdi-trending-up",
-        url: "/targetcalculator",
+        label: "Risk Reward Calculator",
+        icon: "mdi mdi-target",
+        url: "/riskreward-calculator",
         isHasArrow: true,
     },
     {

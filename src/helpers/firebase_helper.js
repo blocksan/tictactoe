@@ -1,7 +1,11 @@
 import { initializeApp } from "firebase/app";
 import { getAuth } from 'firebase/auth';
 import { addDoc, collection, doc, getDocs, getFirestore, query, updateDoc, where } from "firebase/firestore";
-import { DRAWDOWN_CALCULATOR_COLLECTION, SUBSCRIPTIONS_COLLECTION, TARGET_CALCULATOR_COLLECTION } from "../constants/firebase";
+import {
+    DRAWDOWN_CALCULATOR_COLLECTION,
+    RISK_REWARD_CALCULATOR_COLLECTION,
+    SUBSCRIPTIONS_COLLECTION
+} from "../constants/firebase";
 import { loginSuccess } from "../store/actions";
 import { cancelSubscription } from "./cashfree_helper";
 import { getStore } from "./redux_store_helper";
@@ -269,7 +273,7 @@ class FirebaseAuthBackend {
     }
   };
 
-  addOrUpdateTargetCalculatorConfigToFirestore = async (config, configName, isUpdateQuery) => {
+  addOrUpdateRiskRewardCalculatorConfigToFirestore = async (config, configName, isUpdateQuery) => {
     try {
       const db = getFirestore(firebaseApp);
       const user = await this.waitForCurrentUser();
@@ -279,31 +283,31 @@ class FirebaseAuthBackend {
           error: "User not found"
         };
       }
-      const targetConfigDoc = {
+      const riskRewardConfigDoc = {
         createdOn: new Date(),
         updatedOn: new Date(),
-        targetConfig: JSON.stringify(config),
+        riskRewardConfig: JSON.stringify(config),
         customerEmail: user.email,
         configName: configName
       };
 
       if (isUpdateQuery) {
-        const userQuery = query(collection(db, TARGET_CALCULATOR_COLLECTION), where("customerEmail", "==", user.email));
+        const userQuery = query(collection(db, RISK_REWARD_CALCULATOR_COLLECTION), where("customerEmail", "==", user.email));
         const querySnapshot = await getDocs(userQuery);
         if (!querySnapshot.empty) {
           await updateDoc(querySnapshot.docs[0].ref, {
-            targetConfig: targetConfigDoc.targetConfig,
-            updatedOn: targetConfigDoc.updatedOn,
-            configName: targetConfigDoc.configName
+            riskRewardConfig: riskRewardConfigDoc.riskRewardConfig,
+            updatedOn: riskRewardConfigDoc.updatedOn,
+            configName: riskRewardConfigDoc.configName
           });
         } else {
-          await addDoc(collection(db, TARGET_CALCULATOR_COLLECTION), {
-            ...targetConfigDoc
+          await addDoc(collection(db, RISK_REWARD_CALCULATOR_COLLECTION), {
+            ...riskRewardConfigDoc
           });
         }
       } else {
-        await addDoc(collection(db, TARGET_CALCULATOR_COLLECTION), {
-          ...targetConfigDoc
+        await addDoc(collection(db, RISK_REWARD_CALCULATOR_COLLECTION), {
+          ...riskRewardConfigDoc
         });
 
       }
@@ -313,7 +317,7 @@ class FirebaseAuthBackend {
       };
 
     } catch (err) {
-      console.log("error in addOrUpdateTargetCalculatorConfigToFirestore", err)
+      console.log("error in addOrUpdateRiskRewardCalculatorConfigToFirestore", err)
       return {
         status: false,
         error: err.message
@@ -623,7 +627,7 @@ class FirebaseAuthBackend {
     }
   }
 
-  fetchTargetCalculatorConfigFromFirestore = async (customerId) => {
+  fetchRiskRewardCalculatorConfigFromFirestore = async (customerId) => {
     try {
       const user = await this.waitForCurrentUser();
       if (!user) {
@@ -633,7 +637,7 @@ class FirebaseAuthBackend {
         };
       }
       const db = getFirestore(firebaseApp);
-      const userQuery = query(collection(db, TARGET_CALCULATOR_COLLECTION), where("customerEmail", "==", user.email));
+      const userQuery = query(collection(db, RISK_REWARD_CALCULATOR_COLLECTION), where("customerEmail", "==", user.email));
       const querySnapshot = await getDocs(userQuery);
       if (!querySnapshot.empty) {
         let data = querySnapshot.docs.map(doc => {
@@ -641,7 +645,7 @@ class FirebaseAuthBackend {
             ...doc.data(),
             createdOn: doc.data().createdOn.toDate(),
             updatedOn: doc.data().updatedOn.toDate(),
-            parsedConfig: JSON.parse(doc.data().targetConfig)
+            parsedConfig: JSON.parse(doc.data().riskRewardConfig)
           }}).sort((a, b) => b.createdOn - a.createdOn)
         return {
           status: true,
@@ -654,7 +658,7 @@ class FirebaseAuthBackend {
         };
       }
     } catch (err) {
-      console.log("error in fetchTargetCalculatorConfigFromFirestore", err)
+      console.log("error in fetchRiskRewardCalculatorConfigFromFirestore", err)
       return {
         status: false,
         error: err.message,

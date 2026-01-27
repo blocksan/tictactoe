@@ -39,16 +39,16 @@ import { BANKNIFTY_LOT_SIZE, FINNIFTY_LOT_SIZE, IndexType, NIFTY50_LOT_SIZE } fr
 import { getFirebaseBackend } from "../../helpers/firebase_helper";
 import CustomOptionPremiumStackedBar from "./CustomOptionPremiumStackedBar";
 import DayWiseCapitalDrawDown from "./DayWiseCapitalDrawDown";
-const TargetCalculator = (props) => {
+const RiskRewardCalculator = (props) => {
   const navigate = useNavigate()
-  document.title = "Target Calculator";
+  document.title = "RiskReward Calculator";
 
   const premiumOnlyInputs = ['maxSLCountOneDay', 'maxDrawDownPercentage', 'targetRatioMultiplier','maxTradeInOneDay','averageTargetHitTradeInOneDay', 'averageSLHitTradeInOneDay', 'zeroSLHitTradeDays', 'zeroTargetHitTradeDays', 'normalTradingDays','averageTradingChargesPerTrade','totalTradesInOneDay','maxTradeAmountInOneDay']
   const [loggedInUser, setLoggedInUser] = useState(null)
   const [purchasePremiumModal, setPurchasePremiumModal] = useState(false);
   const [configNameModal, setConfigNameModal] = useState(false);
   const [activeTab, setactiveTab] = useState("1");
-  const [targetCalculatorConfigs, setTargetCalculatorConfigs] = useState([]);
+  const [riskRewardCalculatorConfigs, setRiskRewardCalculatorConfigs] = useState([]);
   const [configName, setConfigName] = useState("");
   useEffect(() => {
     if (props.user) {
@@ -59,16 +59,16 @@ const TargetCalculator = (props) => {
     }
   }, [props.user])
 
-  const fetchTargetCalculatorConfigs = async () => {
-    const response = await getFirebaseBackend().fetchTargetCalculatorConfigFromFirestore();
+  const fetchRiskRewardCalculatorConfigs = async () => {
+    const response = await getFirebaseBackend().fetchRiskRewardCalculatorConfigFromFirestore();
     if (response.status) {
-      setTargetCalculatorConfigs([...response.data]);
+      setRiskRewardCalculatorConfigs([...response.data]);
     }
   }
   const toggle2 = async (tab) => {
     if (activeTab !== tab) {
       if (tab == "2") {
-        const response = await fetchTargetCalculatorConfigs();
+        const response = await fetchRiskRewardCalculatorConfigs();
 
       }
       setactiveTab(tab);
@@ -141,7 +141,7 @@ const TargetCalculator = (props) => {
 
 
   // Form validation
-  const targetCalculatorForm = useFormik({
+  const riskRewardCalculatorForm = useFormik({
     // enableReinitialize : use this flag when initial values needs to be changed
     enableReinitialize: true,
 
@@ -212,7 +212,7 @@ const TargetCalculator = (props) => {
       setLoading(true)
 
       const backend = getFirebaseBackend();
-      const trialStatus = await backend.checkAndIncrementTrialCount("TargetCalculator");
+      const trialStatus = await backend.checkAndIncrementTrialCount("RiskRewardCalculator");
       if (!trialStatus.allowed) {
             setLoading(false);
             setPurchasePremiumModal(true);
@@ -244,22 +244,22 @@ const TargetCalculator = (props) => {
   const handleOnChange = (event) => {
     const { name, value } = event.target;
     if (name == 'desiredNumberOfTradingSessions') {
-      targetCalculatorForm.setFieldValue('percentageOfTradingCapitalInOneTrade', 0);
+      riskRewardCalculatorForm.setFieldValue('percentageOfTradingCapitalInOneTrade', 0);
     } else if (name == 'percentageOfTradingCapitalInOneTrade') {
-      targetCalculatorForm.setFieldValue('desiredNumberOfTradingSessions', 0);
+      riskRewardCalculatorForm.setFieldValue('desiredNumberOfTradingSessions', 0);
     }
     // riskCalculatorForm.setFieldValue(name, value);
   }
 
-  const calculateRisk = (targetCalculatorFormValues) => {
+  const calculateRisk = (riskRewardCalculatorFormValues) => {
     // Calculate Risk Metadata
-    const metadataResult = calculateRiskMetadata(targetCalculatorFormValues);
+    const metadataResult = calculateRiskMetadata(riskRewardCalculatorFormValues);
     setCalculatedMetadata({ ...metadataResult });
     // setCalculatedMetadata({ maxSLCapacityDaily, maxSLCapacityInOneTrade, maxTradeAmountInOneDay });
     let calculatedRiskRows = [];
     tradeIndexes.forEach((tradeIndex) => {
       const { lotSize, optionPremium, indexName } = tradeIndex;
-      let calculatedRiskOfIndexResult = calculateRiskofIndex(targetCalculatorFormValues, lotSize, optionPremium, indexName, metadataResult.maxSLCapacityInOneTrade, metadataResult);
+      let calculatedRiskOfIndexResult = calculateRiskofIndex(riskRewardCalculatorFormValues, lotSize, optionPremium, indexName, metadataResult.maxSLCapacityInOneTrade, metadataResult);
       calculatedRiskRows.push(calculatedRiskOfIndexResult);
     });
 
@@ -273,19 +273,19 @@ const TargetCalculator = (props) => {
 
   }
 
-  const calculateRiskofIndex = (targetCalculatorFormValues, lotSize, optionPremium, indexName, maxSLCapacityInOneTrade, calculatedMetadata) => {
+  const calculateRiskofIndex = (riskRewardCalculatorFormValues, lotSize, optionPremium, indexName, maxSLCapacityInOneTrade, calculatedMetadata) => {
     let calculatedLotSize = lotSize;
-    targetCalculatorFormValues.optionPremium = optionPremium;
-    let SLAmountInOptionPremium = calculateSLAmountInOptionPremium(targetCalculatorFormValues);
-    let TargetAmountInOptionPremium = calculateTargetAmountInOptionPremium(targetCalculatorFormValues, SLAmountInOptionPremium);
-    let optionPremiumTargetPrice = calculateOptionPremiumTargetPrice(targetCalculatorFormValues, SLAmountInOptionPremium);
-    let optionPremiumExitPrice = calculateOptionPremiumExitPrice(targetCalculatorFormValues, SLAmountInOptionPremium);
-    let totalTradableLots = calculateTotalTradableLots(targetCalculatorFormValues, maxSLCapacityInOneTrade, calculatedLotSize);
+    riskRewardCalculatorFormValues.optionPremium = optionPremium;
+    let SLAmountInOptionPremium = calculateSLAmountInOptionPremium(riskRewardCalculatorFormValues);
+    let TargetAmountInOptionPremium = calculateTargetAmountInOptionPremium(riskRewardCalculatorFormValues, SLAmountInOptionPremium);
+    let optionPremiumTargetPrice = calculateOptionPremiumTargetPrice(riskRewardCalculatorFormValues, SLAmountInOptionPremium);
+    let optionPremiumExitPrice = calculateOptionPremiumExitPrice(riskRewardCalculatorFormValues, SLAmountInOptionPremium);
+    let totalTradableLots = calculateTotalTradableLots(riskRewardCalculatorFormValues, maxSLCapacityInOneTrade, calculatedLotSize);
     let totalTradableQuantity = calculateTotalTradableQuantity(totalTradableLots, calculatedLotSize);
-    let singleTradeAmount = calculateTotalTradeCapital(targetCalculatorFormValues, totalTradableQuantity);
+    let singleTradeAmount = calculateTotalTradeCapital(riskRewardCalculatorFormValues, totalTradableQuantity);
     let totalSLofTrade = calculateTotalSLofTrade(totalTradableQuantity, SLAmountInOptionPremium);
     let totalTargetofTrade = calculateTotalTargetofTrade(optionPremiumTargetPrice, totalTradableQuantity, singleTradeAmount);
-    let capitalLeftAfterTradingSessions = calculateCapitalLeftAfterTradingSessions(targetCalculatorFormValues, totalSLofTrade);
+    let capitalLeftAfterTradingSessions = calculateCapitalLeftAfterTradingSessions(riskRewardCalculatorFormValues, totalSLofTrade);
     // let drawDownMetricsResult = calculateDrawDownMetrics(targetCalculatorFormValues)
 
     // console.log('---targetCalculatorFormValues---', targetCalculatorFormValues);
@@ -295,27 +295,27 @@ const TargetCalculator = (props) => {
 
     // console.log("capitalDayWiseLabels", capitalDayWiseLabels);
     // console.log("remainingCapitalDayWise", remainingCapitalDayWise);
-    const profitInSuccessfulDays = targetCalculatorFormValues.averageTargetHitTradeInOneDay * targetCalculatorFormValues.zeroSLHitTradeDays * totalTargetofTrade;
-    const lossInUnsuccessfulDays = targetCalculatorFormValues.averageSLHitTradeInOneDay * targetCalculatorFormValues.zeroTargetHitTradeDays * totalSLofTrade;
-    const totalTradesInOneDay = targetCalculatorFormValues.averageTargetHitTradeInOneDay + targetCalculatorFormValues.averageSLHitTradeInOneDay;
-    const normalTradingDays = calculatedMetadata.numberOfTradingSessions - (targetCalculatorFormValues.zeroSLHitTradeDays + targetCalculatorFormValues.zeroTargetHitTradeDays);
+    const profitInSuccessfulDays = riskRewardCalculatorFormValues.averageTargetHitTradeInOneDay * riskRewardCalculatorFormValues.zeroSLHitTradeDays * totalTargetofTrade;
+    const lossInUnsuccessfulDays = riskRewardCalculatorFormValues.averageSLHitTradeInOneDay * riskRewardCalculatorFormValues.zeroTargetHitTradeDays * totalSLofTrade;
+    const totalTradesInOneDay = riskRewardCalculatorFormValues.averageTargetHitTradeInOneDay + riskRewardCalculatorFormValues.averageSLHitTradeInOneDay;
+    const normalTradingDays = calculatedMetadata.numberOfTradingSessions - (riskRewardCalculatorFormValues.zeroSLHitTradeDays + riskRewardCalculatorFormValues.zeroTargetHitTradeDays);
     let totalTradingCharges = 0;
     if (totalTradableQuantity > 0) {
-      totalTradingCharges = targetCalculatorFormValues.averageTradingChargesPerTrade * totalTradesInOneDay * calculatedMetadata.numberOfTradingSessions;
+      totalTradingCharges = riskRewardCalculatorFormValues.averageTradingChargesPerTrade * totalTradesInOneDay * calculatedMetadata.numberOfTradingSessions;
     }
     // console.log(totalTargetofTrade*targetCalculatorFormValues.averageTargetHitTradeInOneDay);
     // console.log(totalSLofTrade*targetCalculatorFormValues.averageSLHitTradeInOneDay);
     // console.log(profitInSuccessfulDays-lossInUnsuccessfulDays)
-    const profitAfterAllTradingSessions = (((totalTargetofTrade * targetCalculatorFormValues.averageTargetHitTradeInOneDay) - totalSLofTrade * targetCalculatorFormValues.averageSLHitTradeInOneDay) * normalTradingDays) + (profitInSuccessfulDays - lossInUnsuccessfulDays)
+    const profitAfterAllTradingSessions = (((totalTargetofTrade * riskRewardCalculatorFormValues.averageTargetHitTradeInOneDay) - totalSLofTrade * riskRewardCalculatorFormValues.averageSLHitTradeInOneDay) * normalTradingDays) + (profitInSuccessfulDays - lossInUnsuccessfulDays)
     const targetAfterTradingCharges = profitAfterAllTradingSessions - totalTradingCharges;
-    const finalTargetCapitalAfterTradingCharges = targetCalculatorFormValues.tradingCapital + targetAfterTradingCharges;
+    const finalTargetCapitalAfterTradingCharges = riskRewardCalculatorFormValues.tradingCapital + targetAfterTradingCharges;
     const finalCapitalAfterTradingChargesIfMaxSLHit = capitalLeftAfterTradingSessions - totalTradingCharges;
 
     let targetCapitalDayWise = []
     let capitalDayWiseLabels = []
-    let averageProfitInOneDay = (totalTargetofTrade * targetCalculatorFormValues.averageTargetHitTradeInOneDay) - (totalSLofTrade * targetCalculatorFormValues.averageSLHitTradeInOneDay);
+    let averageProfitInOneDay = (totalTargetofTrade * riskRewardCalculatorFormValues.averageTargetHitTradeInOneDay) - (totalSLofTrade * riskRewardCalculatorFormValues.averageSLHitTradeInOneDay);
 
-    let currentCapital = targetCalculatorFormValues.tradingCapital;
+    let currentCapital = riskRewardCalculatorFormValues.tradingCapital;
     let maxTradingSessions = calculatedMetadata.numberOfTradingSessions;
     for (let i = 1; i <= maxTradingSessions; i++) {
       capitalDayWiseLabels.push(`Day ${i}`);
@@ -363,11 +363,11 @@ const TargetCalculator = (props) => {
   }
 
 
-  const calculateRiskMetadata = (targetCalculatorFormValues) => {
-    const maxSLCapacityDaily = targetCalculatorFormValues.desiredNumberOfTradingSessions ? Math.floor((targetCalculatorFormValues.tradingCapital - (targetCalculatorFormValues.tradingCapital / targetCalculatorFormValues.desiredNumberOfTradingSessions)) / targetCalculatorFormValues.desiredNumberOfTradingSessions) : Math.floor((targetCalculatorFormValues.tradingCapital * targetCalculatorFormValues.percentageOfTradingCapitalInOneTrade / 100) * (targetCalculatorFormValues.maxDrawDownPercentage / 100) * targetCalculatorFormValues.maxSLCountOneDay);
-    const maxSLCapacityInOneTrade = Math.floor(maxSLCapacityDaily / targetCalculatorFormValues.maxSLCountOneDay);
-    const numberOfTradingSessions = targetCalculatorFormValues.desiredNumberOfTradingSessions ? targetCalculatorFormValues.desiredNumberOfTradingSessions : Math.floor(((targetCalculatorFormValues.tradingCapital - (targetCalculatorFormValues.tradingCapital * (targetCalculatorFormValues.percentageOfTradingCapitalInOneTrade / 100))) / maxSLCapacityInOneTrade) / targetCalculatorFormValues.maxSLCountOneDay) + 1; //1 is added to consider the buffer amount left after trading sessions
-    const maxTradeAmountInOneDay = Math.floor(100 * (maxSLCapacityInOneTrade / targetCalculatorFormValues.maxDrawDownPercentage))
+  const calculateRiskMetadata = (riskRewardCalculatorFormValues) => {
+    const maxSLCapacityDaily = riskRewardCalculatorFormValues.desiredNumberOfTradingSessions ? Math.floor((riskRewardCalculatorFormValues.tradingCapital - (riskRewardCalculatorFormValues.tradingCapital / riskRewardCalculatorFormValues.desiredNumberOfTradingSessions)) / riskRewardCalculatorFormValues.desiredNumberOfTradingSessions) : Math.floor((riskRewardCalculatorFormValues.tradingCapital * riskRewardCalculatorFormValues.percentageOfTradingCapitalInOneTrade / 100) * (riskRewardCalculatorFormValues.maxDrawDownPercentage / 100) * riskRewardCalculatorFormValues.maxSLCountOneDay);
+    const maxSLCapacityInOneTrade = Math.floor(maxSLCapacityDaily / riskRewardCalculatorFormValues.maxSLCountOneDay);
+    const numberOfTradingSessions = riskRewardCalculatorFormValues.desiredNumberOfTradingSessions ? riskRewardCalculatorFormValues.desiredNumberOfTradingSessions : Math.floor(((riskRewardCalculatorFormValues.tradingCapital - (riskRewardCalculatorFormValues.tradingCapital * (riskRewardCalculatorFormValues.percentageOfTradingCapitalInOneTrade / 100))) / maxSLCapacityInOneTrade) / riskRewardCalculatorFormValues.maxSLCountOneDay) + 1; //1 is added to consider the buffer amount left after trading sessions
+    const maxTradeAmountInOneDay = Math.floor(100 * (maxSLCapacityInOneTrade / riskRewardCalculatorFormValues.maxDrawDownPercentage))
 
     // console.log("targetCalculatorFormValues", targetCalculatorFormValues);
     // console.log("maxSLCapacityDaily", maxSLCapacityDaily);
@@ -384,28 +384,28 @@ const TargetCalculator = (props) => {
 
 
 
-  const calculateSLAmountInOptionPremium = (targetCalculatorFormValues,) => {
-    return Math.floor(targetCalculatorFormValues.optionPremium * (targetCalculatorFormValues.maxDrawDownPercentage / 100));
+  const calculateSLAmountInOptionPremium = (riskRewardCalculatorFormValues,) => {
+    return Math.floor(riskRewardCalculatorFormValues.optionPremium * (riskRewardCalculatorFormValues.maxDrawDownPercentage / 100));
   }
 
-  const calculateTargetAmountInOptionPremium = (targetCalculatorFormValues, SLAmountInOptionPremium) => {
-    return Math.floor(SLAmountInOptionPremium * targetCalculatorFormValues.targetRatioMultiplier);
+  const calculateTargetAmountInOptionPremium = (riskRewardCalculatorFormValues, SLAmountInOptionPremium) => {
+    return Math.floor(SLAmountInOptionPremium * riskRewardCalculatorFormValues.targetRatioMultiplier);
   }
-  const calculateOptionPremiumTargetPrice = (targetCalculatorFormValues, SLAmountInOptionPremium) => {
-    return Math.floor(targetCalculatorFormValues.optionPremium + (SLAmountInOptionPremium * targetCalculatorFormValues.targetRatioMultiplier));
+  const calculateOptionPremiumTargetPrice = (riskRewardCalculatorFormValues, SLAmountInOptionPremium) => {
+    return Math.floor(riskRewardCalculatorFormValues.optionPremium + (SLAmountInOptionPremium * riskRewardCalculatorFormValues.targetRatioMultiplier));
   }
-  const calculateOptionPremiumExitPrice = (targetCalculatorFormValues, SLAmountInOptionPremium) => {
-    return Math.floor(targetCalculatorFormValues.optionPremium - SLAmountInOptionPremium);
+  const calculateOptionPremiumExitPrice = (riskRewardCalculatorFormValues, SLAmountInOptionPremium) => {
+    return Math.floor(riskRewardCalculatorFormValues.optionPremium - SLAmountInOptionPremium);
 
   }
-  const calculateTotalTradableLots = (targetCalculatorFormValues, maxSLCapacityInOneTrade, lotSize) => {
-    return Math.floor((maxSLCapacityInOneTrade / (targetCalculatorFormValues.optionPremium * (targetCalculatorFormValues.maxDrawDownPercentage / 100))) / lotSize);
+  const calculateTotalTradableLots = (riskRewardCalculatorFormValues, maxSLCapacityInOneTrade, lotSize) => {
+    return Math.floor((maxSLCapacityInOneTrade / (riskRewardCalculatorFormValues.optionPremium * (riskRewardCalculatorFormValues.maxDrawDownPercentage / 100))) / lotSize);
   }
   const calculateTotalTradableQuantity = (totalTradableLots, lotSize) => {
     return totalTradableLots * lotSize;
   }
-  const calculateTotalTradeCapital = (targetCalculatorFormValues, totalTradableQuantity) => {
-    return totalTradableQuantity * targetCalculatorFormValues.optionPremium;
+  const calculateTotalTradeCapital = (riskRewardCalculatorFormValues, totalTradableQuantity) => {
+    return totalTradableQuantity * riskRewardCalculatorFormValues.optionPremium;
   }
   const calculateTotalSLofTrade = (totalTradableQuantity, SLAmountInOptionPremium) => {
     return totalTradableQuantity * SLAmountInOptionPremium;
@@ -414,13 +414,13 @@ const TargetCalculator = (props) => {
   const calculateTotalTargetofTrade = (optionPremiumTargetPrice, totalTradableQuantity, singleTradeAmount) => {
     return (optionPremiumTargetPrice * totalTradableQuantity) - singleTradeAmount;
   }
-  const calculateCapitalLeftAfterTradingSessions = (targetCalculatorFormValues, totalSLofTrade) => {
-    return targetCalculatorFormValues.tradingCapital - (totalSLofTrade * calculatedMetadata.numberOfTradingSessions * targetCalculatorFormValues.maxSLCountOneDay);
+  const calculateCapitalLeftAfterTradingSessions = (riskRewardCalculatorFormValues, totalSLofTrade) => {
+    return riskRewardCalculatorFormValues.tradingCapital - (totalSLofTrade * calculatedMetadata.numberOfTradingSessions * riskRewardCalculatorFormValues.maxSLCountOneDay);
   }
 
 
   const handleResetClick = () => {
-    targetCalculatorForm.resetForm(); // Reset the form's values and errors
+    riskRewardCalculatorForm.resetForm(); // Reset the form's values and errors
   };
   const optionPremiumChangeHandler = async (event, indexName) => {
     let updatedOptionPremium = event.target.value;
@@ -438,7 +438,7 @@ const TargetCalculator = (props) => {
       if (riskRow.indexName == indexName) {
         riskRow.optionPremium = parseInt(updatedOptionPremium);
 
-        const calculatedRiskOfIndexResult = calculateRiskofIndex(targetCalculatorForm.values, riskRow.lotSize, riskRow.optionPremium, riskRow.indexName, calculatedMetadata.maxSLCapacityInOneTrade, calculatedMetadata);
+        const calculatedRiskOfIndexResult = calculateRiskofIndex(riskRewardCalculatorForm.values, riskRow.lotSize, riskRow.optionPremium, riskRow.indexName, calculatedMetadata.maxSLCapacityInOneTrade, calculatedMetadata);
         // calculateAndSetStackedBarChartData(calculatedRiskOfIndexResult)
         updatedCalculateRiskRows.push(calculatedRiskOfIndexResult);
       } else {
@@ -465,10 +465,10 @@ const TargetCalculator = (props) => {
 
 
   const loadSavedConfiguration = (config) => {
-    targetCalculatorForm.setValues(config.parsedConfig);
-    targetCalculatorForm.setTouched({});
-    targetCalculatorForm.setErrors({});
-    targetCalculatorForm.submitForm();
+    riskRewardCalculatorForm.setValues(config.parsedConfig);
+    riskRewardCalculatorForm.setTouched({});
+    riskRewardCalculatorForm.setErrors({});
+    riskRewardCalculatorForm.submitForm();
     toggle2("1");
   }
 
@@ -484,7 +484,7 @@ const TargetCalculator = (props) => {
       return;
     }
     setLoading(true);
-    const response = await getFirebaseBackend().addOrUpdateTargetCalculatorConfigToFirestore(targetCalculatorForm.values, configName);
+    const response = await getFirebaseBackend().addOrUpdateRiskRewardCalculatorConfigToFirestore(riskRewardCalculatorForm.values, configName);
     if (response.status) {
       setConfigNameModal(false);
       setConfigName("");
@@ -519,7 +519,7 @@ const TargetCalculator = (props) => {
     <React.Fragment>
       <div className="page-content landing-header-main">
         <Container fluid={true}>
-          <Breadcrumbs title="F&O Calculator" breadcrumbItem="Target Calculator" />
+          <Breadcrumbs title="F&O Calculator" breadcrumbItem="Risk Reward Calculator" />
         </Container>
         <Row>
           <Col lg={12}>
@@ -536,7 +536,7 @@ const TargetCalculator = (props) => {
                     }}
                   >
                     <i className="mdi mdi-calculator-variant me-1 align-middle"> </i>{" "}
-                    Target Calculator
+                    Risk Reward Calculator
                   </NavLink>
                 </NavItem>
                 <NavItem>
@@ -563,16 +563,16 @@ const TargetCalculator = (props) => {
                       <Card className="shadow-sm border-0 h-100 mb-0" style={{ borderRadius: '16px' }}>
                         <CardBody className="p-4">
                           <div className="d-flex justify-content-between align-items-center mb-4">
-                            <h1 className="card-title fw-bold text-dark m-0 fs-5">Target Calculator</h1>
+                            <h1 className="card-title fw-bold text-dark m-0 fs-5">Risk Reward Calculator</h1>
                           </div>
                           <CardSubtitle className="mb-4 text-muted small">
-                            This tool will help you <strong>calculate the target amount</strong> you can <strong className="text-success">target in a trade</strong> based on your capital, percentage of risk per trade, and target hit ratio.
+                            Calculate your risk reward ratio effectively.
                           </CardSubtitle>
 
                           <Form
                             onSubmit={(e) => {
                               e.preventDefault();
-                              targetCalculatorForm.handleSubmit();
+                              riskRewardCalculatorForm.handleSubmit();
                               return false;
                             }}
                             onChange={handleOnChange}
@@ -587,13 +587,13 @@ const TargetCalculator = (props) => {
                                   placeholder="Ex: 50000"
                                   type="number"
                                         className="calculator-form-input w-100 bg-light bg-opacity-25"
-                                  onChange={targetCalculatorForm.handleChange}
-                                  onBlur={targetCalculatorForm.handleBlur}
-                                  value={targetCalculatorForm.values.tradingCapital || ""}
-                                  invalid={!!(targetCalculatorForm.touched.tradingCapital && targetCalculatorForm.errors.tradingCapital)}
+                                  onChange={riskRewardCalculatorForm.handleChange}
+                                  onBlur={riskRewardCalculatorForm.handleBlur}
+                                  value={riskRewardCalculatorForm.values.tradingCapital || ""}
+                                  invalid={!!(riskRewardCalculatorForm.touched.tradingCapital && riskRewardCalculatorForm.errors.tradingCapital)}
                                 />
-                                {targetCalculatorForm.touched.tradingCapital && targetCalculatorForm.errors.tradingCapital && (
-                                  <FormFeedback type="invalid">{targetCalculatorForm.errors.tradingCapital}</FormFeedback>
+                                {riskRewardCalculatorForm.touched.tradingCapital && riskRewardCalculatorForm.errors.tradingCapital && (
+                                  <FormFeedback type="invalid">{riskRewardCalculatorForm.errors.tradingCapital}</FormFeedback>
                                 )}
                               </Col>
 
@@ -609,12 +609,12 @@ const TargetCalculator = (props) => {
                                         className="calculator-form-input w-100 shadow-sm"
                                         type="number"
                                         placeholder="Ex: 20"
-                                        onChange={targetCalculatorForm.handleChange}
-                                        onBlur={targetCalculatorForm.handleBlur}
-                                        value={targetCalculatorForm.values.desiredNumberOfTradingSessions || ""}
-                                        invalid={!!(targetCalculatorForm.touched.desiredNumberOfTradingSessions && targetCalculatorForm.errors.desiredNumberOfTradingSessions)}
+                                        onChange={riskRewardCalculatorForm.handleChange}
+                                        onBlur={riskRewardCalculatorForm.handleBlur}
+                                        value={riskRewardCalculatorForm.values.desiredNumberOfTradingSessions || ""}
+                                        invalid={!!(riskRewardCalculatorForm.touched.desiredNumberOfTradingSessions && riskRewardCalculatorForm.errors.desiredNumberOfTradingSessions)}
                                       />
-                                      <FormFeedback>{targetCalculatorForm.errors.desiredNumberOfTradingSessions}</FormFeedback>
+                                      <FormFeedback>{riskRewardCalculatorForm.errors.desiredNumberOfTradingSessions}</FormFeedback>
                                     </Col>
                                     <Col md={2} className="d-flex align-items-center justify-content-center pt-4">
                                       <span className="text-muted small fw-bold text-uppercase" style={{ fontSize: '0.75rem', marginTop: '10px' }}>OR</span>
@@ -626,12 +626,12 @@ const TargetCalculator = (props) => {
                                         className="calculator-form-input w-100 shadow-sm"
                                         type="number"
                                         placeholder="Ex: 5"
-                                        onChange={targetCalculatorForm.handleChange}
-                                        onBlur={targetCalculatorForm.handleBlur}
-                                        value={targetCalculatorForm.values.percentageOfTradingCapitalInOneTrade || ""}
-                                        invalid={!!(targetCalculatorForm.touched.percentageOfTradingCapitalInOneTrade && targetCalculatorForm.errors.percentageOfTradingCapitalInOneTrade)}
+                                        onChange={riskRewardCalculatorForm.handleChange}
+                                        onBlur={riskRewardCalculatorForm.handleBlur}
+                                        value={riskRewardCalculatorForm.values.percentageOfTradingCapitalInOneTrade || ""}
+                                        invalid={!!(riskRewardCalculatorForm.touched.percentageOfTradingCapitalInOneTrade && riskRewardCalculatorForm.errors.percentageOfTradingCapitalInOneTrade)}
                                       />
-                                      <FormFeedback>{targetCalculatorForm.errors.percentageOfTradingCapitalInOneTrade}</FormFeedback>
+                                      <FormFeedback>{riskRewardCalculatorForm.errors.percentageOfTradingCapitalInOneTrade}</FormFeedback>
                                     </Col>
                                   </Row>
                                 </div>
@@ -658,12 +658,12 @@ const TargetCalculator = (props) => {
                                         name="maxSLCountOneDay"
                                         type="number"
                                               className="calculator-form-input w-100 bg-light bg-opacity-25"
-                                        onChange={targetCalculatorForm.handleChange}
-                                        onBlur={targetCalculatorForm.handleBlur}
-                                        value={targetCalculatorForm.values.maxSLCountOneDay || ""}
-                                        invalid={!!(targetCalculatorForm.touched.maxSLCountOneDay && targetCalculatorForm.errors.maxSLCountOneDay)}
+                                        onChange={riskRewardCalculatorForm.handleChange}
+                                        onBlur={riskRewardCalculatorForm.handleBlur}
+                                        value={riskRewardCalculatorForm.values.maxSLCountOneDay || ""}
+                                        invalid={!!(riskRewardCalculatorForm.touched.maxSLCountOneDay && riskRewardCalculatorForm.errors.maxSLCountOneDay)}
                                       />
-                                      <FormFeedback>{targetCalculatorForm.errors.maxSLCountOneDay}</FormFeedback>
+                                      <FormFeedback>{riskRewardCalculatorForm.errors.maxSLCountOneDay}</FormFeedback>
                                     </Col>
                                     <Col md={6}>
                                       <Label className="calculator-form-input-label small text-muted">Max Drawdown %</Label>
@@ -671,12 +671,12 @@ const TargetCalculator = (props) => {
                                         name="maxDrawDownPercentage"
                                         type="number"
                                               className="calculator-form-input w-100 bg-light bg-opacity-25"
-                                        onChange={targetCalculatorForm.handleChange}
-                                        onBlur={targetCalculatorForm.handleBlur}
-                                        value={targetCalculatorForm.values.maxDrawDownPercentage || ""}
-                                        invalid={!!(targetCalculatorForm.touched.maxDrawDownPercentage && targetCalculatorForm.errors.maxDrawDownPercentage)}
+                                        onChange={riskRewardCalculatorForm.handleChange}
+                                        onBlur={riskRewardCalculatorForm.handleBlur}
+                                        value={riskRewardCalculatorForm.values.maxDrawDownPercentage || ""}
+                                        invalid={!!(riskRewardCalculatorForm.touched.maxDrawDownPercentage && riskRewardCalculatorForm.errors.maxDrawDownPercentage)}
                                       />
-                                      <FormFeedback>{targetCalculatorForm.errors.maxDrawDownPercentage}</FormFeedback>
+                                      <FormFeedback>{riskRewardCalculatorForm.errors.maxDrawDownPercentage}</FormFeedback>
                                     </Col>
 
                                     <Col md={6}>
@@ -685,12 +685,12 @@ const TargetCalculator = (props) => {
                                         name="targetRatioMultiplier"
                                         type="number"
                                               className="calculator-form-input w-100 bg-light bg-opacity-25"
-                                        onChange={targetCalculatorForm.handleChange}
-                                        onBlur={targetCalculatorForm.handleBlur}
-                                        value={targetCalculatorForm.values.targetRatioMultiplier || ""}
-                                        invalid={!!(targetCalculatorForm.touched.targetRatioMultiplier && targetCalculatorForm.errors.targetRatioMultiplier)}
+                                        onChange={riskRewardCalculatorForm.handleChange}
+                                        onBlur={riskRewardCalculatorForm.handleBlur}
+                                        value={riskRewardCalculatorForm.values.targetRatioMultiplier || ""}
+                                        invalid={!!(riskRewardCalculatorForm.touched.targetRatioMultiplier && riskRewardCalculatorForm.errors.targetRatioMultiplier)}
                                       />
-                                      <FormFeedback>{targetCalculatorForm.errors.targetRatioMultiplier}</FormFeedback>
+                                      <FormFeedback>{riskRewardCalculatorForm.errors.targetRatioMultiplier}</FormFeedback>
                                     </Col>
                                     <Col md={6}>
                                       <Label className="calculator-form-input-label small text-muted">Trading Charge (Buy & Sell)</Label>
@@ -698,12 +698,12 @@ const TargetCalculator = (props) => {
                                         name="averageTradingChargesPerTrade"
                                         type="number"
                                         className="calculator-form-input w-100 bg-light bg-opacity-25"
-                                        onChange={targetCalculatorForm.handleChange}
-                                        onBlur={targetCalculatorForm.handleBlur}
-                                        value={targetCalculatorForm.values.averageTradingChargesPerTrade}
-                                        invalid={!!(targetCalculatorForm.touched.averageTradingChargesPerTrade && targetCalculatorForm.errors.averageTradingChargesPerTrade)}
+                                        onChange={riskRewardCalculatorForm.handleChange}
+                                        onBlur={riskRewardCalculatorForm.handleBlur}
+                                        value={riskRewardCalculatorForm.values.averageTradingChargesPerTrade}
+                                        invalid={!!(riskRewardCalculatorForm.touched.averageTradingChargesPerTrade && riskRewardCalculatorForm.errors.averageTradingChargesPerTrade)}
                                       />
-                                      <FormFeedback>{targetCalculatorForm.errors.averageTradingChargesPerTrade}</FormFeedback>
+                                      <FormFeedback>{riskRewardCalculatorForm.errors.averageTradingChargesPerTrade}</FormFeedback>
                                     </Col>
 
                                     <Col md={6}>
@@ -712,12 +712,12 @@ const TargetCalculator = (props) => {
                                         name="averageSLHitTradeInOneDay"
                                         type="number"
                                         className="calculator-form-input w-100 bg-light bg-opacity-25"
-                                        onChange={targetCalculatorForm.handleChange}
-                                        onBlur={targetCalculatorForm.handleBlur}
-                                        value={targetCalculatorForm.values.averageSLHitTradeInOneDay}
-                                        invalid={!!(targetCalculatorForm.touched.averageSLHitTradeInOneDay && targetCalculatorForm.errors.averageSLHitTradeInOneDay)}
+                                        onChange={riskRewardCalculatorForm.handleChange}
+                                        onBlur={riskRewardCalculatorForm.handleBlur}
+                                        value={riskRewardCalculatorForm.values.averageSLHitTradeInOneDay}
+                                        invalid={!!(riskRewardCalculatorForm.touched.averageSLHitTradeInOneDay && riskRewardCalculatorForm.errors.averageSLHitTradeInOneDay)}
                                       />
-                                      <FormFeedback>{targetCalculatorForm.errors.averageSLHitTradeInOneDay}</FormFeedback>
+                                      <FormFeedback>{riskRewardCalculatorForm.errors.averageSLHitTradeInOneDay}</FormFeedback>
                                     </Col>
                                     <Col md={6}>
                                       <Label className="calculator-form-input-label small text-muted">Avg Target Hit (One Day)</Label>
@@ -725,12 +725,12 @@ const TargetCalculator = (props) => {
                                         name="averageTargetHitTradeInOneDay"
                                         type="number"
                                         className="calculator-form-input w-100 bg-light bg-opacity-25"
-                                        onChange={targetCalculatorForm.handleChange}
-                                        onBlur={targetCalculatorForm.handleBlur}
-                                        value={targetCalculatorForm.values.averageTargetHitTradeInOneDay}
-                                        invalid={!!(targetCalculatorForm.touched.averageTargetHitTradeInOneDay && targetCalculatorForm.errors.averageTargetHitTradeInOneDay)}
+                                        onChange={riskRewardCalculatorForm.handleChange}
+                                        onBlur={riskRewardCalculatorForm.handleBlur}
+                                        value={riskRewardCalculatorForm.values.averageTargetHitTradeInOneDay}
+                                        invalid={!!(riskRewardCalculatorForm.touched.averageTargetHitTradeInOneDay && riskRewardCalculatorForm.errors.averageTargetHitTradeInOneDay)}
                                       />
-                                      <FormFeedback>{targetCalculatorForm.errors.averageTargetHitTradeInOneDay}</FormFeedback>
+                                      <FormFeedback>{riskRewardCalculatorForm.errors.averageTargetHitTradeInOneDay}</FormFeedback>
                                     </Col>
 
                                     <Col md={6}>
@@ -739,12 +739,12 @@ const TargetCalculator = (props) => {
                                         name="zeroSLHitTradeDays"
                                         type="number"
                                         className="calculator-form-input w-100 bg-light bg-opacity-25"
-                                        onChange={targetCalculatorForm.handleChange}
-                                        onBlur={targetCalculatorForm.handleBlur}
-                                        value={targetCalculatorForm.values.zeroSLHitTradeDays}
-                                        invalid={!!(targetCalculatorForm.touched.zeroSLHitTradeDays && targetCalculatorForm.errors.zeroSLHitTradeDays)}
+                                        onChange={riskRewardCalculatorForm.handleChange}
+                                        onBlur={riskRewardCalculatorForm.handleBlur}
+                                        value={riskRewardCalculatorForm.values.zeroSLHitTradeDays}
+                                        invalid={!!(riskRewardCalculatorForm.touched.zeroSLHitTradeDays && riskRewardCalculatorForm.errors.zeroSLHitTradeDays)}
                                       />
-                                      <FormFeedback>{targetCalculatorForm.errors.zeroSLHitTradeDays}</FormFeedback>
+                                      <FormFeedback>{riskRewardCalculatorForm.errors.zeroSLHitTradeDays}</FormFeedback>
                                     </Col>
                                     <Col md={6}>
                                       <Label className="calculator-form-input-label small text-muted">Zero Target Hit Days</Label>
@@ -752,12 +752,12 @@ const TargetCalculator = (props) => {
                                         name="zeroTargetHitTradeDays"
                                         type="number"
                                         className="calculator-form-input w-100 bg-light bg-opacity-25"
-                                        onChange={targetCalculatorForm.handleChange}
-                                        onBlur={targetCalculatorForm.handleBlur}
-                                        value={targetCalculatorForm.values.zeroTargetHitTradeDays}
-                                        invalid={!!(targetCalculatorForm.touched.zeroTargetHitTradeDays && targetCalculatorForm.errors.zeroTargetHitTradeDays)}
+                                        onChange={riskRewardCalculatorForm.handleChange}
+                                        onBlur={riskRewardCalculatorForm.handleBlur}
+                                        value={riskRewardCalculatorForm.values.zeroTargetHitTradeDays}
+                                        invalid={!!(riskRewardCalculatorForm.touched.zeroTargetHitTradeDays && riskRewardCalculatorForm.errors.zeroTargetHitTradeDays)}
                                       />
-                                      <FormFeedback>{targetCalculatorForm.errors.zeroTargetHitTradeDays}</FormFeedback>
+                                      <FormFeedback>{riskRewardCalculatorForm.errors.zeroTargetHitTradeDays}</FormFeedback>
                                     </Col>
                                   </Row>
                                 </div>
@@ -782,7 +782,7 @@ const TargetCalculator = (props) => {
                                     disabled={loading}
                                   >
                                     {loading ? <i className="fas fa-circle-notch fa-spin me-2"></i> : null}
-                                    Calculate Target
+                                    Calculate RiskReward
                                   </Button>
                                 </div>
                               </Col>
@@ -868,7 +868,7 @@ const TargetCalculator = (props) => {
                             <h5 className="card-title fw-bold text-dark m-0">Saved Configurations</h5>
                           </div>
                           <div className="table-responsive">
-                            {targetCalculatorConfigs && targetCalculatorConfigs.length > 0 ? (
+                            {riskRewardCalculatorConfigs && riskRewardCalculatorConfigs.length > 0 ? (
                               <table className="table table-hover align-middle mb-0">
                                 <thead className="bg-light bg-opacity-50">
                                   <tr>
@@ -879,7 +879,7 @@ const TargetCalculator = (props) => {
                                   </tr>
                                 </thead>
                                 <tbody>
-                                  {targetCalculatorConfigs.map(function (config, index) {
+                                  {riskRewardCalculatorConfigs.map(function (config, index) {
                                     return (
                                       <tr key={index} className="cursor-pointer" style={{ transition: 'all 0.2s' }}>
                                         <th scope="row" className="ps-4 text-muted">{index + 1}</th>
@@ -910,7 +910,7 @@ const TargetCalculator = (props) => {
                                   <i className="mdi mdi-folder-open-outline display-4 text-light"></i>
                                 </div>
                                 <h5 className="text-muted">No saved configurations found</h5>
-                                <p className="text-muted small">Save your risk calculations to access them here later.</p>
+                                <p className="text-muted small">Save your riskreward calculations to access them here later.</p>
                               </div>
                             )}
                           </div>
@@ -931,7 +931,7 @@ const TargetCalculator = (props) => {
             {!loading && activeTab === "1" && calculatedRiskRows && calculatedRiskRows.length > 0 && (
               <Card xl="2" style={{ margin: 0 }}>
                 <div className="text-left extra-card-header">
-                  <span>Calculated Profit</span>
+                  <span>Calculated RiskReward</span>
                   <Button onClick={() => {
                     setConfigNameModal(true)
                   }} 
@@ -1086,7 +1086,7 @@ const TargetCalculator = (props) => {
                       {selectedIndexCalculatedRisk.drawDownMetrics && <DayWiseCapitalDrawDown drawDownMetrics={selectedIndexCalculatedRisk.drawDownMetrics} title={`Average Target Capital Day Wise at <strong>&#8377; ${selectedIndexCalculatedRisk.optionPremium}</strong>  Option Premium`} calculatedMetadata={[
                         {
                           title: `Starting Trading Capital`,
-                          count: `&#8377; ${targetCalculatorForm.values.tradingCapital} `,
+                          count: `&#8377; ${riskRewardCalculatorForm.values.tradingCapital} `,
                           color: "info",
                         },
                         {
@@ -1097,7 +1097,7 @@ const TargetCalculator = (props) => {
                         {
                           title: "Daily Max SL Capacity",
                           count: `&#8377; ${calculatedMetadata.maxSLCapacityDaily}`,
-                          percentage: (calculatedMetadata.maxSLCapacityDaily / targetCalculatorForm.values.tradingCapital * 100).toFixed(2),
+                          percentage: (calculatedMetadata.maxSLCapacityDaily / riskRewardCalculatorForm.values.tradingCapital * 100).toFixed(2),
                           color: "danger",
                         },
                         {
@@ -1338,7 +1338,7 @@ const TargetCalculator = (props) => {
                             </CardBody>
                           </Card>
                         </Col> */}
-                        {targetCalculatorForm.values.zeroSLHitTradeDays > 0 && <Col xl="3">
+                        {riskRewardCalculatorForm.values.zeroSLHitTradeDays > 0 && <Col xl="3">
                           <Card color="" className="card metrics-card metrics-card-success" xl="2">
 
                             <CardBody>
@@ -1352,7 +1352,7 @@ const TargetCalculator = (props) => {
                             </CardBody>
                           </Card>
                         </Col>}
-                        {targetCalculatorForm.values.zeroTargetHitTradeDays > 0 && <Col xl="3">
+                        {riskRewardCalculatorForm.values.zeroTargetHitTradeDays > 0 && <Col xl="3">
                           <Card color="" className="card metrics-card metrics-card-danger" xl="2">
 
                             <CardBody>
@@ -1502,4 +1502,4 @@ const mapStateToProps = state => {
   return { ...state.login };
 };
 
-export default connect(mapStateToProps, {})(TargetCalculator);
+export default connect(mapStateToProps, {})(RiskRewardCalculator);

@@ -154,11 +154,10 @@ const Header = (props) => {
                         aria-label="Recipient's username"
                       />
                       <div className="input-group-append">
-                        <button className="btn btn-primary" type="submit">
-                          <i className="ri-search-line" />
-                        </button>
-                      </div>
-                    </div>
+                                    <Link className="dropdown-item" to="/riskreward-calculator">
+                                        <i className="mdi mdi-target font-size-16 align-middle me-1"></i>{" "}
+                                        Risk Reward Calculator
+                                    </Link>
                   </div>
                 </form>
               </div>
