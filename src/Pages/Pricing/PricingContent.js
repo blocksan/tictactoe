@@ -152,10 +152,9 @@ function PricingContent(props) {
             {loading && <div class="full-page-loading"></div>}
                 <Col lg={7}>
                     <div className="text-center mb-5">
-                        <h2 className="fw-bold mb-3 text-dark">Professional Risk Management for Every Trader</h2>
+                        <h2 className="fw-black mb-3 text-dark" style={{ fontSize: "3.5rem", fontWeight: "800", letterSpacing: "-0.05em", lineHeight: "1.2" }}>Professional Risk Management</h2>
                         <p className="text-muted font-size-17 px-lg-5">
                             Scale your trading strategy with institutional-grade risk management tools. 
-                            Choose the professional edge that aligns with your performance goals.
                         </p>
                     </div>
                 </Col>

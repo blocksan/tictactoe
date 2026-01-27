@@ -5,8 +5,8 @@ function PrivacyPolicy() {
   return (
     <React.Fragment>
       <div className="doc-page-wrapper">
-        <Container fluid>
-          <div className="doc-container">
+        <Container>
+          <div className="doc-container pt-5">
             <Row>
               <Col lg={12}>
                 <div className="doc-card">

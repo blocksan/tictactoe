@@ -4,7 +4,7 @@ import { Col, Row } from "reactstrap";
 const Footer = () => {
   return (
     <footer className="footer shadow-sm">
-      <div className="max-width-l">
+      <div className="container">
         <Row className="align-items-center">
           <Col md={6}>
             <div className="d-flex align-items-center">

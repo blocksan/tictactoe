@@ -3,7 +3,6 @@ import React, { useState } from "react";
 
 import { connect } from "react-redux";
 import { Link } from "react-router-dom";
-import LanguageDropdown from "../../components/Common/TopbarDropdown/LanguageDropdown";
 import NotificationDropdown from "../../components/Common/TopbarDropdown/NotificationDropdown";
 
 //i18n
@@ -18,9 +17,9 @@ import logoSm from "../../assets/images/logo-sm.png";
 import AppsDropdown from "../../components/Common/TopbarDropdown/AppsDropdown";
 import ProfileMenu from "../../components/Common/TopbarDropdown/ProfileMenu";
 import {
-    changeSidebarType,
-    showRightSidebarAction,
-    toggleLeftmenu,
+  changeSidebarType,
+  showRightSidebarAction,
+  toggleLeftmenu,
 } from "../../store/actions";
 
 const Header = (props) => {
@@ -143,7 +142,7 @@ const Header = (props) => {
               </div>
             </div>
 
-            <LanguageDropdown />
+            {/* <LanguageDropdown /> */}
 
             <AppsDropdown />
 

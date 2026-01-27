@@ -13,7 +13,7 @@ function OpenPricing(props) {
     <React.Fragment>
 
       <Row>
-        <Container fluid={true} style={{marginTop:"120px"}}>
+        <Container style={{marginTop:"120px"}}>
           <Col>
             <PricingContent user={props.user}></PricingContent>
           </Col>
