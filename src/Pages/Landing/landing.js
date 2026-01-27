@@ -16,7 +16,6 @@ import {
 } from "reactstrap";
 
 // Import Images
-import mandrawing from "../../assets/images/mandrawing.png";
 import logoVoiled from "../../assets/images/OnlyLogoVoiled.png";
 import productOverview from "../../assets/images/product-overview.png";
 import riskcalculator from "../../assets/images/riskcalculator.png";
@@ -25,6 +24,8 @@ import tradingdesktops from "../../assets/images/tradingdesktopscompressed.png";
 
 // Import Components
 import GoogleButton from "../../components/Common/GoogleButton";
+import AllocationLogic from '../../components/Common/Svgs/AllocationLogic';
+import CapitalShield from "../../components/Common/Svgs/CapitalShield";
 import withRouter from "../../components/Common/withRouter";
 import { getFirebaseApp } from "../../helpers/firebase_helper";
 import { logoutUser, socialLogin } from "../../store/actions";
@@ -181,9 +182,7 @@ const Landing = (props) => {
                                     </h1>
                                     
                                     <p className="lead text-medium-contrast mb-5 w-75 mx-auto mx-lg-0" style={{ fontSize: "1.15rem", lineHeight: "1.7" }}>
-                                        Position sizing and drawdown planning for option traders.
-Calculate <strong><i>capital risk</i></strong>, simulate <strong><i>drawdown scenarios</i></strong>, and trade within predefined exposure limits.
-                                    </p>
+                                        Trrader is a risk planning and position sizing platform for F&O traders. It helps you analyse capital exposure, model drawdown scenarios, and define position sizes based on disciplined risk parameters</p>
                                     
                                     <div className="d-flex align-items-center justify-content-center justify-content-lg-start gap-4">
                                         <div onClick={signInWithGoogle} className="cursor-pointer hover-transform" style={{ transition: "transform 0.2s" }}>
@@ -202,19 +201,14 @@ Calculate <strong><i>capital risk</i></strong>, simulate <strong><i>drawdown sce
                             <Col lg={6}>
                                 <AnimatedSection delay="delay-200">
                                     <div className="position-relative text-center perspective-container">
-                                        <div className="position-relative z-2 hero-image-container animate-float" style={{ transition: "transform 0.3s ease" }}>
-                                            <img 
-                                                src={mandrawing} 
-                                                alt="Trading Analytics Dashboard" 
-                                                className="img-fluid position-relative" 
-                                                style={{ maxHeight: "600px", filter: "drop-shadow(0 20px 80px rgba(79, 70, 229, 0.4))" }} 
-                                            />
+                                        <div className="position-relative z-2 hero-image-container" style={{ transition: "transform 0.3s ease" }}>
+                                            <CapitalShield width="100%" height="auto" className="img-fluid position-relative" style={{ maxHeight: "600px", filter: "drop-shadow(0 0 40px rgba(79, 70, 229, 0.2))" }} />
                                         </div>
                                         <div className="position-absolute top-50 start-50 translate-middle z-0 rounded-circle" 
                                             style={{ 
                                                 width: "60%", 
                                                 height: "60%", 
-                                                background: "radial-gradient(circle, rgba(99, 102, 241, 0.3) 0%, rgba(15, 17, 26, 0) 70%)", 
+                                                background: "radial-gradient(circle, rgba(99, 102, 241, 0.2) 0%, rgba(15, 17, 26, 0) 70%)", 
                                                 filter: "blur(60px)" 
                                             }}></div>
                                     </div>
@@ -431,12 +425,11 @@ Calculate <strong><i>capital risk</i></strong>, simulate <strong><i>drawdown sce
                             </Row>
                         </div>
                         </AnimatedSection>
-                    </Container>
-                </section>
+
 
                         {/* Feature 3 */}
                         <AnimatedSection delay="delay-300">
-                        <div className="card mb-0 rounded-4" style={{ background: "#11141c", border: "1px solid rgba(255,255,255,0.08)" }}>
+                        <div className="card mb-0 rounded-4" style={{ background: "#11141c", border: "1px solid rgba(255,255,255,0.08)", marginTop: "60px" }}>
                             <Row className="g-0 align-items-center">
                                 <Col lg={6} className="p-5">
                                     <div className="icon-box d-inline-flex align-items-center justify-content-center p-3 rounded-3 mb-4" style={{ background: "rgba(245, 158, 11, 0.1)" }}>
@@ -461,20 +454,16 @@ Calculate <strong><i>capital risk</i></strong>, simulate <strong><i>drawdown sce
                                      {/* Use a different image or reuse desktop one */}
                                     <div className="position-absolute top-0 end-0 w-100 h-100" style={{ background: "linear-gradient(45deg, transparent 40%, rgba(245, 158, 11, 0.05) 100%)" }}></div>
                                     <div className="p-4 h-100 d-flex align-items-center justify-content-center" style={{ minHeight: "400px" }}>
-                                        <div className="position-relative group-hover-zoom">
-                                            <img 
-                                                src={tradingdesktops} 
-                                                alt="Capital Logic" 
-                                                className="img-fluid rounded-3 shadow-lg transform-rotate-left animate-float" 
-                                                style={{ transform: "perspective(1000px) rotateY(-5deg) scale(0.95)", transition: "transform 0.3s", boxShadow: "0 25px 50px -12px rgba(0, 0, 0, 0.5)", cursor: "zoom-in", opacity: 0.8 }} 
-                                                onClick={() => setSelectedImage(tradingdesktops)}
-                                            />
+                                        <div className="position-relative">
+                                            <AllocationLogic width="100%" height="auto" className="img-fluid" style={{ maxHeight: "500px", filter: "drop-shadow(0 25px 50px rgba(0, 0, 0, 0.5))" }} />
                                         </div>
                                     </div>
                                 </Col>
                             </Row>
                         </div>
                         </AnimatedSection>
+                    </Container>
+                </section>
 
                 {/* Who It Is For Section */}
                 <section className="py-5 position-relative overflow-hidden" style={{ background: "#0b0d12" }}>
