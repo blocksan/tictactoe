@@ -130,7 +130,7 @@ const Landing = (props) => {
                             </div>
                             <div className="d-flex flex-column justify-content-center">
                                 <h4 className="m-0 fw-bold fs-5 text-high-contrast lh-1" style={{ letterSpacing: "-0.5px" }}>Trrader.in</h4>
-                                <span className="text-medium-contrast text-opacity-50 small fw-medium mt-1" style={{ fontSize: "0.75rem" }}>Professional Risk Management</span>
+                                <span className="text-medium-contrast text-opacity-50 small fw-medium mt-1" style={{ fontSize: "0.75rem" }}> Built By Trrader, For Trrader</span>
                             </div>
                         </NavbarBrand>
                         <div className="d-flex align-items-center gap-4">
@@ -181,7 +181,8 @@ const Landing = (props) => {
                                     </h1>
                                     
                                     <p className="lead text-medium-contrast mb-5 w-75 mx-auto mx-lg-0" style={{ fontSize: "1.15rem", lineHeight: "1.7" }}>
-                                        Deploy institutional-grade risk models to your retail trading. Calculate position sizing, forecast drawdowns, and execute with the discipline of a hedge fund algorithm.
+                                        Position sizing and drawdown planning for option traders.
+Calculate <strong><i>capital risk</i></strong>, simulate <strong><i>drawdown scenarios</i></strong>, and trade within predefined exposure limits.
                                     </p>
                                     
                                     <div className="d-flex align-items-center justify-content-center justify-content-lg-start gap-4">

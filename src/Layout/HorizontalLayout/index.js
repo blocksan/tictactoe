@@ -4,10 +4,10 @@ import withRouter from "../../components/Common/withRouter";
 
 //actions
 import {
-    changeLayout,
-    changeLayoutWidth,
-    changeTopbarTheme,
-    showRightSidebarAction,
+  changeLayout,
+  changeLayoutWidth,
+  changeTopbarTheme,
+  showRightSidebarAction,
 } from "../../store/actions";
 
 //redux
@@ -33,10 +33,10 @@ const Layout = (props) => {
   document title
   */
   useEffect(() => {
-    const title = props.router.location.pathname;
-    let currentage = title.charAt(1).toUpperCase() + title.slice(2);
+    // const title = props.router.location.pathname;
+    // let currentage = title.charAt(1).toUpperCase() + title.slice(2);
 
-    document.title = currentage + " | Trrader - React Admin & Dashboard Template";
+    // document.title = currentage + " | Trrader - React Admin & Dashboard Template";
   }, [props.router.location.pathname]);
 
   useEffect(() => {

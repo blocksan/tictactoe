@@ -56,7 +56,7 @@ const PublicHeader = (props) => {
                                 </div>
                             ) : (
                                 <div className="d-flex flex-column">
-                                    <span className="text-white text-opacity-50 small fw-medium mt-1" style={{ fontSize: "0.75rem" }}>Professional Risk Management</span>
+                                    <span className="text-white text-opacity-50 small fw-medium mt-1" style={{ fontSize: "0.75rem" }}> Built By Trrader, For Trrader</span>
                                     {props.user && props.user.freeTrialConfig && (
                                         <div className="d-flex align-items-center mt-1">
                                             <span className="text-warning small fw-bold d-flex align-items-center" style={{ fontSize: "0.7rem" }}>
