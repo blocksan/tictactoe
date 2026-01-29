@@ -176,7 +176,7 @@ function PricingContent(props) {
             <Row className="justify-content-center gx-4">
                 {PricingData.map((item, key) => (
                     <Col xl={3} md={6} className="mb-4" key={key}>
-                        <Card className={`pricing-card h-100 border-0 ${item.yearly ? 'pricing-card-highlight' : ''}`}>
+                        <Card className={`pricing-card h-100 ${props.user && props.user.planId === item.planId ? 'border border-2 border-primary shadow-lg position-relative' : 'border-0'} ${item.yearly ? 'pricing-card-highlight' : ''}`}>
                             <CardBody className="p-4 d-flex flex-column">
                                 {item.yearly && (
                                     <div className="pricing-badge">
@@ -227,8 +227,12 @@ function PricingContent(props) {
                                             <i className="bx bx-check-double me-1"></i> Active Plan
                                         </button>
                                     ) : item.pricingPlan === PRICING_PLANS[0] ? (
-                                        <button className="btn btn-light w-100 fw-bold py-2 disabled" style={{ backgroundColor: "#f8f9fa" }}>
+                                        <button className="btn btn-light w-100 fw-bold py-2 disabled" style={{ backgroundColor: "#f8f9fa", cursor: "default" }}>
                                             {props.user && props.user.planId ? "Standard Access" : "Current Plan"}
+                                        </button>
+                                    ) : (props.user && props.user.planId && props.user.planId.includes("YEARLY") && item.pricingPlan === PRICING_PLANS[1]) ? (
+                                        <button className="btn btn-light w-100 fw-bold py-2 disabled" style={{ backgroundColor: "#f8f9fa", cursor: "not-allowed", opacity: 0.7 }}>
+                                            <i className="bx bx-check-circle me-1"></i> Included in Yearly
                                         </button>
                                     ) : (
                                         <button 

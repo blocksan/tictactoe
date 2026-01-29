@@ -54,11 +54,21 @@ const MySubscription = () => {
 
     const formatDate = (date) => {
         if (!date) return "-";
-        return date.toLocaleDateString("en-IN", {
+        const dateStr = date.toLocaleDateString("en-IN", {
             day: 'numeric',
             month: 'short',
             year: 'numeric'
         });
+        const timeStr = date.toLocaleTimeString("en-IN", {
+            hour: '2-digit',
+            minute: '2-digit'
+        });
+        return (
+            <div>
+                <div>{dateStr}</div>
+                <small className="text-muted">{timeStr}</small>
+            </div>
+        );
     };
 
     const getStatusBadge = (sub) => {
@@ -97,8 +107,10 @@ const MySubscription = () => {
                                                 <thead className="thead-light">
                                                     <tr>
                                                         <th>Plan</th>
+                                                        <th>Purchased On</th>
                                                         <th>Start Date</th>
                                                         <th>End Date</th>
+                                                        <th>Cancelled On</th>
                                                         <th>Amount</th>
                                                         <th>Status</th>
                                                         <th>Order ID</th>
@@ -115,8 +127,10 @@ const MySubscription = () => {
                                                                 </h5>
                                                                 {/* <span className="text-muted font-size-12">{sub.planId}</span> */}
                                                             </td>
+                                                            <td>{formatDate(sub.purchasedOn)}</td>
                                                             <td>{formatDate(sub.startDate)}</td>
                                                             <td>{formatDate(sub.endDate)}</td>
+                                                            <td>{formatDate(sub.cancelledOn)}</td>
                                                             <td>
                                                                 {sub.currency} {sub.amount}
                                                             </td>

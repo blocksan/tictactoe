@@ -5,7 +5,8 @@ import { PRICING_PLANS } from "../constants/common";
 import {
   DRAWDOWN_CALCULATOR_COLLECTION,
   RISK_REWARD_CALCULATOR_COLLECTION,
-  SUBSCRIPTIONS_COLLECTION
+  SUBSCRIPTIONS_COLLECTION,
+  USERS_COLLECTION
 } from "../constants/firebase";
 import { loginSuccess } from "../store/actions";
 import { cancelSubscription } from "./cashfree_helper";
@@ -201,7 +202,7 @@ class FirebaseAuthBackend {
       };
 
       // await collection(db, "users").id(user.uid).set(dbUser);
-      const userQuery = query(collection(db, "users"), where("email", "==", dbUser.email));
+      const userQuery = query(collection(db, USERS_COLLECTION), where("email", "==", dbUser.email));
       const querySnapshot = await getDocs(userQuery);
       if (!querySnapshot.empty) {
         const existingData = querySnapshot.docs[0].data();
@@ -210,7 +211,7 @@ class FirebaseAuthBackend {
         });
         return { user: { ...dbUser, ...existingData } };
       } else {
-        await addDoc(collection(db, "users"), {
+        await addDoc(collection(db, USERS_COLLECTION), {
           ...dbUser
         });
         return { user: dbUser };
@@ -341,8 +342,39 @@ class FirebaseAuthBackend {
       }
 
       // Calculate subscription duration
-      const startDate = new Date();
-      const endDate = new Date();
+      let startDate = new Date();
+      
+      // Check for existing active subscription to extend
+      const userQuery = query(collection(db, USERS_COLLECTION), where("email", "==", user.email));
+      const userSnapshot = await getDocs(userQuery);
+      let existingSubscriptionEnd = null;
+      
+      if (!userSnapshot.empty) {
+          const userData = userSnapshot.docs[0].data();
+          if (userData.isPremium && userData.subscription && userData.subscription.status === 'active' && userData.subscription.endDate) {
+               existingSubscriptionEnd = userData.subscription.endDate.toDate();
+               // Only extend if the existing subscription hasn't expired yet
+               if (existingSubscriptionEnd > new Date()) {
+                   startDate = existingSubscriptionEnd;
+                   
+                   // Mark previous active subscription as UPGRADED in history
+                   const activeSubQuery = query(
+                        collection(db, SUBSCRIPTIONS_COLLECTION), 
+                        where("email", "==", user.email),
+                        where("status", "==", "active")
+                   );
+                   const activeSubSnapshot = await getDocs(activeSubQuery);
+                   activeSubSnapshot.forEach(async (doc) => {
+                       await updateDoc(doc.ref, {
+                           status: "UPGRADED",
+                           updatedOn: new Date()
+                       });
+                   });
+               }
+          }
+      }
+
+      const endDate = new Date(startDate);
       const isYearly = paymentData.planId && paymentData.planId.includes('YEARLY');
       // Add 365 days for yearly, 30 days for monthly (default)
       endDate.setDate(startDate.getDate() + (isYearly ? 365 : 30));
@@ -365,12 +397,31 @@ class FirebaseAuthBackend {
         endDate: endDate,
         createdOn: new Date(),
         updatedOn: new Date(),
+        purchasedOn: new Date(),
         planId: paymentData.planId || "unknown",
-        planType: isYearly ? PRICING_PLANS[1] : PRICING_PLANS[0],
+        planType: isYearly ? PRICING_PLANS[2] : PRICING_PLANS[1],
       };
 
       // Save to subscriptions collection
       await addDoc(collection(db, SUBSCRIPTIONS_COLLECTION), subscriptionData);
+
+      // Update user document in "users" collection for optimization
+      if (!userSnapshot.empty) {
+          const userDocRef = userSnapshot.docs[0].ref;
+          await updateDoc(userDocRef, {
+              isPremium: true,
+              subscription: {
+                planId: subscriptionData.planId,
+                planType: subscriptionData.planType,
+                startDate: startDate,
+                endDate: endDate,
+                purchasedOn: new Date(),
+                status: 'active',
+                lastUpdated: new Date()
+              },
+              updatedOn: new Date()
+          });
+      }
 
       // Update local auth object
       await this.updateAuthUser({
@@ -462,44 +513,30 @@ class FirebaseAuthBackend {
         return { isPremium: false };
       }
 
-      // Check subscriptions collection for active subscription
-      // Check subscriptions collection for active subscription
-      // Query by email only to avoid composite index requirement
-      const subscriptionsQuery = query(
-        collection(db, SUBSCRIPTIONS_COLLECTION), 
-        where("email", "==", user.email)
-      );
-      
-      const querySnapshot = await getDocs(subscriptionsQuery);
-
-      // Fetch user doc to sync freeTrialConfig
-      const userQuery = query(collection(db, "users"), where("email", "==", user.email));
+      // OPTIMIZATION: Check User Profile first
+      const userQuery = query(collection(db, USERS_COLLECTION), where("email", "==", user.email));
       const userSnapshot = await getDocs(userQuery);
       let freeTrialConfig = {};
+      let userDocData = {};
+
       if (!userSnapshot.empty) {
-          freeTrialConfig = userSnapshot.docs[0].data().freeTrialConfig || {};
-      }
+          userDocData = userSnapshot.docs[0].data();
+          freeTrialConfig = userDocData.freeTrialConfig || {};
 
-      // Filter in memory for active subscriptions
-      const activeSubscriptions = querySnapshot.docs
-        .map(doc => doc.data())
-        .filter(sub => {
-            const endDate = sub.endDate.toDate();
-            // Check if active AND not expired
-            return sub.status === 'active' && endDate > new Date();
-        });
-
-      if (activeSubscriptions.length > 0) {
-        // Found at least one active subscription
-        // We can pick the one with the latest end date if multiple exist
-        const latestSubscription = activeSubscriptions
-          .sort((a, b) => b.endDate.toDate() - a.endDate.toDate())[0];
+          // If user profile has valid active subscription, use it
+          const subscription = userDocData.subscription || {};
+          const userEndDate = subscription.endDate ? subscription.endDate.toDate() : null;
           
-         const endDate = latestSubscription.endDate.toDate();
-         const planId = latestSubscription.planId;
-
-         await this.updateAuthUser({ isPremiumUser: true, subscriptionEndDate: endDate, planId: planId, freeTrialConfig: freeTrialConfig });
-         return { isPremium: true, endDate: endDate, planId: planId, freeTrialConfig: freeTrialConfig };
+          if (userDocData.isPremium && userEndDate && userEndDate > new Date() && subscription.status === 'active') {
+              // Found active premium in user config
+              await this.updateAuthUser({ 
+                  isPremiumUser: true, 
+                  subscriptionEndDate: userEndDate, 
+                  planId: subscription.planId, 
+                  freeTrialConfig: freeTrialConfig 
+              });
+              return { isPremium: true, endDate: userEndDate, planId: subscription.planId, freeTrialConfig: freeTrialConfig };
+          }
       }
 
       // If we reach here, user is NOT premium. Update local state to sync.
@@ -535,8 +572,11 @@ class FirebaseAuthBackend {
               id: doc.id,
               startDate: data.startDate ? data.startDate.toDate() : null,
               endDate: data.endDate ? data.endDate.toDate() : null,
+              createdOn: data.createdOn ? data.createdOn.toDate() : null,
+              purchasedOn: data.purchasedOn ? data.purchasedOn.toDate() : null,
+              cancelledOn: data.cancelledOn ? data.cancelledOn.toDate() : null
           };
-      }).sort((a, b) => b.startDate - a.startDate);
+      }).sort((a, b) => b.createdOn - a.createdOn);
 
       return { status: true, data: subscriptions };
 
@@ -558,8 +598,25 @@ class FirebaseAuthBackend {
         const subRef = doc(db, SUBSCRIPTIONS_COLLECTION, subscriptionId);
         await updateDoc(subRef, {
             status: "cancelled",
-            updatedOn: new Date()
+            updatedOn: new Date(),
+            cancelledOn: new Date()
         });
+
+        // Update user document in "users" collection
+        const user = await this.waitForCurrentUser();
+        if (user) {
+            const userQuery = query(collection(db, USERS_COLLECTION), where("email", "==", user.email));
+            const userSnapshot = await getDocs(userQuery);
+            if (!userSnapshot.empty) {
+                const userDocRef = userSnapshot.docs[0].ref;
+                await updateDoc(userDocRef, {
+                    "subscription.status": 'cancelled',
+                    "subscription.cancelledOn": new Date(),
+                    isPremium: false, 
+                    updatedOn: new Date()
+                });
+            }
+        }
         
         // 3. Update local premium status
         await this.currentPremiumStatus();
@@ -600,7 +657,7 @@ class FirebaseAuthBackend {
       }
 
       // Fetch user doc to check trial count
-      const userQuery = query(collection(db, "users"), where("email", "==", user.email));
+      const userQuery = query(collection(db, USERS_COLLECTION), where("email", "==", user.email));
       const querySnapshot = await getDocs(userQuery);
       
       if (querySnapshot.empty) {

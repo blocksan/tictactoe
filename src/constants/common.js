@@ -52,3 +52,17 @@ export const PricingData = [
 
 
 export const TOAST_DELAY = 3000;
+
+export const TRADING_HOLIDAYS = [
+    "2026-01-26", // Republic Day
+    "2026-03-07", // Mahashivratri
+    "2026-03-25", // Holi
+    "2026-04-10", // Good Friday
+    "2026-04-14", // Ambedkar Jayanti
+    "2026-05-01", // Maharashtra Day
+    "2026-08-15", // Independence Day
+    "2026-10-02", // Gandhi Jayanti
+    "2026-10-20", // Dussehra
+    "2026-11-08", // Diwali
+    "2026-12-25", // Christmas
+];
