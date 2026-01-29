@@ -1,6 +1,8 @@
 import React from "react";
 import Routes from "./Routes/index";
 
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 // Import Scss
 import './assets/scss/theme.scss';
 
@@ -11,7 +13,7 @@ import './assets/scss/theme.scss';
 
 // Firebase
 // Import Firebase Configuration file
-import { initFirebaseBackend } from "./helpers/firebase_helper"
+import { initFirebaseBackend } from "./helpers/firebase_helper";
 
 const firebaseConfig = {
   apiKey: process.env.REACT_APP_FIREBASE_API_KEY,
@@ -29,10 +31,12 @@ initFirebaseBackend(firebaseConfig)
 // Activating fake backend
 // fakeBackend();
 
+
 function App() {
   return (
     <React.Fragment>
       <Routes />
+      <ToastContainer autoClose={3000} pauseOnHover />
     </React.Fragment>
   );
 }

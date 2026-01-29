@@ -7,6 +7,7 @@ import {
 } from "reactstrap";
 import { getFirebaseBackend } from '../../helpers/firebase_helper';
 // import OffLogo33 from "../../assets/images/OffLogo33Compressed.png";
+import { toast } from 'react-toastify';
 import { createPaymentIntent, fetchPaymentStatus } from '../../helpers/cashfree_helper';
 const PRICING_PLANS = ["Free", "Monthly", "Yearly"];
 function PricingContent(props) {
@@ -119,24 +120,24 @@ function PricingContent(props) {
                      await saveSuccessfulSubscription(statusRes, pendingPlan);
                      localStorage.removeItem("pending_subscription_plan");
                 } else {
-                    alert("Payment received! However, plan details were not found. Please contact support.");
+                    toast.error("Payment received! However, plan details were not found. Please contact support.");
                 }
             } else if (statusRes.status === "success" && statusRes.payment_status === "ACTIVE") {
                  console.warn("Payment Status is ACTIVE (Pending/Abandoned)");
                  // UPDATE LOG TO PENDING/CANCELLED
                  await firebaseBackend.updatePaymentStatus(orderId, "PENDING", { response: statusRes.data });
                  
-                 alert("Payment process was cancelled or is still pending. If you deduced money, please contact support.");
+                 toast.warn("Payment process was cancelled or is still pending. If you deduced money, please contact support.");
             } else {
                 // UPDATE LOG TO FAILED
                 await firebaseBackend.updatePaymentStatus(orderId, "FAILED", { 
                     response: statusRes.data || statusRes.error
                 });
-                alert("Payment failed or cancelled. Status: " + statusRes.payment_status);
+                toast.error("Payment failed or cancelled. Status: " + statusRes.payment_status);
             }
         } catch (err) {
             console.error(err);
-            alert("Error verifying payment: " + err.message);
+            toast.error("Error verifying payment: " + err.message);
         }
         setLoading(false);
     };
@@ -153,11 +154,13 @@ function PricingContent(props) {
         }, props.user);
 
         if (saveResult.status) {
-            alert("Subscription successful! You are now a Premium member.");
-            // window.location.reload();
+            toast.success("Subscription successful! You are now a Premium member.");
+            setTimeout(() => {
+                window.location.reload();
+            }, 3000);
         } else {
             console.error(saveResult.error);
-            alert("Payment successful but failed to update subscription in database. Please contact support. Error: " + saveResult.error);
+            toast.error("Payment successful but failed to update subscription in database. Please contact support. Error: " + saveResult.error);
         }
     };
 
@@ -184,7 +187,6 @@ function PricingContent(props) {
             };
 
             const paymentIntent = await createPaymentIntent(amount, "INR", userDetails);
-            console.log("Payment Intent:", paymentIntent);
             if (paymentIntent.status === "success") {
                 // Store plan details for post-payment verification
                 localStorage.setItem("pending_subscription_plan", JSON.stringify(selectedPlan));
@@ -206,20 +208,20 @@ function PricingContent(props) {
                 
                 // Code execution might stop here if redirecting
             } else {
-                alert("Failed to initiate payment: " + paymentIntent.error);
+                toast.error("Failed to initiate payment: " + paymentIntent.error);
                 setLoading(false);
             }
             
         } catch (err) {
             console.error(err);
-            alert("Something went wrong: " + err.message);
+            toast.error("Something went wrong: " + err.message);
             setLoading(false);
         }
     }
 
     const checkIfUserIsLoggedIn = () => {
         if (!props.user) {
-            alert("Please login from landing page to purchase the plan")
+            toast.error("Please login from landing page to purchase the plan")
             return false
         } else {
             return true

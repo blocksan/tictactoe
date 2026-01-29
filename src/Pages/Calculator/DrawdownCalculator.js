@@ -1,5 +1,6 @@
 import classnames from "classnames";
 import React, { useEffect, useState } from "react";
+import { toast } from 'react-toastify';
 import {
     Button,
     Card,
@@ -456,7 +457,7 @@ const RiskCalculator = (props) => {
         // }
 
         if (!configName) {
-            alert("Please provide a name for the configuration");
+            toast.error("Please provide a name for the configuration");
             return;
         }
       setLoading(true);

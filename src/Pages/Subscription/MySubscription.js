@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import { Badge, Button, Card, CardBody, CardTitle, Col, Container, Row, Spinner, Table } from 'reactstrap';
+import { toast } from 'react-toastify';
+import { Badge, Button, Card, CardBody, CardTitle, Col, Container, Modal, ModalBody, ModalFooter, ModalHeader, Row, Spinner, Table } from 'reactstrap';
 import Breadcrumbs from '../../components/Common/Breadcrumb';
 import { getFirebaseBackend } from '../../helpers/firebase_helper';
 
@@ -7,6 +8,8 @@ const MySubscription = () => {
     const [subscriptions, setSubscriptions] = useState([]);
     const [loading, setLoading] = useState(true);
     const [cancellingId, setCancellingId] = useState(null);
+    const [modal, setModal] = useState(false);
+    const [subToCancel, setSubToCancel] = useState(null);
 
     const fetchSubscriptions = async () => {
         const backend = getFirebaseBackend();
@@ -21,18 +24,29 @@ const MySubscription = () => {
         fetchSubscriptions();
     }, []);
 
-    const handleCancelSubscription = async (sub) => {
-        if (!window.confirm("Are you sure you want to cancel your subscription?")) return;
+    const toggleModal = () => setModal(!modal);
+
+    const handleCancelClick = (sub) => {
+        setSubToCancel(sub);
+        toggleModal();
+    };
+
+    const handleCancelSubscription = async () => {
+        toggleModal();
+        if (!subToCancel) return;
+        const sub = subToCancel;
 
         setCancellingId(sub.id);
         const backend = getFirebaseBackend();
         const result = await backend.cancelUserSubscription(sub.id, sub.order_id || sub.orderId); // Handle case sensitivity if any
         
         if (result.status) {
-            alert("Subscription cancelled successfully.");
-            window.location.reload();
+            toast.success("Subscription cancelled successfully.");
+            setTimeout(() => {
+                window.location.reload();
+            }, 3000);
         } else {
-            alert("Failed to cancel subscription: " + result.error);
+            toast.error("Failed to cancel subscription: " + result.error);
             setCancellingId(null);
         }
     };
@@ -117,11 +131,14 @@ const MySubscription = () => {
                                                                         color="danger" 
                                                                         size="sm" 
                                                                         outline
-                                                                        onClick={() => handleCancelSubscription(sub)}
+                                                                        onClick={() => handleCancelClick(sub)}
                                                                         disabled={cancellingId === sub.id}
                                                                     >
                                                                         {cancellingId === sub.id ? "Cancelling..." : "Cancel"}
                                                                     </Button>
+                                                                )} 
+                                                                {sub.status === 'cancelled' && (
+                                                                   <span>NA</span>
                                                                 )}
                                                             </td>
                                                         </tr>
@@ -138,6 +155,16 @@ const MySubscription = () => {
                             </Card>
                         </Col>
                     </Row>
+                    <Modal isOpen={modal} toggle={toggleModal} centered>
+                        <ModalHeader toggle={toggleModal}>Confirm Cancellation</ModalHeader>
+                        <ModalBody>
+                            Are you sure you want to cancel your subscription?
+                        </ModalBody>
+                        <ModalFooter>
+                            <Button color="secondary" onClick={toggleModal}>Close</Button>
+                            <Button color="danger" onClick={handleCancelSubscription}>Yes, Cancel</Button>
+                        </ModalFooter>
+                    </Modal>
                 </Container>
             </div>
         </React.Fragment>

@@ -1,29 +1,30 @@
 import classnames from "classnames";
 import React, { useEffect, useRef, useState } from "react";
+import { toast } from 'react-toastify';
 import {
-  Button,
-  Card,
-  CardBody,
-  CardHeader,
-  CardSubtitle,
-  CardText,
-  Col,
-  Container,
-  Form,
-  FormFeedback,
-  Input,
-  Label,
-  Modal,
-  Nav,
-  NavItem,
-  NavLink,
-  Row,
-  TabContent,
-  TabPane,
-  Toast,
-  ToastBody,
-  ToastHeader,
-  UncontrolledAlert
+    Button,
+    Card,
+    CardBody,
+    CardHeader,
+    CardSubtitle,
+    CardText,
+    Col,
+    Container,
+    Form,
+    FormFeedback,
+    Input,
+    Label,
+    Modal,
+    Nav,
+    NavItem,
+    NavLink,
+    Row,
+    TabContent,
+    TabPane,
+    Toast,
+    ToastBody,
+    ToastHeader,
+    UncontrolledAlert
 } from "reactstrap";
 
 //Import Breadcrumb
@@ -480,7 +481,7 @@ const RiskRewardCalculator = (props) => {
     // }
 
     if (!configName) {
-      alert("Please provide a name for the configuration");
+      toast.error("Please provide a name for the configuration");
       return;
     }
     setLoading(true);
@@ -489,7 +490,7 @@ const RiskRewardCalculator = (props) => {
       setConfigNameModal(false);
       setConfigName("");
     }else{
-      alert(response.message)
+      toast.error(response.message)
       setLoading(false);
       return
     }
