@@ -1,16 +1,15 @@
-import React from 'react'
+import React from 'react';
+import { connect } from 'react-redux';
 import {
-  Row,
   Col,
-  Container
+  Container,
+  Row
 } from "reactstrap";
 import Breadcrumbs from "../../components/Common/Breadcrumb";
-import { getCheckoutUrl } from '../../helpers/stripe/stripePayment';
-import { getFirebaseApp } from '../../helpers/firebase_helper';
 import PricingContent from './PricingContent';
-import { connect } from 'react-redux';
 
 function Pricing(props) {
+  
   return (
     <React.Fragment>
             <div className="page-content landing-header-main">

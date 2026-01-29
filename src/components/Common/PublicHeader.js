@@ -2,12 +2,11 @@ import { getAuth, GoogleAuthProvider, signInWithPopup } from 'firebase/auth';
 import React from "react";
 import { connect, useDispatch } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
+import { Container, Navbar, NavbarBrand } from "reactstrap";
 import logoVoiled from "../../assets/images/OnlyLogoVoiled.png";
 import { getFirebaseApp } from "../../helpers/firebase_helper";
 import { socialLogin } from "../../store/actions";
 import GoogleButton from "./GoogleButton";
-
-import { Container, Navbar, NavbarBrand } from "reactstrap";
 
 const PublicHeader = (props) => {
     const dispatch = useDispatch();

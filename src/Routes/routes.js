@@ -13,6 +13,7 @@ import OpenPricing from "../Pages/Pricing/OpenPricing";
 import Pricing from "../Pages/Pricing/Pricing";
 import Referral from "../Pages/Settings/Referral";
 import MySubscription from "../Pages/Subscription/MySubscription";
+import PaymentHistory from "../Pages/Subscription/PaymentHistory";
 import Landing from './../Pages/Landing/landing';
 
 const authProtectedRoutes = [
@@ -27,6 +28,7 @@ const authProtectedRoutes = [
   { path: "/capitalcalculator", component: <CapitalCalculator /> },
   { path: "/pricing", component: <Pricing /> },
   { path: "/my-subscription", component: <MySubscription /> },
+  { path: "/payment-history", component: <PaymentHistory /> },
 
 
   // this route should be at the end of all other routes

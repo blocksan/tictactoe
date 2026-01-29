@@ -1,10 +1,10 @@
 import { initializeApp } from "firebase/app";
 import { getAuth } from 'firebase/auth';
-import { addDoc, collection, doc, getDocs, getFirestore, query, updateDoc, where } from "firebase/firestore";
+import { addDoc, collection, doc, getDocs, getFirestore, query, setDoc, updateDoc, where } from "firebase/firestore";
 import {
-    DRAWDOWN_CALCULATOR_COLLECTION,
-    RISK_REWARD_CALCULATOR_COLLECTION,
-    SUBSCRIPTIONS_COLLECTION
+  DRAWDOWN_CALCULATOR_COLLECTION,
+  RISK_REWARD_CALCULATOR_COLLECTION,
+  SUBSCRIPTIONS_COLLECTION
 } from "../constants/firebase";
 import { loginSuccess } from "../store/actions";
 import { cancelSubscription } from "./cashfree_helper";
@@ -371,8 +371,6 @@ class FirebaseAuthBackend {
       // Save to subscriptions collection
       await addDoc(collection(db, SUBSCRIPTIONS_COLLECTION), subscriptionData);
 
-
-
       // Update local auth object
       await this.updateAuthUser({
         ...user,
@@ -385,6 +383,75 @@ class FirebaseAuthBackend {
     } catch (err) {
       console.log("Error in saveSubscription:", err);
       return { status: false, error: err.message };
+    }
+  }
+
+  // Log initial payment attempt
+  logPaymentInitiation = async (paymentData, user) => {
+    try {
+        const db = getFirestore(firebaseApp);
+        const paymentRecord = {
+            userId: user.uid || user.email,
+            email: user.email,
+            orderId: paymentData.order_id,
+            paymentId: paymentData.payment_session_id, // Initially use session ID
+            amount: paymentData.amount,
+            currency: paymentData.currency || "INR",
+            status: "INITIATED",
+            planId: paymentData.planId,
+            createdOn: new Date(),
+            platform: "Cashfree"
+        };
+        // Use orderId as doc ID to easily update it later
+        await setDoc(doc(db, "payments", paymentData.order_id), paymentRecord);
+        return { status: true };
+    } catch (err) {
+        console.error("Error logging payment initiation:", err);
+        return { status: false, error: err.message };
+    }
+  }
+
+  // Update payment status (Success or Failed)
+  updatePaymentStatus = async (orderId, status, details = {}) => {
+      try {
+        const db = getFirestore(firebaseApp);
+        const paymentRef = doc(db, "payments", orderId);
+        
+        await updateDoc(paymentRef, {
+            status: status,
+            updatedOn: new Date(),
+            ...details
+        });
+        return { status: true };
+      } catch (err) {
+          console.error("Error updating payment status:", err);
+          return { status: false, error: err.message };
+      }
+  }
+
+  // New function to fetch payment history
+  getUserPayments = async () => {
+    try {
+        const db = getFirestore(firebaseApp);
+        const user = await this.waitForCurrentUser();
+        if (!user) return { status: false, error: "User not found" };
+
+        const paymentsQuery = query(
+            collection(db, "payments"),
+            where("email", "==", user.email)
+        );
+
+        const querySnapshot = await getDocs(paymentsQuery);
+        const payments = querySnapshot.docs.map(doc => ({
+            id: doc.id,
+            ...doc.data(),
+            createdOn: doc.data().createdOn ? doc.data().createdOn.toDate() : new Date()
+        })).sort((a, b) => b.createdOn - a.createdOn);
+
+        return { status: true, data: payments };
+    } catch (err) {
+        console.error("Error fetching payments:", err);
+        return { status: false, error: err.message };
     }
   }
 
@@ -409,8 +476,6 @@ class FirebaseAuthBackend {
       );
       
       const querySnapshot = await getDocs(subscriptionsQuery);
-
-      console.log("querySnapshot", querySnapshot.docs);
 
       // Fetch user doc to sync freeTrialConfig
       const userQuery = query(collection(db, "users"), where("email", "==", user.email));

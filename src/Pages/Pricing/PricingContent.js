@@ -82,7 +82,84 @@ function PricingContent(props) {
     ];
 
     const [loading, setLoading] = React.useState(false);
+    
+    // Check for Return URL (Payment Callback)
+    React.useEffect(() => {
+        const queryParams = new URLSearchParams(window.location.search);
+        const orderId = queryParams.get("order_id");
 
+        if (orderId) {
+            handlePaymentCallback(orderId);
+        }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
+
+    const handlePaymentCallback = async (orderId) => {
+        setLoading(true);
+        // Clear URL params
+        window.history.replaceState({}, document.title, window.location.pathname);
+
+        try {
+            const firebaseBackend = getFirebaseBackend();
+            const statusRes = await fetchPaymentStatus(orderId);
+            console.log("Payment Callback Status:", statusRes);
+
+            // Cashfree 'PAID' status check. 
+            // STRICT CHECK: Only 'PAID' means money received. 'ACTIVE' means order is still open/pending.
+            if (statusRes.status === "success" && statusRes.payment_status === "PAID") {
+                const pendingPlan = JSON.parse(localStorage.getItem("pending_subscription_plan"));
+                
+                // UPDATE LOG TO SUCCESS
+                await firebaseBackend.updatePaymentStatus(orderId, "SUCCESS", { 
+                    paymentId: statusRes.data.cf_payment_id || "N/A",  // Capture CF Payment ID if available
+                    response: statusRes.data
+                });
+
+                if (pendingPlan) {
+                     await saveSuccessfulSubscription(statusRes, pendingPlan);
+                     localStorage.removeItem("pending_subscription_plan");
+                } else {
+                    alert("Payment received! However, plan details were not found. Please contact support.");
+                }
+            } else if (statusRes.status === "success" && statusRes.payment_status === "ACTIVE") {
+                 console.warn("Payment Status is ACTIVE (Pending/Abandoned)");
+                 // UPDATE LOG TO PENDING/CANCELLED
+                 await firebaseBackend.updatePaymentStatus(orderId, "PENDING", { response: statusRes.data });
+                 
+                 alert("Payment process was cancelled or is still pending. If you deduced money, please contact support.");
+            } else {
+                // UPDATE LOG TO FAILED
+                await firebaseBackend.updatePaymentStatus(orderId, "FAILED", { 
+                    response: statusRes.data || statusRes.error
+                });
+                alert("Payment failed or cancelled. Status: " + statusRes.payment_status);
+            }
+        } catch (err) {
+            console.error(err);
+            alert("Error verifying payment: " + err.message);
+        }
+        setLoading(false);
+    };
+
+    const saveSuccessfulSubscription = async (paymentStatus, selectedPlan) => {
+        const firebaseBackend = getFirebaseBackend();
+        const saveResult = await firebaseBackend.saveSubscription({
+            id: paymentStatus.order_id, 
+            order_id: paymentStatus.order_id,
+            amount: selectedPlan.yearly ? selectedPlan.discountedPrice : selectedPlan.price,
+            currency: "INR",
+            planId: selectedPlan.planId,
+            payment_status: "PAID"
+        }, props.user);
+
+        if (saveResult.status) {
+            alert("Subscription successful! You are now a Premium member.");
+            // window.location.reload();
+        } else {
+            console.error(saveResult.error);
+            alert("Payment successful but failed to update subscription in database. Please contact support. Error: " + saveResult.error);
+        }
+    };
 
 
     const handleSubscription = async (pricingPlan) => {
@@ -96,40 +173,43 @@ function PricingContent(props) {
 
             setLoading(true);
             
-            // 1. Create Payment Intent
+            // 1. Create Payment Intent (Order)
             const amount = selectedPlan.yearly ? selectedPlan.discountedPrice : selectedPlan.price;
-            const paymentIntent = await createPaymentIntent(amount, "INR");
             
-            if (paymentIntent.status === "success") {
-                // 2. Fetch Payment Status (Simulating payment completion)
-                const paymentStatus = await fetchPaymentStatus(paymentIntent.order_id);
-                
-                if (paymentStatus.status === "success" && paymentStatus.payment_status === "PAID") {
-                    // 3. Save Subscription
-                    const firebaseBackend = getFirebaseBackend();
-                    const saveResult = await firebaseBackend.saveSubscription({
-                        id: paymentStatus.payment_session_id, // using session id as payment id for now
-                        order_id: paymentStatus.order_id,
-                        amount: amount,
-                        currency: "INR",
-                        planId: selectedPlan.planId
-                    }, props.user);
+            // Pass user details for Cashfree
+            const userDetails = {
+                uid: props.user.uid,
+                email: props.user.email,
+                phone: props.user.phone // Ensure phone is available or handle fallback in helper
+            };
 
-                    if (saveResult.status) {
-                        alert("Subscription successful! You are now a Premium member.");
-                        // Optionally refresh page or updatestate
-                         window.location.reload();
-                    } else {
-                        alert("Payment successful but failed to save subscription: " + saveResult.error);
-                    }
-                } else {
-                    alert("Payment failed or pending.");
-                }
+            const paymentIntent = await createPaymentIntent(amount, "INR", userDetails);
+            console.log("Payment Intent:", paymentIntent);
+            if (paymentIntent.status === "success") {
+                // Store plan details for post-payment verification
+                localStorage.setItem("pending_subscription_plan", JSON.stringify(selectedPlan));
+                
+                // LOG INITIATION
+                const firebaseBackend = getFirebaseBackend();
+                await firebaseBackend.logPaymentInitiation({
+                    order_id: paymentIntent.order_id,
+                    payment_session_id: paymentIntent.payment_session_id,
+                    amount: amount,
+                    currency: "INR",
+                    planId: selectedPlan.planId || selectedPlan.pricingPlan,
+                }, props.user);
+
+                // 2. Initiate Payment (Redirects or opens simple checkout)
+                // We need to import doPayment from helper
+                const { doPayment } = require('../../helpers/cashfree_helper'); // Lazy import if not top-level
+                await doPayment(paymentIntent.payment_session_id);
+                
+                // Code execution might stop here if redirecting
             } else {
-                alert("Failed to initiate payment.");
+                alert("Failed to initiate payment: " + paymentIntent.error);
+                setLoading(false);
             }
             
-            setLoading(false);
         } catch (err) {
             console.error(err);
             alert("Something went wrong: " + err.message);
