@@ -49,7 +49,6 @@ export const createPaymentIntent = async (amount, currency = "INR", customerData
         });
 
         const data = await response.json();
-        console.log("Order response:", data);
         if (response.ok) {
             console.log("Order Created:");
             return {

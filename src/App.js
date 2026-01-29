@@ -3,6 +3,7 @@ import Routes from "./Routes/index";
 
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { TOAST_DELAY } from './constants/common';
 // Import Scss
 import './assets/scss/theme.scss';
 
@@ -36,7 +37,7 @@ function App() {
   return (
     <React.Fragment>
       <Routes />
-      <ToastContainer autoClose={3000} pauseOnHover />
+      <ToastContainer autoClose={TOAST_DELAY} pauseOnHover />
     </React.Fragment>
   );
 }

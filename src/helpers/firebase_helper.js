@@ -1,6 +1,7 @@
 import { initializeApp } from "firebase/app";
 import { getAuth } from 'firebase/auth';
 import { addDoc, collection, doc, getDocs, getFirestore, query, setDoc, updateDoc, where } from "firebase/firestore";
+import { PRICING_PLANS } from "../constants/common";
 import {
   DRAWDOWN_CALCULATOR_COLLECTION,
   RISK_REWARD_CALCULATOR_COLLECTION,
@@ -365,7 +366,7 @@ class FirebaseAuthBackend {
         createdOn: new Date(),
         updatedOn: new Date(),
         planId: paymentData.planId || "unknown",
-        planType: isYearly ? "Yearly" : "Monthly",
+        planType: isYearly ? PRICING_PLANS[1] : PRICING_PLANS[0],
       };
 
       // Save to subscriptions collection
@@ -381,7 +382,6 @@ class FirebaseAuthBackend {
       return { status: true, data: subscriptionData };
 
     } catch (err) {
-      console.log("Error in saveSubscription:", err);
       return { status: false, error: err.message };
     }
   }
@@ -406,7 +406,6 @@ class FirebaseAuthBackend {
         await setDoc(doc(db, "payments", paymentData.order_id), paymentRecord);
         return { status: true };
     } catch (err) {
-        console.error("Error logging payment initiation:", err);
         return { status: false, error: err.message };
     }
   }
@@ -424,7 +423,6 @@ class FirebaseAuthBackend {
         });
         return { status: true };
       } catch (err) {
-          console.error("Error updating payment status:", err);
           return { status: false, error: err.message };
       }
   }
@@ -450,7 +448,6 @@ class FirebaseAuthBackend {
 
         return { status: true, data: payments };
     } catch (err) {
-        console.error("Error fetching payments:", err);
         return { status: false, error: err.message };
     }
   }
@@ -461,8 +458,6 @@ class FirebaseAuthBackend {
       // Wait for user session to initialize
       const user = await this.waitForCurrentUser();
       
-      console.log("currentPremiumStatus user", user);
-
       if (!user) {
         return { isPremium: false };
       }
@@ -512,7 +507,6 @@ class FirebaseAuthBackend {
       return { isPremium: false, freeTrialConfig: freeTrialConfig };
 
     } catch (err) {
-      console.log("Error in currentPremiumStatus:", err);
       return { isPremium: false, error: err.message };
     }
   }
@@ -547,7 +541,6 @@ class FirebaseAuthBackend {
       return { status: true, data: subscriptions };
 
     } catch (err) {
-      console.error("Error fetching subscriptions:", err);
       return { status: false, error: err.message };
     }
   }
@@ -573,7 +566,6 @@ class FirebaseAuthBackend {
 
         return { status: true };
     } catch (err) {
-        console.error("Error cancelling subscription:", err);
         return { status: false, error: err.message };
     }
   }
@@ -590,7 +582,6 @@ class FirebaseAuthBackend {
        }
        return newAuthUser;
     } catch (err) {
-      console.log("Error updating user object:", err);
       return null;
     }
   }
@@ -682,7 +673,6 @@ class FirebaseAuthBackend {
         };
       }
     } catch (err) {
-      console.log("error in fetchRiskCalculatorConfigFromFirestore", err)
       return {
         status: false,
         error: err.message,
@@ -723,7 +713,6 @@ class FirebaseAuthBackend {
         };
       }
     } catch (err) {
-      console.log("error in fetchRiskRewardCalculatorConfigFromFirestore", err)
       return {
         status: false,
         error: err.message,

@@ -8,79 +8,11 @@ import {
 import { getFirebaseBackend } from '../../helpers/firebase_helper';
 // import OffLogo33 from "../../assets/images/OffLogo33Compressed.png";
 import { toast } from 'react-toastify';
+import { PRICING_PLANS, PricingData, TOAST_DELAY } from '../../constants/common';
 import { createPaymentIntent, fetchPaymentStatus } from '../../helpers/cashfree_helper';
-const PRICING_PLANS = ["Free", "Monthly", "Yearly"];
-function PricingContent(props) {
-    const PricingData = [
-        {
-            title: "Free",
-            caption: "Precision planning for every trader",
-            icon: "bx bx-rocket",
-            price: "0",
-            pricingPlan: PRICING_PLANS[0],
-            planId: "FREE",
-            isChild: [
-                { id: "1", features: "10 Calculations" },
-                { id: "2", features: "Standard Risk Tools" },
-                { id: "3", features: "Basic Position Sizing" },
-            ],
-        },
 
-        {
-            title: "Professional",
-            caption: "Advanced tools for active traders",
-            icon: "bx bx-trending-up",
-            price: "99",
-            planId: "MONTHLY99",
-            pricingPlan: PRICING_PLANS[1],
-            isChild: [
-                { id: "1", features: "Unlimited Calculations" },
-                { id: "2", features: "Custom Risk Configurations" },
-                { id: "3", features: "Secure Cloud Backups" },
-                { id: "4", features: "Priority Email Support" },
-            ],
-        },
-        {
-            title: "Expert",
-            caption: "Maximum efficiency and best value",
-            icon: "bx bx-diamond",
-            price: "1199",
-            discountedPrice: "599",
-            yearly: true,
-            planId: "YEARLY599",
-            pricingPlan: PRICING_PLANS[2],
-            isChild: [
-                { id: "1", features: "All Professional Features" },
-                { id: "2", features: "50% Annual Cost Savings" },
-                { id: "3", features: "Advanced Support Access" },
-                { id: "4", features: "Priority Feature Access" },
-            ],
-        },
-        // {
-        //   title: "Enterprise",
-        //   caption: "Sed neque unde",
-        //   icon: "fas fa-shield-alt",
-        //   price: "39",
-        //   isChild: [
-        //     { id: "1", features: "Free Live Support" },
-        //     { id: "2", features: "Unlimited User" },
-        //     { id: "3", features: "No Time Tracking" },
-        //     { id: "4", features: "Free Setup" },
-        //   ],
-        // },
-        // {
-        //   title: "Unlimited",
-        //   caption: "Itque eam rerum",
-        //   icon: "fas fa-headset",
-        //   price: "49",
-        //   isChild: [
-        //     { id: "1", features: "Free Live Support" },
-        //     { id: "2", features: "Unlimited User" },
-        //     { id: "3", features: "No Time Tracking" },
-        //     { id: "4", features: "Free Setup" },
-        //   ],
-        // },
-    ];
+function PricingContent(props) {
+    
 
     const [loading, setLoading] = React.useState(false);
     
@@ -157,7 +89,7 @@ function PricingContent(props) {
             toast.success("Subscription successful! You are now a Premium member.");
             setTimeout(() => {
                 window.location.reload();
-            }, 3000);
+            }, TOAST_DELAY);
         } else {
             console.error(saveResult.error);
             toast.error("Payment successful but failed to update subscription in database. Please contact support. Error: " + saveResult.error);

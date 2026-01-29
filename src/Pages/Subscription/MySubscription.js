@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
 import { Badge, Button, Card, CardBody, CardTitle, Col, Container, Modal, ModalBody, ModalFooter, ModalHeader, Row, Spinner, Table } from 'reactstrap';
 import Breadcrumbs from '../../components/Common/Breadcrumb';
+import { TOAST_DELAY } from '../../constants/common';
 import { getFirebaseBackend } from '../../helpers/firebase_helper';
 
 const MySubscription = () => {
@@ -44,7 +45,7 @@ const MySubscription = () => {
             toast.success("Subscription cancelled successfully.");
             setTimeout(() => {
                 window.location.reload();
-            }, 3000);
+            }, TOAST_DELAY);
         } else {
             toast.error("Failed to cancel subscription: " + result.error);
             setCancellingId(null);
