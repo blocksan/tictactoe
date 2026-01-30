@@ -72,13 +72,21 @@ const MySubscription = () => {
     };
 
     const getStatusBadge = (sub) => {
+        if (sub.status === 'UPGRADED') {
+            return <Badge color="info" className="font-size-12">Upgraded</Badge>;
+        }
+
+        const isExpired = new Date() > sub.endDate;
+        if (isExpired) {
+             return <Badge color="secondary" className="font-size-12">Expired</Badge>;
+        }
+
         if (sub.status === 'cancelled') {
+            // Cancelled but NOT expired yet (Access continues)
             return <Badge color="danger" className="font-size-12">Cancelled</Badge>;
         }
         
-        const isActive = new Date() < sub.endDate;
-        
-        if (sub.status === 'active' && isActive) {
+        if (sub.status === 'active') {
              return <Badge color="success" className="font-size-12">Active</Badge>;
         }
         

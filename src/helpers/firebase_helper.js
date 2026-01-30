@@ -3,10 +3,10 @@ import { getAuth } from 'firebase/auth';
 import { addDoc, collection, doc, getDocs, getFirestore, query, setDoc, updateDoc, where } from "firebase/firestore";
 import { PRICING_PLANS } from "../constants/common";
 import {
-  DRAWDOWN_CALCULATOR_COLLECTION,
-  RISK_REWARD_CALCULATOR_COLLECTION,
-  SUBSCRIPTIONS_COLLECTION,
-  USERS_COLLECTION
+    DRAWDOWN_CALCULATOR_COLLECTION,
+    RISK_REWARD_CALCULATOR_COLLECTION,
+    SUBSCRIPTIONS_COLLECTION,
+    USERS_COLLECTION
 } from "../constants/firebase";
 import { loginSuccess } from "../store/actions";
 import { cancelSubscription } from "./cashfree_helper";
@@ -355,7 +355,7 @@ class FirebaseAuthBackend {
                existingSubscriptionEnd = userData.subscription.endDate.toDate();
                // Only extend if the existing subscription hasn't expired yet
                if (existingSubscriptionEnd > new Date()) {
-                   startDate = existingSubscriptionEnd;
+                   // startDate = existingSubscriptionEnd; // Disabled: Start immediately on upgrade
                    
                    // Mark previous active subscription as UPGRADED in history
                    const activeSubQuery = query(
@@ -367,17 +367,29 @@ class FirebaseAuthBackend {
                    activeSubSnapshot.forEach(async (doc) => {
                        await updateDoc(doc.ref, {
                            status: "UPGRADED",
-                           updatedOn: new Date()
+                           updatedOn: new Date(),
+                           cancelledOn: new Date()
                        });
                    });
+                   // We do NOT postpone the new start date. It starts immediately, replacing the old one.
+                   // startDate remains 'new Date()' (defined at top of function implicitly or we set it)
                }
           }
       }
 
-      const endDate = new Date(startDate);
       const isYearly = paymentData.planId && paymentData.planId.includes('YEARLY');
-      // Add 365 days for yearly, 30 days for monthly (default)
-      endDate.setDate(startDate.getDate() + (isYearly ? 365 : 30));
+      const durationDays = isYearly ? 365 : 30;
+      
+      let endDate;
+      // If upgrading with active plan, add new duration to the EXISTING end date (Stacking)
+      if (existingSubscriptionEnd && existingSubscriptionEnd > new Date()) {
+           endDate = new Date(existingSubscriptionEnd);
+           endDate.setDate(endDate.getDate() + durationDays);
+      } else {
+           // Standard calculation from Start Date (Today)
+           endDate = new Date(startDate);
+           endDate.setDate(startDate.getDate() + durationDays);
+      }
 
       let userId = user.uid || user.id;
       if (!userId) {
@@ -527,7 +539,7 @@ class FirebaseAuthBackend {
           const subscription = userDocData.subscription || {};
           const userEndDate = subscription.endDate ? subscription.endDate.toDate() : null;
           
-          if (userDocData.isPremium && userEndDate && userEndDate > new Date() && subscription.status === 'active') {
+          if (userDocData.isPremium && userEndDate && userEndDate > new Date() && (subscription.status === 'active' || subscription.status === 'cancelled')) {
               // Found active premium in user config
               await this.updateAuthUser({ 
                   isPremiumUser: true, 
@@ -612,7 +624,7 @@ class FirebaseAuthBackend {
                 await updateDoc(userDocRef, {
                     "subscription.status": 'cancelled',
                     "subscription.cancelledOn": new Date(),
-                    isPremium: false, 
+                    // isPremium: false, // Keep premium until expiry
                     updatedOn: new Date()
                 });
             }

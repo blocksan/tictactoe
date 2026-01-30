@@ -7,6 +7,7 @@ import {
 } from "reactstrap";
 import { getFirebaseBackend } from '../../helpers/firebase_helper';
 // import OffLogo33 from "../../assets/images/OffLogo33Compressed.png";
+import confetti from 'canvas-confetti';
 import { toast } from 'react-toastify';
 import { PRICING_PLANS, PricingData, TOAST_DELAY } from '../../constants/common';
 import { createPaymentIntent, fetchPaymentStatus } from '../../helpers/cashfree_helper';
@@ -86,6 +87,28 @@ function PricingContent(props) {
         }, props.user);
 
         if (saveResult.status) {
+            // Trigger Confetti Celebration
+            var duration = 5 * 1000;
+            var animationEnd = Date.now() + duration;
+            var defaults = { startVelocity: 30, spread: 360, ticks: 60, zIndex: 9999 }; // High z-index to be on top of everything
+
+            var randomInRange = function(min, max) {
+              return Math.random() * (max - min) + min;
+            };
+
+            var interval = setInterval(function() {
+              var timeLeft = animationEnd - Date.now();
+
+              if (timeLeft <= 0) {
+                return clearInterval(interval);
+              }
+
+              var particleCount = 50 * (timeLeft / duration);
+              // since particles fall down, start a bit higher than random
+              confetti(Object.assign({}, defaults, { particleCount, origin: { x: randomInRange(0.1, 0.3), y: Math.random() - 0.2 } }));
+              confetti(Object.assign({}, defaults, { particleCount, origin: { x: randomInRange(0.7, 0.9), y: Math.random() - 0.2 } }));
+            }, 250);
+
             toast.success("Subscription successful! You are now a Premium member.");
             setTimeout(() => {
                 window.location.reload();
