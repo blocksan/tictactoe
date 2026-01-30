@@ -42,6 +42,13 @@ const MySubscription = () => {
         const result = await backend.cancelUserSubscription(sub.id, sub.order_id || sub.orderId); // Handle case sensitivity if any
         
         if (result.status) {
+            // Analytics: Subscription Cancelled
+            const daysRemaining = Math.max(0, Math.ceil((sub.endDate - new Date()) / (1000 * 60 * 60 * 24)));
+            backend.logEvent("subscription_cancelled", { 
+                plan: sub.planId, 
+                days_remaining: daysRemaining 
+            });
+
             toast.success("Subscription cancelled successfully.");
             setTimeout(() => {
                 window.location.reload();

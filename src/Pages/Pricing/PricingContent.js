@@ -36,17 +36,23 @@ function PricingContent(props) {
         try {
             const firebaseBackend = getFirebaseBackend();
             const statusRes = await fetchPaymentStatus(orderId);
-            console.log("Payment Callback Status:", statusRes);
 
             // Cashfree 'PAID' status check. 
             // STRICT CHECK: Only 'PAID' means money received. 'ACTIVE' means order is still open/pending.
+            const pendingPlan = JSON.parse(localStorage.getItem("pending_subscription_plan"));
             if (statusRes.status === "success" && statusRes.payment_status === "PAID") {
-                const pendingPlan = JSON.parse(localStorage.getItem("pending_subscription_plan"));
                 
                 // UPDATE LOG TO SUCCESS
                 await firebaseBackend.updatePaymentStatus(orderId, "SUCCESS", { 
                     paymentId: statusRes.data.cf_payment_id || "N/A",  // Capture CF Payment ID if available
                     response: statusRes.data
+                });
+
+                // Analytics: Payment Success
+                firebaseBackend.logEvent("payment_success", { 
+                    plan: pendingPlan ? pendingPlan.pricingPlan : "UNKNOWN",
+                    amount: statusRes.data.order_amount,
+                    order_id: orderId
                 });
 
                 if (pendingPlan) {
@@ -66,6 +72,13 @@ function PricingContent(props) {
                 await firebaseBackend.updatePaymentStatus(orderId, "FAILED", { 
                     response: statusRes.data || statusRes.error
                 });
+                
+                // Analytics: Payment Failed
+                firebaseBackend.logEvent("payment_failed", { 
+                    plan: pendingPlan ? pendingPlan.pricingPlan : "UNKNOWN", 
+                    reason: statusRes.payment_status 
+                });
+
                 toast.error("Payment failed or cancelled. Status: " + statusRes.payment_status);
             }
         } catch (err) {
@@ -130,6 +143,13 @@ function PricingContent(props) {
             if (!selectedPlan) return;
 
             setLoading(true);
+            const firebaseBackend = getFirebaseBackend();
+            
+            // Analytics: Upgrade Clicked
+            firebaseBackend.logEvent("upgrade_clicked", { 
+                source: "pricing_page", 
+                current_plan: props.user.planId || "FREE" 
+            });
             
             // 1. Create Payment Intent (Order)
             const amount = selectedPlan.yearly ? selectedPlan.discountedPrice : selectedPlan.price;
@@ -155,6 +175,12 @@ function PricingContent(props) {
                     currency: "INR",
                     planId: selectedPlan.planId || selectedPlan.pricingPlan,
                 }, props.user);
+
+                // Analytics: Payment Started
+                firebaseBackend.logEvent("payment_started", { 
+                    plan: selectedPlan.pricingPlan, 
+                    amount: amount 
+                });
 
                 // 2. Initiate Payment (Redirects or opens simple checkout)
                 // We need to import doPayment from helper

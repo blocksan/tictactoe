@@ -207,12 +207,31 @@ const RiskCalculator = (props) => {
             }
 
             setSelectedIndex(null);
+            
+            // Analytics: Calculator Run & Repeat Run
+            // backend already declared at line 201
+            backend.logEvent("calculator_run", { 
+                calculator_type: "drawdown",
+                index: "ALL",
+                plan_type: loggedInUser?.isPremiumUser ? "PRO" : "FREE"
+            });
+            
+            const runCountKey = "drawdown_calculator_run_count";
+            const currentCount = parseInt(localStorage.getItem(runCountKey) || "0") + 1;
+            localStorage.setItem(runCountKey, currentCount.toString());
+            
+            if (currentCount > 1) {
+                backend.logEvent("calculator_repeat_run", { 
+                    calculator_type: "drawdown",
+                    repeat_count: currentCount
+                });
+            }
+
             await new Promise(r => setTimeout(r, 1500));
             validatePremiumInputs(formValues);
             calculateRisk(formValues);
             scrollTop()
         },
-
     });
 
     const validatePremiumInputs = (formValues) => {
@@ -463,6 +482,11 @@ const RiskCalculator = (props) => {
       setLoading(true);
       const response = await getFirebaseBackend().addOrUpdateDrawdownCalculatorConfigToFirestore(riskCalculatorForm.values, configName);
       if (response.status) {
+            // Analytics: Config Saved
+            getFirebaseBackend().logEvent("config_saved", { 
+                calculator_type: "drawdown" 
+            });
+
             setConfigNameModal(false);
             setConfigName("");
         }

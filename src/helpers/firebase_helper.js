@@ -1,12 +1,13 @@
+import { getAnalytics, logEvent } from "firebase/analytics";
 import { initializeApp } from "firebase/app";
 import { getAuth } from 'firebase/auth';
 import { addDoc, collection, doc, getDocs, getFirestore, query, setDoc, updateDoc, where } from "firebase/firestore";
 import { PRICING_PLANS } from "../constants/common";
 import {
-    DRAWDOWN_CALCULATOR_COLLECTION,
-    RISK_REWARD_CALCULATOR_COLLECTION,
-    SUBSCRIPTIONS_COLLECTION,
-    USERS_COLLECTION
+  DRAWDOWN_CALCULATOR_COLLECTION,
+  RISK_REWARD_CALCULATOR_COLLECTION,
+  SUBSCRIPTIONS_COLLECTION,
+  USERS_COLLECTION
 } from "../constants/firebase";
 import { loginSuccess } from "../store/actions";
 import { cancelSubscription } from "./cashfree_helper";
@@ -15,15 +16,17 @@ import { stripePortalUrl } from "./stripe/stripePayment";
 
 // import { getAuth, signInWithPopup, GoogleAuthProvider } from "firebase/auth";
 // import {ref} from 'firebase/database';
-// import { getAnalytics } from "firebase/analytics";
 
 let firebaseApp = null;
+let analytics = null;
 let _fireBaseBackend = null;
 class FirebaseAuthBackend {
   constructor(firebaseConfig) {
     if (firebaseConfig && !firebaseApp) {
       // Initialize Firebase
       firebaseApp = initializeApp(firebaseConfig);
+      analytics = getAnalytics(firebaseApp);
+
       // firebase.auth().onAuthStateChanged(user => {
       //   if (user) {
       //     localStorage.setItem("authUser", JSON.stringify(user));
@@ -34,6 +37,18 @@ class FirebaseAuthBackend {
     }
   }
 
+
+  logEvent = (eventName, params) => {
+    let finalParams = { ...params };
+    
+    if (process.env.NODE_ENV === 'development') {
+        finalParams.debug_mode = true; // Signals Firebase Console to show in DebugView
+    }
+    
+    if (analytics) {
+      logEvent(analytics, eventName, finalParams);
+    }
+  };
 
   /**
    * Registers the user with given details

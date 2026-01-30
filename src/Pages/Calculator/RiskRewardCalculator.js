@@ -221,6 +221,26 @@ const RiskRewardCalculator = (props) => {
       }
 
       setSelectedIndex(null);
+      
+      // Analytics: Calculator Run & Repeat Run
+      // backend declared at line 215
+      backend.logEvent("calculator_run", { 
+        calculator_type: "risk_reward",
+        index: "ALL", // Calculates for all indices
+        plan_type: loggedInUser?.isPremiumUser ? "PRO" : "FREE"
+      });
+      
+      const runCountKey = "riskreward_calculator_run_count";
+      const currentCount = parseInt(localStorage.getItem(runCountKey) || "0") + 1;
+      localStorage.setItem(runCountKey, currentCount.toString());
+      
+      if (currentCount > 1) {
+          backend.logEvent("calculator_repeat_run", { 
+              calculator_type: "risk_reward",
+              repeat_count: currentCount
+          });
+      }
+
       await new Promise(r => setTimeout(r, 1500));
       validatePremiumInputs(formValues);
       calculateRisk(formValues);
@@ -487,6 +507,11 @@ const RiskRewardCalculator = (props) => {
     setLoading(true);
     const response = await getFirebaseBackend().addOrUpdateRiskRewardCalculatorConfigToFirestore(riskRewardCalculatorForm.values, configName);
     if (response.status) {
+      // Analytics: Config Saved
+      getFirebaseBackend().logEvent("config_saved", { 
+          calculator_type: "risk_reward" 
+      });
+
       setConfigNameModal(false);
       setConfigName("");
     }else{
