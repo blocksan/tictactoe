@@ -47,6 +47,8 @@ class FirebaseAuthBackend {
     
     if (analytics) {
       logEvent(analytics, eventName, finalParams);
+    } else {
+      console.warn("[Analytics] Skipped: Analytics not initialized (Ad blocker?)");
     }
   };
 
