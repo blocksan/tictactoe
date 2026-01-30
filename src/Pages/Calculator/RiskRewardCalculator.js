@@ -910,7 +910,7 @@ const RiskRewardCalculator = (props) => {
                                       <tr key={index} className="cursor-pointer" style={{ transition: 'all 0.2s' }}>
                                         <th scope="row" className="ps-4 text-muted">{index + 1}</th>
                                         <td className="fw-medium text-dark">{config.configName}</td>
-                                        <td className="text-muted">{config.createdOn.toLocaleString()}</td>
+                                        <td className="text-muted">{config.createdOn.toLocaleString('en-US', { year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit', hour12: true })}</td>
                                         <td className="text-end pe-4">
                                           <Button
                                             size="sm"
