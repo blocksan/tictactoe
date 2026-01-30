@@ -161,7 +161,7 @@ function PricingContent(props) {
                 phone: props.user.phone // Ensure phone is available or handle fallback in helper
             };
 
-            const paymentIntent = await createPaymentIntent(amount, "INR", userDetails);
+            const paymentIntent = await createPaymentIntent(selectedPlan.planId, "INR", userDetails);
             if (paymentIntent.status === "success") {
                 // Store plan details for post-payment verification
                 localStorage.setItem("pending_subscription_plan", JSON.stringify(selectedPlan));

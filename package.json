@@ -103,6 +103,7 @@
     ]
   },
   "devDependencies": {
+    "firebase-tools": "^15.5.1",
     "http-proxy-middleware": "^3.0.5"
   }
 }
