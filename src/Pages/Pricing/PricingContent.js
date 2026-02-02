@@ -7,82 +7,130 @@ import {
 } from "reactstrap";
 import { getFirebaseBackend } from '../../helpers/firebase_helper';
 // import OffLogo33 from "../../assets/images/OffLogo33Compressed.png";
+import confetti from 'canvas-confetti';
+import { toast } from 'react-toastify';
+import { PRICING_PLANS, PricingData, TOAST_DELAY } from '../../constants/common';
 import { createPaymentIntent, fetchPaymentStatus } from '../../helpers/cashfree_helper';
-const PRICING_PLANS = ["Free", "Monthly", "Yearly"];
-function PricingContent(props) {
-    const PricingData = [
-        {
-            title: "Free",
-            caption: "Precision planning for every trader",
-            icon: "bx bx-rocket",
-            price: "0",
-            pricingPlan: PRICING_PLANS[0],
-            planId: "FREE",
-            isChild: [
-                { id: "1", features: "10 Calculations" },
-                { id: "2", features: "Standard Risk Tools" },
-                { id: "3", features: "Basic Position Sizing" },
-            ],
-        },
 
-        {
-            title: "Professional",
-            caption: "Advanced tools for active traders",
-            icon: "bx bx-trending-up",
-            price: "99",
-            planId: "MONTHLY99",
-            pricingPlan: PRICING_PLANS[1],
-            isChild: [
-                { id: "1", features: "Unlimited Calculations" },
-                { id: "2", features: "Custom Risk Configurations" },
-                { id: "3", features: "Secure Cloud Backups" },
-                { id: "4", features: "Priority Email Support" },
-            ],
-        },
-        {
-            title: "Expert",
-            caption: "Maximum efficiency and best value",
-            icon: "bx bx-diamond",
-            price: "1199",
-            discountedPrice: "599",
-            yearly: true,
-            planId: "YEARLY599",
-            pricingPlan: PRICING_PLANS[2],
-            isChild: [
-                { id: "1", features: "All Professional Features" },
-                { id: "2", features: "50% Annual Cost Savings" },
-                { id: "3", features: "Advanced Support Access" },
-                { id: "4", features: "Priority Feature Access" },
-            ],
-        },
-        // {
-        //   title: "Enterprise",
-        //   caption: "Sed neque unde",
-        //   icon: "fas fa-shield-alt",
-        //   price: "39",
-        //   isChild: [
-        //     { id: "1", features: "Free Live Support" },
-        //     { id: "2", features: "Unlimited User" },
-        //     { id: "3", features: "No Time Tracking" },
-        //     { id: "4", features: "Free Setup" },
-        //   ],
-        // },
-        // {
-        //   title: "Unlimited",
-        //   caption: "Itque eam rerum",
-        //   icon: "fas fa-headset",
-        //   price: "49",
-        //   isChild: [
-        //     { id: "1", features: "Free Live Support" },
-        //     { id: "2", features: "Unlimited User" },
-        //     { id: "3", features: "No Time Tracking" },
-        //     { id: "4", features: "Free Setup" },
-        //   ],
-        // },
-    ];
+function PricingContent(props) {
+    
 
     const [loading, setLoading] = React.useState(false);
+    
+    // Check for Return URL (Payment Callback)
+    React.useEffect(() => {
+        const queryParams = new URLSearchParams(window.location.search);
+        const orderId = queryParams.get("order_id");
 
+        if (orderId) {
+            handlePaymentCallback(orderId);
+        }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
+
+    const handlePaymentCallback = async (orderId) => {
+        setLoading(true);
+        // Clear URL params
+        window.history.replaceState({}, document.title, window.location.pathname);
+
+        try {
+            const firebaseBackend = getFirebaseBackend();
+            const statusRes = await fetchPaymentStatus(orderId);
+
+            // Cashfree 'PAID' status check. 
+            // STRICT CHECK: Only 'PAID' means money received. 'ACTIVE' means order is still open/pending.
+            const pendingPlan = JSON.parse(localStorage.getItem("pending_subscription_plan"));
+            if (statusRes.status === "success" && statusRes.payment_status === "PAID") {
+                
+                // UPDATE LOG TO SUCCESS
+                await firebaseBackend.updatePaymentStatus(orderId, "SUCCESS", { 
+                    paymentId: statusRes.data.cf_payment_id || "N/A",  // Capture CF Payment ID if available
+                    response: statusRes.data
+                });
+
+                // Analytics: Payment Success
+                firebaseBackend.logEvent("payment_success", { 
+                    plan: pendingPlan ? pendingPlan.pricingPlan : "UNKNOWN",
+                    amount: statusRes.data.order_amount,
+                    order_id: orderId
+                });
+
+                if (pendingPlan) {
+                     await saveSuccessfulSubscription(statusRes, pendingPlan);
+                     localStorage.removeItem("pending_subscription_plan");
+                } else {
+                    toast.error("Payment received! However, plan details were not found. Please contact support.");
+                }
+            } else if (statusRes.status === "success" && statusRes.payment_status === "ACTIVE") {
+                 console.warn("Payment Status is ACTIVE (Pending/Abandoned)");
+                 // UPDATE LOG TO PENDING/CANCELLED
+                 await firebaseBackend.updatePaymentStatus(orderId, "PENDING", { response: statusRes.data });
+                 
+                 toast.warn("Payment process was cancelled or is still pending. If you deduced money, please contact support.");
+            } else {
+                // UPDATE LOG TO FAILED
+                await firebaseBackend.updatePaymentStatus(orderId, "FAILED", { 
+                    response: statusRes.data || statusRes.error
+                });
+                
+                // Analytics: Payment Failed
+                firebaseBackend.logEvent("payment_failed", { 
+                    plan: pendingPlan ? pendingPlan.pricingPlan : "UNKNOWN", 
+                    reason: statusRes.payment_status 
+                });
+
+                toast.error("Payment failed or cancelled. Status: " + statusRes.payment_status);
+            }
+        } catch (err) {
+            console.error(err);
+            toast.error("Error verifying payment: " + err.message);
+        }
+        setLoading(false);
+    };
+
+    const saveSuccessfulSubscription = async (paymentStatus, selectedPlan) => {
+        const firebaseBackend = getFirebaseBackend();
+        const saveResult = await firebaseBackend.saveSubscription({
+            id: paymentStatus.order_id, 
+            order_id: paymentStatus.order_id,
+            amount: selectedPlan.yearly ? selectedPlan.discountedPrice : selectedPlan.price,
+            currency: "INR",
+            planId: selectedPlan.planId,
+            payment_status: "PAID"
+        }, props.user);
+
+        if (saveResult.status) {
+            // Trigger Confetti Celebration
+            var duration = 5 * 1000;
+            var animationEnd = Date.now() + duration;
+            var defaults = { startVelocity: 30, spread: 360, ticks: 60, zIndex: 9999 }; // High z-index to be on top of everything
+
+            var randomInRange = function(min, max) {
+              return Math.random() * (max - min) + min;
+            };
+
+            var interval = setInterval(function() {
+              var timeLeft = animationEnd - Date.now();
+
+              if (timeLeft <= 0) {
+                return clearInterval(interval);
+              }
+
+              var particleCount = 50 * (timeLeft / duration);
+              // since particles fall down, start a bit higher than random
+              confetti(Object.assign({}, defaults, { particleCount, origin: { x: randomInRange(0.1, 0.3), y: Math.random() - 0.2 } }));
+              confetti(Object.assign({}, defaults, { particleCount, origin: { x: randomInRange(0.7, 0.9), y: Math.random() - 0.2 } }));
+            }, 250);
+
+            toast.success("Subscription successful! You are now a Premium member.");
+            setTimeout(() => {
+                window.location.reload();
+            }, TOAST_DELAY);
+        } else {
+            console.error(saveResult.error);
+            toast.error("Payment successful but failed to update subscription in database. Please contact support. Error: " + saveResult.error);
+        }
+    };
 
 
     const handleSubscription = async (pricingPlan) => {
@@ -95,51 +143,66 @@ function PricingContent(props) {
             if (!selectedPlan) return;
 
             setLoading(true);
+            const firebaseBackend = getFirebaseBackend();
             
-            // 1. Create Payment Intent
+            // Analytics: Upgrade Clicked
+            firebaseBackend.logEvent("upgrade_clicked", { 
+                source: "pricing_page", 
+                current_plan: props.user.planId || "FREE" 
+            });
+            
+            // 1. Create Payment Intent (Order)
             const amount = selectedPlan.yearly ? selectedPlan.discountedPrice : selectedPlan.price;
-            const paymentIntent = await createPaymentIntent(amount, "INR");
             
-            if (paymentIntent.status === "success") {
-                // 2. Fetch Payment Status (Simulating payment completion)
-                const paymentStatus = await fetchPaymentStatus(paymentIntent.order_id);
-                
-                if (paymentStatus.status === "success" && paymentStatus.payment_status === "PAID") {
-                    // 3. Save Subscription
-                    const firebaseBackend = getFirebaseBackend();
-                    const saveResult = await firebaseBackend.saveSubscription({
-                        id: paymentStatus.payment_session_id, // using session id as payment id for now
-                        order_id: paymentStatus.order_id,
-                        amount: amount,
-                        currency: "INR",
-                        planId: selectedPlan.planId
-                    }, props.user);
+            // Pass user details for Cashfree
+            const userDetails = {
+                uid: props.user.uid,
+                email: props.user.email,
+                phone: props.user.phone // Ensure phone is available or handle fallback in helper
+            };
 
-                    if (saveResult.status) {
-                        alert("Subscription successful! You are now a Premium member.");
-                        // Optionally refresh page or updatestate
-                         window.location.reload();
-                    } else {
-                        alert("Payment successful but failed to save subscription: " + saveResult.error);
-                    }
-                } else {
-                    alert("Payment failed or pending.");
-                }
+            const paymentIntent = await createPaymentIntent(selectedPlan.planId, "INR", userDetails);
+            if (paymentIntent.status === "success") {
+                // Store plan details for post-payment verification
+                localStorage.setItem("pending_subscription_plan", JSON.stringify(selectedPlan));
+                
+                // LOG INITIATION
+                const firebaseBackend = getFirebaseBackend();
+                await firebaseBackend.logPaymentInitiation({
+                    order_id: paymentIntent.order_id,
+                    payment_session_id: paymentIntent.payment_session_id,
+                    amount: amount,
+                    currency: "INR",
+                    planId: selectedPlan.planId || selectedPlan.pricingPlan,
+                }, props.user);
+
+                // Analytics: Payment Started
+                firebaseBackend.logEvent("payment_started", { 
+                    plan: selectedPlan.pricingPlan, 
+                    amount: amount 
+                });
+
+                // 2. Initiate Payment (Redirects or opens simple checkout)
+                // We need to import doPayment from helper
+                const { doPayment } = require('../../helpers/cashfree_helper'); // Lazy import if not top-level
+                await doPayment(paymentIntent.payment_session_id);
+                
+                // Code execution might stop here if redirecting
             } else {
-                alert("Failed to initiate payment.");
+                toast.error("Failed to initiate payment: " + paymentIntent.error);
+                setLoading(false);
             }
             
-            setLoading(false);
         } catch (err) {
             console.error(err);
-            alert("Something went wrong: " + err.message);
+            toast.error("Something went wrong: " + err.message);
             setLoading(false);
         }
     }
 
     const checkIfUserIsLoggedIn = () => {
         if (!props.user) {
-            alert("Please login from landing page to purchase the plan")
+            toast.error("Please login from landing page to purchase the plan")
             return false
         } else {
             return true
@@ -162,7 +225,7 @@ function PricingContent(props) {
             <Row className="justify-content-center gx-4">
                 {PricingData.map((item, key) => (
                     <Col xl={3} md={6} className="mb-4" key={key}>
-                        <Card className={`pricing-card h-100 border-0 ${item.yearly ? 'pricing-card-highlight' : ''}`}>
+                        <Card className={`pricing-card h-100 ${props.user && props.user.planId === item.planId ? 'border border-2 border-primary shadow-lg position-relative' : 'border-0'} ${item.yearly ? 'pricing-card-highlight' : ''}`}>
                             <CardBody className="p-4 d-flex flex-column">
                                 {item.yearly && (
                                     <div className="pricing-badge">
@@ -213,8 +276,12 @@ function PricingContent(props) {
                                             <i className="bx bx-check-double me-1"></i> Active Plan
                                         </button>
                                     ) : item.pricingPlan === PRICING_PLANS[0] ? (
-                                        <button className="btn btn-light w-100 fw-bold py-2 disabled" style={{ backgroundColor: "#f8f9fa" }}>
+                                        <button className="btn btn-light w-100 fw-bold py-2 disabled" style={{ backgroundColor: "#f8f9fa", cursor: "default" }}>
                                             {props.user && props.user.planId ? "Standard Access" : "Current Plan"}
+                                        </button>
+                                    ) : (props.user && props.user.planId && props.user.planId.includes("YEARLY") && item.pricingPlan === PRICING_PLANS[1]) ? (
+                                        <button className="btn btn-light w-100 fw-bold py-2 disabled" style={{ backgroundColor: "#f8f9fa", cursor: "not-allowed", opacity: 0.7 }}>
+                                            <i className="bx bx-check-circle me-1"></i> Included in Yearly
                                         </button>
                                     ) : (
                                         <button 

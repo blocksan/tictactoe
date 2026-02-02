@@ -1,41 +1,78 @@
+import { load } from '@cashfreepayments/cashfree-js';
+import { getFunctions, httpsCallable } from "firebase/functions";
+import { getFirebaseApp } from "./firebase_helper";
 
-export const createPaymentIntent = async (amount, currency = "INR") => {
-  return new Promise((resolve) => {
-    setTimeout(() => {
-        resolve({
-            status: "success",
-            payment_session_id: "dummy_session_" + Date.now(),
-            order_id: "order_" + Date.now(),
-            data: {
-                payment_token: "dummy_token_" + Date.now()
-            }
-        })
-    }, 1000);
-  });
+let cashfree;
+export const initializeCashfree = async () => {
+    cashfree = await load({
+        mode: process.env.REACT_APP_CASHFREE_ENV || "sandbox"
+    });
+};
+
+export const createPaymentIntent = async (planId, currency = "INR", customerData) => {
+    try {
+        const functions = getFunctions(getFirebaseApp());
+        const createPaymentOrder = httpsCallable(functions, 'createPaymentOrder');
+        
+        const returnUrl = window.location.origin + "/pricing?order_id={order_id}";
+
+        const result = await createPaymentOrder({
+            planId,
+            currency,
+            customerData,
+            returnUrl
+        });
+
+        const data = result.data;
+        
+        console.log("Order Created (Backend):", data);
+        if (data.status === "success") {
+            return {
+                status: "success",
+                payment_session_id: data.payment_session_id,
+                order_id: data.order_id,
+                data: data.data
+            };
+        } else {
+             return {
+                status: "failed",
+                error: data.message || "Failed to create order"
+            };
+        }
+
+    } catch (error) {
+        console.error("Cashfree API Error (Backend):", error);
+        return { status: "failed", error: error.message };
+    }
 };
 
 export const fetchPaymentStatus = async (orderId) => {
-    return new Promise((resolve) => {
-        setTimeout(() => {
-            resolve({
-                status: "success",
-                order_id: orderId,
-                payment_status: "PAID",
-                data: {
-                    message: "Payment successfully captured"
-                }
-            })
-        }, 1000);
-      });
+    try {
+        const functions = getFunctions(getFirebaseApp());
+        const verifyPaymentStatus = httpsCallable(functions, 'verifyPaymentStatus');
+
+        const result = await verifyPaymentStatus({ orderId });
+        const data = result.data;
+
+        console.log("Payments Response (Backend):", data);
+        return data;
+
+    } catch (error) {
+         console.error("Cashfree Fetch Status Error (Backend):", error);
+         return { status: "failed", error: error.message };
+    }
 }
 
-export const cancelSubscription = async (orderId) => {
-    return new Promise((resolve) => {
-        setTimeout(() => {
-            resolve({
-                status: "success",
-                message: "Subscription cancelled successfully"
-            })
-        }, 1000);
+export const doPayment = async (paymentSessionId) => {
+    if (!cashfree) {
+        await initializeCashfree();
+    }
+    return cashfree.checkout({
+        paymentSessionId: paymentSessionId,
+        returnUrl: window.location.origin + "/pricing?order_id={order_id}"
     });
+};
+
+export const cancelSubscription = async (orderId) => {
+    return { status: "success", message: "Not implemented" };
 }

@@ -1,12 +1,16 @@
 import React, { useEffect, useState } from 'react';
-import { Badge, Button, Card, CardBody, CardTitle, Col, Container, Row, Spinner, Table } from 'reactstrap';
+import { toast } from 'react-toastify';
+import { Badge, Button, Card, CardBody, CardTitle, Col, Container, Modal, ModalBody, ModalFooter, ModalHeader, Row, Spinner, Table } from 'reactstrap';
 import Breadcrumbs from '../../components/Common/Breadcrumb';
+import { TOAST_DELAY } from '../../constants/common';
 import { getFirebaseBackend } from '../../helpers/firebase_helper';
 
 const MySubscription = () => {
     const [subscriptions, setSubscriptions] = useState([]);
     const [loading, setLoading] = useState(true);
     const [cancellingId, setCancellingId] = useState(null);
+    const [modal, setModal] = useState(false);
+    const [subToCancel, setSubToCancel] = useState(null);
 
     const fetchSubscriptions = async () => {
         const backend = getFirebaseBackend();
@@ -21,39 +25,75 @@ const MySubscription = () => {
         fetchSubscriptions();
     }, []);
 
-    const handleCancelSubscription = async (sub) => {
-        if (!window.confirm("Are you sure you want to cancel your subscription?")) return;
+    const toggleModal = () => setModal(!modal);
+
+    const handleCancelClick = (sub) => {
+        setSubToCancel(sub);
+        toggleModal();
+    };
+
+    const handleCancelSubscription = async () => {
+        toggleModal();
+        if (!subToCancel) return;
+        const sub = subToCancel;
 
         setCancellingId(sub.id);
         const backend = getFirebaseBackend();
         const result = await backend.cancelUserSubscription(sub.id, sub.order_id || sub.orderId); // Handle case sensitivity if any
         
         if (result.status) {
-            alert("Subscription cancelled successfully.");
-            window.location.reload();
+            // Analytics: Subscription Cancelled
+            const daysRemaining = Math.max(0, Math.ceil((sub.endDate - new Date()) / (1000 * 60 * 60 * 24)));
+            backend.logEvent("subscription_cancelled", { 
+                plan: sub.planId, 
+                days_remaining: daysRemaining 
+            });
+
+            toast.success("Subscription cancelled successfully.");
+            setTimeout(() => {
+                window.location.reload();
+            }, TOAST_DELAY);
         } else {
-            alert("Failed to cancel subscription: " + result.error);
+            toast.error("Failed to cancel subscription: " + result.error);
             setCancellingId(null);
         }
     };
 
     const formatDate = (date) => {
         if (!date) return "-";
-        return date.toLocaleDateString("en-IN", {
+        const dateStr = date.toLocaleDateString("en-IN", {
             day: 'numeric',
             month: 'short',
             year: 'numeric'
         });
+        const timeStr = date.toLocaleTimeString("en-IN", {
+            hour: '2-digit',
+            minute: '2-digit'
+        });
+        return (
+            <div>
+                <div>{dateStr}</div>
+                <small className="text-muted">{timeStr}</small>
+            </div>
+        );
     };
 
     const getStatusBadge = (sub) => {
+        if (sub.status === 'UPGRADED') {
+            return <Badge color="info" className="font-size-12">Upgraded</Badge>;
+        }
+
+        const isExpired = new Date() > sub.endDate;
+        if (isExpired) {
+             return <Badge color="secondary" className="font-size-12">Expired</Badge>;
+        }
+
         if (sub.status === 'cancelled') {
+            // Cancelled but NOT expired yet (Access continues)
             return <Badge color="danger" className="font-size-12">Cancelled</Badge>;
         }
         
-        const isActive = new Date() < sub.endDate;
-        
-        if (sub.status === 'active' && isActive) {
+        if (sub.status === 'active') {
              return <Badge color="success" className="font-size-12">Active</Badge>;
         }
         
@@ -82,8 +122,10 @@ const MySubscription = () => {
                                                 <thead className="thead-light">
                                                     <tr>
                                                         <th>Plan</th>
+                                                        <th>Purchased On</th>
                                                         <th>Start Date</th>
                                                         <th>End Date</th>
+                                                        <th>Cancelled On</th>
                                                         <th>Amount</th>
                                                         <th>Status</th>
                                                         <th>Order ID</th>
@@ -100,8 +142,10 @@ const MySubscription = () => {
                                                                 </h5>
                                                                 {/* <span className="text-muted font-size-12">{sub.planId}</span> */}
                                                             </td>
+                                                            <td>{formatDate(sub.purchasedOn)}</td>
                                                             <td>{formatDate(sub.startDate)}</td>
                                                             <td>{formatDate(sub.endDate)}</td>
+                                                            <td>{formatDate(sub.cancelledOn)}</td>
                                                             <td>
                                                                 {sub.currency} {sub.amount}
                                                             </td>
@@ -117,11 +161,14 @@ const MySubscription = () => {
                                                                         color="danger" 
                                                                         size="sm" 
                                                                         outline
-                                                                        onClick={() => handleCancelSubscription(sub)}
+                                                                        onClick={() => handleCancelClick(sub)}
                                                                         disabled={cancellingId === sub.id}
                                                                     >
                                                                         {cancellingId === sub.id ? "Cancelling..." : "Cancel"}
                                                                     </Button>
+                                                                )} 
+                                                                {sub.status === 'cancelled' && (
+                                                                   <span>NA</span>
                                                                 )}
                                                             </td>
                                                         </tr>
@@ -138,6 +185,16 @@ const MySubscription = () => {
                             </Card>
                         </Col>
                     </Row>
+                    <Modal isOpen={modal} toggle={toggleModal} centered>
+                        <ModalHeader toggle={toggleModal}>Confirm Cancellation</ModalHeader>
+                        <ModalBody>
+                            Are you sure you want to cancel your subscription?
+                        </ModalBody>
+                        <ModalFooter>
+                            <Button color="secondary" onClick={toggleModal}>Close</Button>
+                            <Button color="danger" onClick={handleCancelSubscription}>Yes, Cancel</Button>
+                        </ModalFooter>
+                    </Modal>
                 </Container>
             </div>
         </React.Fragment>

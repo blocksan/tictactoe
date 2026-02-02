@@ -1,10 +1,10 @@
 import PropTypes from 'prop-types';
 import React, { useEffect, useState } from "react";
 import {
-  Dropdown,
-  DropdownItem,
-  DropdownMenu,
-  DropdownToggle,
+    Dropdown,
+    DropdownItem,
+    DropdownMenu,
+    DropdownToggle,
 } from "reactstrap";
 
 //i18n
@@ -99,6 +99,12 @@ const ProfileMenu = props => {
             <Link to="/my-subscription" style={{color:"black", display:"block", width:"100%"}}>
               <i className="ri-settings-2-line align-middle me-2" />
               {props.t("My Subscriptions")}
+            </Link>
+          </DropdownItem>
+          <DropdownItem tag="a" href="#">
+            <Link to="/payment-history" style={{color:"black", display:"block", width:"100%"}}>
+              <i className="ri-history-line align-middle me-2" />
+              {props.t("Payment History")}
             </Link>
           </DropdownItem>
           <DropdownItem tag="a">

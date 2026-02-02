@@ -1,5 +1,6 @@
 import classnames from "classnames";
 import React, { useEffect, useState } from "react";
+import { toast } from 'react-toastify';
 import {
     Button,
     Card,
@@ -206,12 +207,31 @@ const RiskCalculator = (props) => {
             }
 
             setSelectedIndex(null);
+            
+            // Analytics: Calculator Run & Repeat Run
+            // backend already declared at line 201
+            backend.logEvent("calculator_run", { 
+                calculator_type: "drawdown",
+                index: "ALL",
+                plan_type: loggedInUser?.isPremiumUser ? "PRO" : "FREE"
+            });
+            
+            const runCountKey = "drawdown_calculator_run_count";
+            const currentCount = parseInt(localStorage.getItem(runCountKey) || "0") + 1;
+            localStorage.setItem(runCountKey, currentCount.toString());
+            
+            if (currentCount > 1) {
+                backend.logEvent("calculator_repeat_run", { 
+                    calculator_type: "drawdown",
+                    repeat_count: currentCount
+                });
+            }
+
             await new Promise(r => setTimeout(r, 1500));
             validatePremiumInputs(formValues);
             calculateRisk(formValues);
             scrollTop()
         },
-
     });
 
     const validatePremiumInputs = (formValues) => {
@@ -456,12 +476,17 @@ const RiskCalculator = (props) => {
         // }
 
         if (!configName) {
-            alert("Please provide a name for the configuration");
+            toast.error("Please provide a name for the configuration");
             return;
         }
       setLoading(true);
       const response = await getFirebaseBackend().addOrUpdateDrawdownCalculatorConfigToFirestore(riskCalculatorForm.values, configName);
       if (response.status) {
+            // Analytics: Config Saved
+            getFirebaseBackend().logEvent("config_saved", { 
+                calculator_type: "drawdown" 
+            });
+
             setConfigNameModal(false);
             setConfigName("");
         }
@@ -772,7 +797,7 @@ const RiskCalculator = (props) => {
                                           <tr key={index} className="cursor-pointer" style={{ transition: 'all 0.2s' }}>
                                             <th scope="row" className="ps-4 text-muted">{index + 1}</th>
                                             <td className="fw-medium text-dark">{config.configName}</td>
-                                            <td className="text-muted">{config.createdOn.toLocaleString()}</td>
+                                            <td className="text-muted">{config.createdOn.toLocaleString('en-US', { year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit', hour12: true })}</td>
                                             <td className="text-end pe-4">
                                               <Button
                                                 size="sm"

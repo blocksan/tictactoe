@@ -27,7 +27,7 @@ import GoogleButton from "../../components/Common/GoogleButton";
 import AllocationLogic from '../../components/Common/Svgs/AllocationLogic';
 import CapitalShield from "../../components/Common/Svgs/CapitalShield";
 import withRouter from "../../components/Common/withRouter";
-import { getFirebaseApp } from "../../helpers/firebase_helper";
+import { getFirebaseApp, getFirebaseBackend } from "../../helpers/firebase_helper";
 import { logoutUser, socialLogin } from "../../store/actions";
 
 // Simple hook for scroll animations
@@ -82,6 +82,11 @@ const Landing = (props) => {
                 email: user.email,
                 picture: user.photoURL,
             };
+
+            // Analytics: Login Success
+            const backend = getFirebaseBackend();
+            backend.logEvent("login_success", { method: "google" });
+
             dispatch(socialLogin(postData, props.router.navigate, "google"));
         } catch (error) {
             console.error("Login failed:", error);

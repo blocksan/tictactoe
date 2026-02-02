@@ -13,16 +13,47 @@ import { withTranslation } from "react-i18next";
 import logoVoiled from "../../assets/images/OnlyLogoVoiled.png";
 // Redux Store
 import ProfileMenu from "../../components/Common/TopbarDropdown/ProfileMenu";
+import { TRADING_HOLIDAYS } from "../../constants/common";
 import {
-    changeSidebarType,
-    showRightSidebarAction,
-    toggleLeftmenu,
+  changeSidebarType,
+  showRightSidebarAction,
+  toggleLeftmenu,
 } from "../../store/actions";
 // import AppsDropdown from "../../components/Common/TopbarDropdown/AppsDropdown";
 
 const Header = (props) => {
   const [showHamburgerMenu, setShowHamburgerMenu] = useState(false);
-  // const [search, setsearch] = useState(false);
+  const [currentTime, setCurrentTime] = useState(new Date());
+  const [isMarketOpen, setIsMarketOpen] = useState(false);
+
+  useEffect(() => {
+      const timer = setInterval(() => {
+          const now = new Date();
+          setCurrentTime(now);
+          
+          // Check Market Status (Mon-Fri, 9:15 - 15:30)
+          const day = now.getDay(); // 0 is Sunday, 6 is Saturday
+          const hour = now.getHours();
+          const minute = now.getMinutes();
+          const totalMinutes = hour * 60 + minute;
+          
+          // Format today as YYYY-MM-DD for holiday check
+          const year = now.getFullYear();
+          const month = String(now.getMonth() + 1).padStart(2, '0');
+          const date = String(now.getDate()).padStart(2, '0');
+          const todayStr = `${year}-${month}-${date}`;
+          
+          const isWeekend = day === 0 || day === 6;
+          const isHoliday = TRADING_HOLIDAYS.includes(todayStr);
+          const isTradingHours = totalMinutes >= (9 * 60 + 15) && totalMinutes < (15 * 60 + 30);
+          
+          const marketOpen = !isWeekend && !isHoliday && isTradingHours;
+                            
+          setIsMarketOpen(marketOpen);
+      }, 1000);
+      
+      return () => clearInterval(timer);
+  }, []);
 
   function toggleFullscreen() {
     if (
@@ -74,7 +105,7 @@ const Header = (props) => {
   return (
     <React.Fragment>
       <header id="page-topbar">
-        <div className="navbar-header">
+        <div className="navbar-header position-relative">
           <div className="d-flex">
             <div className="navbar-brand-box text-left">
               <Link to="/drawdown-calculator" className="logo logo-dark text-left" style={{
@@ -124,6 +155,64 @@ const Header = (props) => {
             </form> */}
           </div>
 
+            {/* Market Status Widget (Centered over Content) */}
+            <div 
+                className="d-none d-md-flex justify-content-center align-items-center position-absolute top-50 translate-middle-y"
+                style={{ zIndex: 10, left: '45%', transform: 'translateX(-50%)' }} 
+            >
+                <style>
+                    {`
+                        @keyframes pulse-green {
+                            0% { box-shadow: 0 0 0 0 rgba(52, 195, 143, 0.7); }
+                            70% { box-shadow: 0 0 0 6px rgba(52, 195, 143, 0); }
+                            100% { box-shadow: 0 0 0 0 rgba(52, 195, 143, 0); }
+                        }
+                        @keyframes pulse-red {
+                            0% { box-shadow: 0 0 0 0 rgba(244, 106, 106, 0.7); }
+                            70% { box-shadow: 0 0 0 6px rgba(244, 106, 106, 0); }
+                            100% { box-shadow: 0 0 0 0 rgba(244, 106, 106, 0); }
+                        }
+                    `}
+                </style>
+                <div 
+                    className="d-flex align-items-center shadow-sm rounded-pill px-3 py-2 bg-white" 
+                    style={{ border: '1px solid #f1f5f7' }}
+                >
+                    
+                    {/* Market Status Section */}
+                    <div className="d-flex align-items-center me-3 pe-3 border-end" style={{ height: '28px' }}>
+                        <div 
+                            className={`rounded-circle me-2 ${isMarketOpen ? 'bg-success' : 'bg-danger'}`} 
+                            style={{ 
+                                width: '10px', 
+                                height: '10px', 
+                                animation: isMarketOpen ? 'pulse-green 2s infinite' : 'none'
+                             }}
+                        ></div>
+                        <div className="d-flex flex-column">
+                            <span className={`font-size-12 fw-bold ${isMarketOpen ? 'text-success' : 'text-danger'} line-height-1`}>
+                                {isMarketOpen ? 'MARKET OPEN' : 'MARKET CLOSED'}
+                            </span>
+                            {isMarketOpen && <small className="text-muted font-size-10">Live Updates</small>}
+                        </div>
+                    </div>
+
+                    {/* Time Section */}
+                    <div className="d-flex flex-column justify-content-center text-end ps-1">
+                        <div className="line-height-1 mb-1">
+                             <span className="font-size-16 fw-bolder text-dark font-family-secondary" style={{minWidth: '110px'}}>
+                                {currentTime.toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: true })}
+                            </span>
+                        </div>
+                        <div className="line-height-1">
+                             <span className="font-size-11 text-muted fw-semibold">
+                                {currentTime.toLocaleDateString('en-IN', { day: 'numeric', month: 'short', weekday: 'long' })}
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
           <div className="d-flex">
             {/* <div className="dropdown d-inline-block d-lg-none ms-2">
               <button
@@ -165,6 +254,8 @@ const Header = (props) => {
 
             {/* <LanguageDropdown /> */}
             {/* <AppsDropdown /> */}
+
+
 
             <div className="dropdown d-none d-lg-inline-block ms-1">
               <button
