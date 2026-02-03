@@ -1,19 +1,19 @@
 import PropTypes from "prop-types";
 import React, { useEffect } from "react";
-import logolight from "../../assets/images/logo-light.png";
 import logodark from "../../assets/images/logo-dark.png";
+import logolight from "../../assets/images/logo-light.png";
 
-import { Row, Col, CardBody, Card, Alert, Container, Form, Input, FormFeedback, Label } from "reactstrap";
+import { Card, CardBody, Col, Container, Row } from "reactstrap";
 
 //redux
-import { useSelector, useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 
 import { Link } from "react-router-dom";
 import withRouter from "../../components/Common/withRouter";
 
 // Formik validation
-import * as Yup from "yup";
 import { useFormik } from "formik";
+import * as Yup from "yup";
 
 //Social Media Imports
 // import { GoogleLogin } from "react-google-login";
@@ -25,7 +25,7 @@ import { GoogleLogin } from '@react-oauth/google';
 import { loginUser, socialLogin } from "../../store/actions";
 
 //Import config
-import { facebook, google } from "../../config";
+import { google } from "../../config";
 
 const Login = props => {
   document.title = "Login | Trrader - React Admin & Dashboard Template";
@@ -155,7 +155,7 @@ const Login = props => {
                             )}
                             onSuccess={googleResponse}
                             onFailure={(error) => {
-                              console.log(error,'---loginerror---')
+                              console.log('error in google login',error)
                              }}
                           />
                         </Col>

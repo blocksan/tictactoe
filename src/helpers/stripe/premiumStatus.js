@@ -36,7 +36,6 @@ export const getPremiumStatus = async (app, includeTrial) => {
           console.log("No active or trialing subscriptions found");
           resolve(false);
         } else {
-          console.log("Active or trialing subscription found");
           resolve(true);
         }
         unsubscribe();

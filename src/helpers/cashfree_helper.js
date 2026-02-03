@@ -25,7 +25,6 @@ export const createPaymentIntent = async (planId, currency = "INR", customerData
 
         const data = result.data;
         
-        console.log("Order Created (Backend):", data);
         if (data.status === "success") {
             return {
                 status: "success",
@@ -53,8 +52,6 @@ export const fetchPaymentStatus = async (orderId) => {
 
         const result = await verifyPaymentStatus({ orderId });
         const data = result.data;
-
-        console.log("Payments Response (Backend):", data);
         return data;
 
     } catch (error) {

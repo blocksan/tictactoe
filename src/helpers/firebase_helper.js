@@ -185,9 +185,7 @@ class FirebaseAuthBackend {
   isPremiumUser = async (includeTrial) => {
     try {
       // Check Firestore premium status
-      console.log("Checking premium status...", includeTrial);
       const status = await this.currentPremiumStatus();
-      console.log("Premium status:", status);
       return status; 
     } catch (err) {
       console.log("Error checking premium user:", err);
@@ -235,7 +233,7 @@ class FirebaseAuthBackend {
       }
       // const collection = firebaseApp.firestore().collection("users");
     } catch (err) {
-      console.log(err, '---err--')
+      console.log('error in addNewUserToFirestore',err)
       throw err;
     }
   };
