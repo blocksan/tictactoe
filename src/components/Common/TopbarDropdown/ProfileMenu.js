@@ -42,14 +42,19 @@ const ProfileMenu = props => {
 
   return (
     <React.Fragment>
+
+
         {props.user && !isPremiumUser && (
-             <span className="ms-1" style={{fontWeight: 'bold', color: 'orange', alignSelf: 'center', marginRight: '15px'}}>
-                Trial Left : <span style={{
+             <span className="ms-1 d-flex align-items-center" style={{fontWeight: 'bold', color: 'orange', alignSelf: 'center', marginRight: '15px'}}>
+                <span className="d-none d-lg-inline">Trial Left : </span>
+                <span className="d-inline d-lg-none font-size-11">Trial : </span>
+                <span style={{
                     backgroundColor: 'orange',
                     color: 'white',
                     borderRadius: '50%',
                     padding: '2px 8px',
-                    marginLeft: '5px'
+                    marginLeft: '5px',
+                    fontSize: '0.8rem'
                 }}>{Math.max(0, 10 - (Object.values(props.user.freeTrialConfig || {}).reduce((a,b)=>a+b, 0)))}</span>
             </span>
         )}

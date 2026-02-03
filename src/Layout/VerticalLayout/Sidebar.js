@@ -144,6 +144,11 @@ const Sidebar = (props) => {
                     <li key={key}>
                       <Link
                         to={item.url ? item.url : "/#"}
+                        onClick={() => {
+                          if (window.innerWidth < 992) {
+                            document.body.classList.remove("sidebar-enable");
+                          }
+                        }}
                         className={
                           (item.issubMenubadge || item.isHasArrow)
                             ? " "

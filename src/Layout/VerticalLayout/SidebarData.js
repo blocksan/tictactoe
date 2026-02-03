@@ -38,7 +38,7 @@ const SidebarData = [
         isHasArrow: true,
     },
     {
-        label: "Risk Reward Calculator",
+        label: "RiskReward Calculator",
         icon: "mdi mdi-target",
         url: "/riskreward-calculator",
         isHasArrow: true,

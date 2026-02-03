@@ -2,29 +2,30 @@ import classnames from "classnames";
 import React, { useEffect, useRef, useState } from "react";
 import { toast } from 'react-toastify';
 import {
-    Button,
-    Card,
-    CardBody,
-    CardHeader,
-    CardSubtitle,
-    CardText,
-    Col,
-    Container,
-    Form,
-    FormFeedback,
-    Input,
-    Label,
-    Modal,
-    Nav,
-    NavItem,
-    NavLink,
-    Row,
-    TabContent,
-    TabPane,
-    Toast,
-    ToastBody,
-    ToastHeader,
-    UncontrolledAlert
+  Button,
+  Card,
+  CardBody,
+  CardHeader,
+  CardSubtitle,
+  CardText,
+  Col,
+  Collapse,
+  Container,
+  Form,
+  FormFeedback,
+  Input,
+  Label,
+  Modal,
+  Nav,
+  NavItem,
+  NavLink,
+  Row,
+  TabContent,
+  TabPane,
+  Toast,
+  ToastBody,
+  ToastHeader,
+  UncontrolledAlert
 } from "reactstrap";
 
 //Import Breadcrumb
@@ -100,7 +101,8 @@ const RiskRewardCalculator = (props) => {
   //   resultContainerRef.current.scrollTop = -500;
   // };
 
-  const [disableTheInputs, setDisableTheInputs] = useState(true);
+  const [isAdvancedOpen, setIsAdvancedOpen] = useState(false);
+  const [isEditing, setIsEditing] = useState(false);
   const [loading, setLoading] = useState(false);
   const [selectedIndex, setSelectedIndex] = useState(IndexType.BANKNIFTY);
   const [selectedIndexCalculatedRisk, setSelectedIndexCalculatedRisk] = useState({});
@@ -131,13 +133,16 @@ const RiskRewardCalculator = (props) => {
 
   const [calculatedRiskRows, setCalculatedRiskRows] = useState([]);
 
-  const disableInputsHandler = () => {
+  const toggleAdvancedParams = () => {
+    setIsAdvancedOpen(!isAdvancedOpen);
+  }
+
+  const handleEditClick = () => {
     if (loggedInUser && !loggedInUser.isPremiumUser) {
       setPurchasePremiumModal(true);
       return;
-    } else {
-      setDisableTheInputs(!disableTheInputs);
     }
+    setIsEditing(!isEditing);
   }
 
 
@@ -343,6 +348,7 @@ const RiskRewardCalculator = (props) => {
       targetCapitalDayWise.push(currentCapital + averageProfitInOneDay);
       currentCapital = targetCapitalDayWise[targetCapitalDayWise.length - 1];
     }
+    let graphFinalCapital = targetCapitalDayWise.length > 0 ? targetCapitalDayWise[targetCapitalDayWise.length - 1] : riskRewardCalculatorFormValues.tradingCapital;
     let series = [
       {
         name: 'Capital',
@@ -372,6 +378,7 @@ const RiskRewardCalculator = (props) => {
       targetAfterTradingCharges,
       finalTargetCapitalAfterTradingCharges,
       finalCapitalAfterTradingChargesIfMaxSLHit,
+      graphFinalCapital,
       normalTradingDays,
       totalTradesInOneDay,
       drawDownMetrics: {
@@ -545,39 +552,45 @@ const RiskRewardCalculator = (props) => {
     <React.Fragment>
       <div className="page-content landing-header-main">
         <Container fluid={true}>
-          <Breadcrumbs title="F&O Calculator" breadcrumbItem="Risk Reward Calculator" />
+          <Breadcrumbs title="F&O Calculator" breadcrumbItem="RiskReward Calculator" />
         </Container>
         <Row>
           <Col lg={12}>
             <div className="d-flex justify-content-center mb-4">
               <Nav pills className="custom-dashboard-tabs">
                 <NavItem>
-                  <NavLink
-                    style={{ cursor: "pointer" }}
-                    className={classnames({
-                      active: activeTab === "1",
-                    })}
-                    onClick={() => {
-                      toggle2("1");
-                    }}
-                  >
-                    <i className="mdi mdi-calculator-variant me-1 align-middle"> </i>{" "}
-                    Risk Reward Calculator
-                  </NavLink>
-                </NavItem>
-                <NavItem>
-                  <NavLink
-                    style={{ cursor: "pointer", minWidth: "250px" }}
-                    className={classnames({
-                      active: activeTab === "2",
-                    })}
-                    onClick={() => {
-                      toggle2("2");
-                    }}
-                  >
-                    <i className="mdi mdi-cog me-1 align-middle"></i>{" "}
-                    Saved Configurations
-                  </NavLink>
+                      <NavLink
+                        style={{ cursor: "pointer" }}
+                        className={classnames({
+                          active: activeTab === "1",
+                        })}
+                        onClick={() => {
+                          toggle2("1");
+                        }}
+                      >
+                        <div className="d-flex flex-column flex-sm-row align-items-center justify-content-center">
+                            <i className="mdi mdi-calculator-variant me-0 me-sm-1 align-middle font-size-18 mb-1 mb-sm-0"> </i>
+                            <span className="d-none d-sm-inline">RiskReward Calculator</span>
+                            <span className="d-inline d-sm-none font-size-12">Risk Reward<br/>Calculator</span>
+                        </div>
+                      </NavLink>
+                    </NavItem>
+                    <NavItem>
+                      <NavLink
+                        style={{ cursor: "pointer", minWidth: "250px" }}
+                        className={classnames({
+                          active: activeTab === "2",
+                        })}
+                        onClick={() => {
+                          toggle2("2");
+                        }}
+                      >
+                        <div className="d-flex flex-column flex-sm-row align-items-center justify-content-center">
+                            <i className="mdi mdi-cog me-0 me-sm-1 align-middle font-size-18 mb-1 mb-sm-0"></i>
+                            <span className="d-none d-sm-inline">Saved Configurations</span>
+                            <span className="d-inline d-sm-none font-size-12">Saved<br/>Configurations</span>
+                        </div>
+                      </NavLink>
                 </NavItem>
 
               </Nav>
@@ -589,7 +602,7 @@ const RiskRewardCalculator = (props) => {
                       <Card className="shadow-sm border-0 h-100 mb-0" style={{ borderRadius: '16px' }}>
                         <CardBody className="p-4">
                           <div className="d-flex justify-content-between align-items-center mb-4">
-                            <h1 className="card-title fw-bold text-dark m-0 fs-5">Risk Reward Calculator</h1>
+                            <h1 className="card-title fw-bold text-dark m-0 fs-5">RiskReward Calculator</h1>
                           </div>
                           <CardSubtitle className="mb-4 text-muted small">
                             Calculate your risk reward ratio effectively.
@@ -665,18 +678,45 @@ const RiskRewardCalculator = (props) => {
 
                               {/* Advanced Configuration Toggle */}
                               <Col md={12}>
-                                <div className="d-flex align-items-center justify-content-between my-2">
-                                  <Label className="fw-bold m-0 text-dark">Advanced Parameters</Label>
-                                  <button
-                                    type="button"
-                                    className="btn btn-md text-primary text-decoration-none fw-semibold p-0"
-                                    onClick={disableInputsHandler}
-                                  >
-                                    {disableTheInputs ? "Edit" : "Lock"}
-                                  </button>
+                                <div 
+                                  className={`d-flex align-items-center justify-content-between p-3 rounded-3 mb-3 border transition-all ${isAdvancedOpen ? 'bg-light border-primary border-opacity-25' : 'bg-white border-dashed'}`}
+                                  style={{cursor: 'pointer', transition: 'all 0.2s'}}
+                                  onClick={toggleAdvancedParams}
+                                  onMouseOver={(e) => e.currentTarget.style.backgroundColor = '#f8f9fa'}
+                                  onMouseOut={(e) => e.currentTarget.style.backgroundColor = isAdvancedOpen ? '#f8f9fa' : 'white'}
+                                >
+                                  <div className="d-flex align-items-center gap-2">
+                                    <div className={`rounded-circle p-2 d-flex align-items-center justify-content-center ${isAdvancedOpen ? 'bg-primary text-white' : 'bg-light text-primary'}`} style={{width: '32px', height: '32px', transition: 'all 0.3s'}}>
+                                        <i className="mdi mdi-tune font-size-16"></i>
+                                    </div>
+                                    <Label className="fw-bold m-0 text-dark" style={{cursor: 'pointer', fontSize: '0.95rem'}}>Advanced Parameters</Label>
+                                    <div className="d-flex align-items-center text-primary ms-1">
+                                        <i 
+                                          className="mdi mdi-chevron-down fs-4" 
+                                          style={{ 
+                                            transform: isAdvancedOpen ? 'rotate(180deg)' : 'rotate(0deg)', 
+                                            transition: 'transform 0.3s ease-in-out' 
+                                          }}
+                                        ></i>
+                                    </div>
+                                  </div>
+                                  
+                                  {isAdvancedOpen && (
+                                    <button
+                                      type="button"
+                                      className="btn btn-sm text-primary fw-semibold"
+                                      onClick={(e) => {
+                                        e.stopPropagation();
+                                        handleEditClick();
+                                      }}
+                                    >
+                                      {isEditing ? "Lock" : "Edit"}
+                                    </button>
+                                  )}
                                 </div>
 
-                                <div className={`transition-all ${disableTheInputs ? 'opacity-50 pointer-events-none' : ''}`} style={disableTheInputs ? { pointerEvents: 'none' } : {}}>
+                                <Collapse isOpen={isAdvancedOpen}>
+                                  <div className={`transition-all ${!isEditing ? 'opacity-50' : ''}`} style={!isEditing ? { pointerEvents: 'none' } : {}}>
                                   <Row className="g-3">
                                     <Col md={6}>
                                       <Label className="calculator-form-input-label small text-muted">Max SL Count (Day)</Label>
@@ -785,8 +825,9 @@ const RiskRewardCalculator = (props) => {
                                       />
                                       <FormFeedback>{riskRewardCalculatorForm.errors.zeroTargetHitTradeDays}</FormFeedback>
                                     </Col>
-                                  </Row>
-                                </div>
+                                    </Row>
+                                  </div>
+                                </Collapse>
                               </Col>
 
                               {/* Action Buttons */}
@@ -834,51 +875,60 @@ const RiskRewardCalculator = (props) => {
 
                     {/* Right Sidebar: Market Info */}
                     <Col lg={4}>
-                      <Card className="shadow-sm border-0 h-100 mb-0" style={{ borderRadius: '16px', backgroundColor: '#f5f5f5' }}>
-                        <CardBody className="p-4">
-                          <h5 className="card-title fw-bold text-dark mb-4">Market Lot Sizes</h5>
-                          <div className="d-flex flex-column gap-3">
-                            {/* Bank Nifty */}
-                            <div className="d-flex justify-content-between align-items-center p-3 rounded-4" style={{ backgroundColor: '#f8fafc' }}>
-                              <div>
-                                <h6 className="mb-1 fw-bold text-dark">BANKNIFTY</h6>
-                                <small className="text-muted">1 Lot Size</small>
-                              </div>
-                              <div className="text-end">
-                                <h3 className="mb-0 fw-bold" style={{ color: '#4747A1' }}>{BANKNIFTY_LOT_SIZE}</h3>
-                                <small className="text-muted fw-medium">Qty</small>
-                              </div>
-                            </div>
+                          <Card className="shadow-sm border-0 h-100 mb-0" style={{ borderRadius: '16px', backgroundColor: '#f8f9fa' }}>
+                            <CardBody className="p-4">
+                              <h5 className="card-title fw-bold text-dark mb-4">Market Lot Sizes</h5>
+                              <div className="d-flex flex-column gap-3">
+                                {/* Bank Nifty */}
+                                <div className="d-flex justify-content-between align-items-center p-3 rounded-3 bg-white shadow-sm border-start border-4 border-success">
+                                  <div>
+                                    <div className="d-flex align-items-center gap-2 mb-1">
+                                        <i className="mdi mdi-chart-line text-success fs-5"></i>
+                                        <h6 className="mb-0 fw-bold text-dark">BANKNIFTY</h6>
+                                    </div>
+                                    <small className="text-muted">1 Lot Size</small>
+                                  </div>
+                                  <div className="text-end">
+                                    <h3 className="mb-0 fw-bold text-success">{BANKNIFTY_LOT_SIZE}</h3>
+                                    <small className="text-muted fw-medium">Qty</small>
+                                  </div>
+                                </div>
 
-                            {/* Fin Nifty */}
-                            <div className="d-flex justify-content-between align-items-center p-3 rounded-4" style={{ backgroundColor: '#f8fafc' }}>
-                              <div>
-                                <h6 className="mb-1 fw-bold text-dark">FINNIFTY</h6>
-                                <small className="text-muted">1 Lot Size</small>
-                              </div>
-                              <div className="text-end">
-                                <h3 className="mb-0 fw-bold" style={{ color: '#4747A1' }}>{FINNIFTY_LOT_SIZE}</h3>
-                                <small className="text-muted fw-medium">Qty</small>
-                              </div>
-                            </div>
+                                {/* Fin Nifty */}
+                                <div className="d-flex justify-content-between align-items-center p-3 rounded-3 bg-white shadow-sm border-start border-4 border-info">
+                                  <div>
+                                    <div className="d-flex align-items-center gap-2 mb-1">
+                                        <i className="mdi mdi-finance text-info fs-5"></i>
+                                        <h6 className="mb-0 fw-bold text-dark">FINNIFTY</h6>
+                                    </div>
+                                    <small className="text-muted">1 Lot Size</small>
+                                  </div>
+                                  <div className="text-end">
+                                    <h3 className="mb-0 fw-bold text-info">{FINNIFTY_LOT_SIZE}</h3>
+                                    <small className="text-muted fw-medium">Qty</small>
+                                  </div>
+                                </div>
 
-                            {/* Nifty 50 */}
-                            <div className="d-flex justify-content-between align-items-center p-3 rounded-4" style={{ backgroundColor: '#f8fafc' }}>
-                              <div>
-                                <h6 className="mb-1 fw-bold text-dark">NIFTY 50</h6>
-                                <small className="text-muted">1 Lot Size</small>
-                              </div>
-                              <div className="text-end">
-                                <h3 className="mb-0 fw-bold" style={{ color: '#4747A1' }}>{NIFTY50_LOT_SIZE}</h3>
-                                <small className="text-muted fw-medium">Qty</small>
-                              </div>
-                            </div>
+                                {/* Nifty 50 */}
+                                <div className="d-flex justify-content-between align-items-center p-3 rounded-3 bg-white shadow-sm border-start border-4 border-primary">
+                                  <div>
+                                    <div className="d-flex align-items-center gap-2 mb-1">
+                                        <i className="mdi mdi-trending-up text-primary fs-5"></i>
+                                        <h6 className="mb-0 fw-bold text-dark">NIFTY 50</h6>
+                                    </div>
+                                    <small className="text-muted">1 Lot Size</small>
+                                  </div>
+                                  <div className="text-end">
+                                    <h3 className="mb-0 fw-bold text-primary">{NIFTY50_LOT_SIZE}</h3>
+                                    <small className="text-muted fw-medium">Qty</small>
+                                  </div>
+                                </div>
 
-                            <div className="mt-auto pt-4 text-center">
-                              <small className="text-muted opacity-75" style={{ fontSize: '0.8rem' }}>
-                                *Lot sizes are standard NSE contract sizes used for calculations.
-                              </small>
-                            </div>
+                                <div className="mt-auto pt-4 text-center">
+                                  <small className="text-muted opacity-75" style={{ fontSize: '0.8rem' }}>
+                                    *Lot sizes are standard NSE contract sizes used for calculations.
+                                  </small>
+                                </div>
                           </div>
                         </CardBody>
                       </Card>
@@ -1109,25 +1159,25 @@ const RiskRewardCalculator = (props) => {
                       </Row>
                     </Col>
                     <Col xl="9">
-                      {selectedIndexCalculatedRisk.drawDownMetrics && <DayWiseCapitalDrawDown drawDownMetrics={selectedIndexCalculatedRisk.drawDownMetrics} title={`Average Target Capital Day Wise at <strong>&#8377; ${selectedIndexCalculatedRisk.optionPremium}</strong>  Option Premium`} calculatedMetadata={[
+                      {selectedIndexCalculatedRisk.drawDownMetrics && <DayWiseCapitalDrawDown drawDownMetrics={selectedIndexCalculatedRisk.drawDownMetrics} title={`Capital Drawdown Simulation at <strong>&#8377; ${selectedIndexCalculatedRisk.optionPremium}</strong> Option Premium`} calculatedMetadata={[
                         {
-                          title: `Starting Trading Capital`,
+                          title: `Starting Capital`,
                           count: `&#8377; ${riskRewardCalculatorForm.values.tradingCapital} `,
                           color: "info",
                         },
                         {
-                          title: `Capital after ${calculatedMetadata.numberOfTradingSessions} Trading Sessions`,
-                          count: `&#8377; ${selectedIndexCalculatedRisk.finalTargetCapitalAfterTradingCharges}`,
+                          title: `Capital Left after ${calculatedMetadata.numberOfTradingSessions} Trading Sessions`,
+                          count: `&#8377; ${selectedIndexCalculatedRisk.graphFinalCapital !== undefined ? selectedIndexCalculatedRisk.graphFinalCapital : selectedIndexCalculatedRisk.finalCapitalAfterTradingChargesIfMaxSLHit}`,
                           color: "primary",
                         },
                         {
-                          title: "Daily Max SL Capacity",
+                          title: "Max Daily Loss Limit",
                           count: `&#8377; ${calculatedMetadata.maxSLCapacityDaily}`,
                           percentage: (calculatedMetadata.maxSLCapacityDaily / riskRewardCalculatorForm.values.tradingCapital * 100).toFixed(2),
                           color: "danger",
                         },
                         {
-                          title: "Max Daily Trade Amount",
+                          title: "Max Capital Deployment per Day",
                           count: `&#8377; ${calculatedMetadata.maxTradeAmountInOneDay}`,
                           color: "warning",
                         }

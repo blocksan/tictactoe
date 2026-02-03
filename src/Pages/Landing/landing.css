@@ -1,0 +1,188 @@
+/* Landing Page Responsive Adjustments */
+
+/* Navbar Toggler Fix */
+.navbar-toggler {
+  border-color: rgba(255, 255, 255, 0.1);
+}
+
+.navbar-toggler-icon {
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba%28255, 255, 255, 0.7%29' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
+}
+
+/* Mobile responsive adjustments */
+@media (max-width: 991.98px) {
+  /* Navbar adjustments */
+  .navbar-collapse {
+    background: #0f111a;
+    padding: 1rem;
+    border-radius: 0.5rem;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    margin-top: 1rem;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+  }
+
+  .navbar-nav {
+    gap: 1rem;
+    align-items: flex-start !important;
+  }
+  
+  .navbar-nav .nav-link {
+    width: 100%;
+  }
+
+  /* Hero Section */
+  .hero-title {
+    font-size: 2.5rem !important;
+  }
+  
+  .hero-lead {
+    width: 100% !important;
+    font-size: 1rem !important;
+  }
+
+  /* Gradients */
+  .gradient-blob {
+    width: 100% !important;
+    height: 60vh !important;
+    top: 0 !important;
+    left: 0 !important;
+    transform: none !important;
+    filter: blur(60px) !important;
+  }
+
+  /* Feature cards */
+  .feature-card {
+    padding: 1.5rem !important;
+  }
+  
+  .feature-row {
+    flex-direction: column !important;
+  }
+  
+  .feature-row-reverse {
+    flex-direction: column !important;
+  }
+
+  .feature-image-col {
+    min-height: 250px !important;
+  }
+
+  /* Footer */
+  .footer-cta-container {
+    padding: 2rem !important;
+  }
+  
+  .footer-cta-title {
+    font-size: 2rem !important;
+  }
+}
+
+@media (max-width: 576px) {
+  .hero-title {
+    font-size: 2rem !important;
+  }
+  
+  .navbar-brand img {
+    height: 30px !important;
+  }
+  
+  .navbar-brand h4 {
+    font-size: 1rem !important;
+  }
+
+  .card-vibrant {
+      padding: 1rem !important;
+  }
+}
+
+/* Hero Section Mobile Fix */
+@media (max-width: 991.98px) {
+  .hero-section {
+    min-height: auto !important;
+    padding-top: 8rem !important; 
+    padding-bottom: 4rem !important;
+  }
+}
+
+/* Prevent potential wrapping issues with brand */
+.navbar-brand {
+  max-width: 80%;
+  white-space: nowrap;
+}
+
+/* Ensure text truncates if really too small, though unlikely on modern phones */
+.navbar-brand h4, .navbar-brand span {
+  text-overflow: ellipsis;
+  overflow: hidden;
+}
+
+@media (max-width: 380px) {
+  .navbar-brand h4 {
+      font-size: 1rem !important;
+  }
+   .navbar-brand span {
+      font-size: 0.65rem !important;
+  }
+}
+
+/* Ensure Brand Logo doesn't shrink and break layout */
+.navbar-brand {
+  flex-shrink: 0;
+  max-width: 80%; /* Ensure it leaves room for toggler */
+}
+
+/* Ensure Toggler stays on the right and doesn't wrap */
+.navbar-toggler {
+  margin-left: auto; /* Bootstrap handles this, but ensuring it */
+}
+
+/* Fix collapse transition */
+.navbar-collapse {
+  transition: height 0.3s ease;
+}
+
+/* Make Hamburger Menu White */
+.navbar-toggler {
+    border-color: rgba(255,255,255,0.5);
+}
+.navbar-toggler-icon {
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba%28255, 255, 255, 1%29' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e") !important;
+}
+
+/* Align Mobile Menu Items to Left */
+@media (max-width: 991.98px) {
+    .navbar-collapse .navbar-nav {
+        align-items: flex-start !important; /* Override the align-items-center from JS */
+        gap: 1.5rem !important; /* Adjust gap for vertical stacking */
+        width: 100%;
+    }
+    
+    .navbar-collapse .nav-item {
+        width: 100%;
+        text-align: right;
+    }
+
+    /* Adjust button alignment if needed */
+    .navbar-collapse .nav-item .cursor-pointer {
+        display: inline-block;
+    }
+}
+
+/* Align Menu Items to Left specifically on mobile */
+@media (max-width: 991.98px) {
+    .navbar-collapse .navbar-nav {
+       align-items: flex-start !important; /* Left align items */
+       width: 100%;
+       padding: 0;
+    }
+    .navbar-collapse .nav-item {
+        width: 100%;
+        text-align: right; /* Left align text inside items */
+    }
+    
+    /* Ensure Sign In button container aligns left */
+    .navbar-collapse .nav-item > div {
+        display: flex;
+        justify-content: flex-start;
+    }
+}

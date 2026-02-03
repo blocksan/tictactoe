@@ -8,12 +8,18 @@ import {
     AccordionHeader,
     AccordionItem,
     Col,
+    Collapse,
     Container,
+    Nav,
     Navbar,
     NavbarBrand,
+    NavbarToggler,
+    NavItem,
     Row,
     UncontrolledAccordion
 } from "reactstrap";
+
+import "./landing.css";
 
 // Import Images
 import logoVoiled from "../../assets/images/OnlyLogoVoiled.png";
@@ -68,6 +74,9 @@ const Landing = (props) => {
     const dispatch = useDispatch();
     const [scrolled, setScrolled] = useState(false);
     const [selectedImage, setSelectedImage] = useState(null);
+    const [isOpen, setIsOpen] = useState(false);
+    
+    const toggle = () => setIsOpen(!isOpen);
 
     const firebaseApp = getFirebaseApp();
     const firebaseAuth = getAuth(firebaseApp);
@@ -126,11 +135,26 @@ const Landing = (props) => {
                 <Navbar
                     expand="lg"
                     fixed="top"
-                    className={`transition-all py-3 ${scrolled ? 'glass-nav shadow-lg' : 'bg-transparent'}`}
+                    className={`transition-all py-3 ${scrolled || isOpen ? 'glass-nav shadow-lg' : 'bg-transparent'}`}
                     style={{ transition: "all 0.3s ease" }}
                 >
-                    <Container className="d-flex align-items-center justify-content-between">
-                        <NavbarBrand href="/" className="d-flex align-items-center gap-3 m-0">
+                    <Container className="d-flex flex-wrap align-items-center justify-content-between">
+                        {/* Mobile Header: Brand + Toggler */}
+                        <div className="d-flex d-lg-none align-items-center justify-content-between w-100">
+                             <NavbarBrand href="/" className="d-flex align-items-center gap-3 m-0">
+                                <div className="bg-white bg-opacity-10 rounded-3 p-1 d-flex align-items-center justify-content-center" style={{ width: "48px", height: "48px" }}>
+                                    <img src={logoVoiled} alt="Trrader" style={{ height: "36px", filter: "brightness(1.1)" }} />
+                                </div>
+                                <div className="d-flex flex-column justify-content-center">
+                                    <h4 className="m-0 fw-bold fs-5 text-high-contrast lh-1" style={{ letterSpacing: "-0.5px" }}>Trrader.in</h4>
+                                    <span className="text-medium-contrast text-opacity-50 small fw-medium mt-1" style={{ fontSize: "0.65rem" }}>Built By Trrader, For Trrader</span>
+                                </div>
+                            </NavbarBrand>
+                            <NavbarToggler onClick={toggle} className="ms-auto" />
+                        </div>
+
+                        {/* Desktop Brand */}
+                        <NavbarBrand href="/" className="d-none d-lg-flex align-items-center gap-3 m-0 me-auto">
                             <div className="bg-white bg-opacity-10 rounded-3 p-1 d-flex align-items-center justify-content-center" style={{ width: "48px", height: "48px" }}>
                                 <img src={logoVoiled} alt="Trrader" style={{ height: "36px", filter: "brightness(1.1)" }} />
                             </div>
@@ -139,21 +163,27 @@ const Landing = (props) => {
                                 <span className="text-medium-contrast text-opacity-50 small fw-medium mt-1" style={{ fontSize: "0.75rem" }}> Built By Trrader, For Trrader</span>
                             </div>
                         </NavbarBrand>
-                        <div className="d-flex align-items-center gap-4">
-                            <Link to="/openpricing" className="text-medium-contrast text-decoration-none fw-medium hover-text-white" style={{ fontSize: "0.95rem" }}>Pricing</Link>
-                            <div onClick={signInWithGoogle} className="cursor-pointer">
-                                <GoogleButton />
-                            </div>
-                        </div>
+                        <Collapse isOpen={isOpen} navbar>
+                            <Nav className="ms-auto align-items-center gap-4" navbar>
+                                <NavItem>
+                                    <Link to="/openpricing" className="text-medium-contrast text-decoration-none fw-medium hover-text-white" style={{ fontSize: "0.95rem" }}>Pricing</Link>
+                                </NavItem>
+                                <NavItem>
+                                    <div onClick={signInWithGoogle} className="cursor-pointer">
+                                        <GoogleButton />
+                                    </div>
+                                </NavItem>
+                            </Nav>
+                        </Collapse>
                     </Container>
                 </Navbar>
 
                 {/* Hero Section */}
-                <section className="position-relative pt-5 pb-5 d-flex align-items-center" style={{ minHeight: "100vh" }}>
+                <section className="position-relative pt-5 pb-5 d-flex align-items-center hero-section" style={{ minHeight: "100vh" }}>
                     {/* Background Gradients */}
                     <div className="position-absolute top-0 start-0 w-100 h-100 overflow-hidden" style={{ zIndex: 0 }}>
                          {/* Enhanced Colorful Gradients */}
-                        <div className="position-absolute top-0 start-50 translate-middle pointer-events-none" 
+                        <div className="position-absolute top-0 start-50 translate-middle pointer-events-none gradient-blob" 
                              style={{ 
                                  width: "1000px", 
                                  height: "1000px", 
@@ -161,7 +191,7 @@ const Landing = (props) => {
                                  filter: "blur(80px)",
                                  top: "-200px"
                              }}></div>
-                        <div className="position-absolute bottom-0 end-0 translate-middle-x pointer-events-none" 
+                        <div className="position-absolute bottom-0 end-0 translate-middle-x pointer-events-none gradient-blob" 
                              style={{ 
                                  width: "800px", 
                                  height: "800px", 
@@ -179,15 +209,19 @@ const Landing = (props) => {
                                         <span className="text-medium-contrast small fw-medium">The New Standard in Risk Intelligence</span>
                                     </div> */}
                                     
-                                    <h1 className="display-4 fw-black text-high-contrast mb-4 lh-tight tracking-tight" style={{ fontSize: "3.5rem", fontWeight: "800", textShadow: "0 0 40px rgba(79, 70, 229, 0.2)" }}>
-                                        Capital Preservation <br />
-                                        <span className="gradient-text" style={{ background: "linear-gradient(to right, #60a5fa, #a78bfa, #f472b6)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>
-                                            Is Not Optional.
+                                    <h1 className="display-4 fw-black text-high-contrast mb-4 lh-tight tracking-tight hero-title" style={{ fontSize: "2.5rem", fontWeight: "800", textShadow: "0 0 40px rgba(79, 70, 229, 0.2)" }}>
+                                         Before You Trade <br />
+                                        <span className="gradient-text" style={{ fontSize: "3.2rem", background: "linear-gradient(to right, #60a5fa, #a78bfa, #f472b6)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>
+                                            Protect Your Capital.
                                         </span>
                                     </h1>
                                     
+
+                                    
                                     <p className="lead text-medium-contrast mb-5 w-75 mx-auto mx-lg-0" style={{ fontSize: "1.15rem", lineHeight: "1.7" }}>
-                                        Trrader is a risk planning and position sizing platform for F&O traders. It helps you analyse capital exposure, model drawdown scenarios, and define position sizes based on disciplined risk parameters</p>
+                                        Trrader helps traders decide how much to risk before entering a trade.
+Understand capital exposure, simulate drawdowns, and set position sizes your
+account can actually survive.</p>
                                     
                                     <div className="d-flex align-items-center justify-content-center justify-content-lg-start gap-4">
                                         <div onClick={signInWithGoogle} className="cursor-pointer hover-transform" style={{ transition: "transform 0.2s" }}>
@@ -348,7 +382,7 @@ const Landing = (props) => {
                         <AnimatedSection delay="delay-100">
                         <div className="card card-vibrant mb-5 rounded-4">
                             <Row className="g-0 align-items-center">
-                                <Col lg={6} className="p-5">
+                                <Col lg={6} className="p-4 p-lg-5">
                                     <div className="icon-box d-inline-flex align-items-center justify-content-center p-3 rounded-3 mb-4" style={{ background: "rgba(59, 130, 246, 0.1)" }}>
                                         <i className="mdi mdi-shield-lock-outline text-primary fs-3"></i>
                                     </div>
@@ -394,7 +428,7 @@ const Landing = (props) => {
                         <AnimatedSection delay="delay-200">
                         <div className="card card-vibrant rounded-4">
                             <Row className="g-0 align-items-center flex-row-reverse">
-                                <Col lg={6} className="p-5">
+                                <Col lg={6} className="p-4 p-lg-5">
                                     <div className="icon-box d-inline-flex align-items-center justify-content-center p-3 rounded-3 mb-4" style={{ background: "rgba(16, 185, 129, 0.1)" }}>
                                         <i className="mdi mdi-chart-areaspline text-success fs-3"></i>
                                     </div>
@@ -436,7 +470,7 @@ const Landing = (props) => {
                         <AnimatedSection delay="delay-300">
                         <div className="card mb-0 rounded-4" style={{ background: "#11141c", border: "1px solid rgba(255,255,255,0.08)", marginTop: "60px" }}>
                             <Row className="g-0 align-items-center">
-                                <Col lg={6} className="p-5">
+                                <Col lg={6} className="p-4 p-lg-5">
                                     <div className="icon-box d-inline-flex align-items-center justify-content-center p-3 rounded-3 mb-4" style={{ background: "rgba(245, 158, 11, 0.1)" }}>
                                         <i className="mdi mdi-scale-balance text-warning fs-3"></i>
                                     </div>
@@ -479,7 +513,7 @@ const Landing = (props) => {
                         <Row className="g-4 justify-content-center">
                             <Col md={5} className="d-flex">
                                 <AnimatedSection delay="delay-100" className="w-100">
-                                <div className="card h-100 p-5 rounded-3 border-0 position-relative overflow-hidden d-flex flex-column" 
+                                <div className="card h-100 p-4 p-lg-5 rounded-3 border-0 position-relative overflow-hidden d-flex flex-column" 
                                      style={{ background: "#11141c", borderLeft: "4px solid #10b981", boxShadow: "0 10px 30px -15px rgba(0,0,0,0.5)" }}>
                                     <h3 className="fw-bold text-white mb-4"><i className="mdi mdi-check-decagram text-success me-2"></i>This is for you if:</h3>
                                     <ul className="list-unstyled d-flex flex-column gap-3 text-secondary fs-5 flex-grow-1">
@@ -501,7 +535,7 @@ const Landing = (props) => {
                             </Col>
                             <Col md={5} className="d-flex">
                                 <AnimatedSection delay="delay-200" className="w-100">
-                                <div className="card h-100 p-5 rounded-3 border-0 position-relative overflow-hidden d-flex flex-column"
+                                <div className="card h-100 p-4 p-lg-5 rounded-3 border-0 position-relative overflow-hidden d-flex flex-column"
                                      style={{ background: "#11141c", borderLeft: "4px solid #ef4444", boxShadow: "0 10px 30px -15px rgba(0,0,0,0.5)" }}>
                                     <h3 className="fw-bold text-white mb-4"><i className="mdi mdi-close-octagon text-danger me-2"></i>This is NOT for you if:</h3>
                                     <ul className="list-unstyled d-flex flex-column gap-3 text-secondary fs-5 flex-grow-1">
@@ -649,7 +683,7 @@ const Landing = (props) => {
                 <section className="py-5 position-relative overflow-hidden" style={{ background: "#0f111a" }}>
                     <Container>
                         <AnimatedSection>
-                        <div className="p-5 rounded-4 position-relative overflow-hidden" 
+                        <div className="p-4 p-lg-5 rounded-4 position-relative overflow-hidden" 
                              style={{ 
                                  background: "linear-gradient(135deg, #1f2937 0%, #111827 100%)", 
                                  border: "1px solid rgba(255,255,255,0.1)",
@@ -680,7 +714,7 @@ const Landing = (props) => {
                 <section className="py-5 position-relative">
                     <Container>
                         <AnimatedSection>
-                        <div className="p-5 rounded-5 text-center position-relative overflow-hidden" 
+                        <div className="p-4 p-lg-5 rounded-5 text-center position-relative overflow-hidden"  
                              style={{ 
                                  background: "linear-gradient(135deg, #4f46e5 0%, #3b82f6 100%)",
                                  boxShadow: "0 20px 60px -15px rgba(59, 130, 246, 0.5)"
@@ -718,9 +752,10 @@ const Landing = (props) => {
                                     Trrader.in is a software tool for calculation and risk modelling only. We are not a SEBI registered investment advisor. We do not provide trading tips, stock recommendations, or financial advice. All projections are based on mathematical models and hypothetical scenarios. Trading in Future & Options (F&O) involves high risk and can lead to the loss of your entire capital. Users are responsible for their own trading decisions.
                                 </p>
                                 <div className="d-flex gap-3 social-links">
-                                    <a href="#" className="text-medium-contrast hover-text-white"><i className="mdi mdi-twitter fs-4"></i></a>
-                                    <a href="#" className="text-medium-contrast hover-text-white"><i className="mdi mdi-linkedin fs-4"></i></a>
-                                    <a href="#" className="text-medium-contrast hover-text-white"><i className="mdi mdi-instagram fs-4"></i></a>
+                                    {/* <a href="#" className="text-medium-contrast hover-text-white"><i className="mdi mdi-twitter fs-4"></i></a> */}
+                                    {/* <a href="#" className="text-medium-contrast hover-text-white"><i className="mdi mdi-linkedin fs-4"></i></a> */}
+                                    <a href="https://instagram.com/trrader.in" target='_blank' rel='noopener noreferrer' className="text-medium-contrast hover-text-white"><i className="mdi mdi-instagram fs-4"></i></a>
+                                    <a href="https://www.facebook.com/profile.php?id=61552908395184" target='_blank' rel='noopener noreferrer' className="text-medium-contrast hover-text-white"><i className="mdi mdi-facebook fs-4"></i></a>
                                 </div>
                             </Col>
                             <Col lg={2}>
@@ -728,22 +763,23 @@ const Landing = (props) => {
                                 <ul className="list-unstyled d-flex flex-column gap-3 text-medium-contrast small">
                                     <li><Link to="/" className="text-decoration-none text-medium-contrast hover-text-white">Home</Link></li>
                                     <li><Link to="/openpricing" className="text-decoration-none text-medium-contrast hover-text-white">Pricing</Link></li>
-                                    <li><Link to="/calculators" className="text-decoration-none text-medium-contrast hover-text-white">Calculators</Link></li>
+                                    {/* <li><Link to="/calculators" className="text-decoration-none text-medium-contrast hover-text-white">Calculators</Link></li> */}
                                 </ul>
                             </Col>
                             <Col lg={2}>
-                                <h6 className="text-high-contrast fw-bold mb-4">Resources</h6>
+                                {/* <h6 className="text-high-contrast fw-bold mb-4">Resources</h6>
                                 <ul className="list-unstyled d-flex flex-column gap-3 text-medium-contrast small">
                                     <li><Link to="/blog" className="text-decoration-none text-medium-contrast hover-text-white">Blog</Link></li>
                                     <li><Link to="/guide" className="text-decoration-none text-medium-contrast hover-text-white">User Guide</Link></li>
                                     <li><Link to="/faq" className="text-decoration-none text-medium-contrast hover-text-white">FAQ</Link></li>
-                                </ul>
+                                </ul> */}
                             </Col>
                              <Col lg={4}>
                                 <h6 className="text-high-contrast fw-bold mb-4">Legal</h6>
                                 <ul className="list-unstyled d-flex flex-column gap-3 text-medium-contrast small">
                                     <li><Link to="/termsandconditions" className="text-decoration-none text-medium-contrast hover-text-white">Terms of Conditons</Link></li>
                                     <li><Link to="/privacypolicy" className="text-decoration-none text-medium-contrast hover-text-white">Privacy Policy</Link></li>
+                                    <li><Link to="/FAQ" className="text-decoration-none text-medium-contrast hover-text-white">FAQ</Link></li>
                                 </ul>
                             </Col>
                         </Row>

@@ -45,7 +45,7 @@ const Header = (props) => {
           
           const isWeekend = day === 0 || day === 6;
           const isHoliday = TRADING_HOLIDAYS.includes(todayStr);
-          const isTradingHours = totalMinutes >= (9 * 60 + 15) && totalMinutes < (15 * 60 + 30);
+              const isTradingHours = totalMinutes >= (9 * 60 + 15) && totalMinutes < (15 * 60 + 30);
           
           const marketOpen = !isWeekend && !isHoliday && isTradingHours;
                             
@@ -96,6 +96,7 @@ const Header = (props) => {
   function tToggle() {
     var body = document.body;
     if (window.screen.width <= 998) {
+      body.classList.toggle("sidebar-enable");
     } else {
       // body.classList.toggle("vertical-collpsed");
       body.classList.toggle("sidebar-enable");
@@ -105,8 +106,8 @@ const Header = (props) => {
   return (
     <React.Fragment>
       <header id="page-topbar">
-        <div className="navbar-header position-relative">
-          <div className="d-flex">
+        <div className="navbar-header position-relative d-flex align-items-center justify-content-between">
+          <div className="d-flex align-items-center" style={{ flex: 1 }}>
             <div className="navbar-brand-box text-left">
               <Link to="/drawdown-calculator" className="logo logo-dark text-left" style={{
                 color:"black"
@@ -140,7 +141,7 @@ const Header = (props) => {
                 tToggle();
               }}
             >
-             {showHamburgerMenu && <i className="ri-menu-2-line align-middle"></i>}
+             <i className="ri-menu-2-line align-middle text-dark"></i>
             </button>
 
             {/* <form className="app-search d-none d-lg-block">
@@ -155,11 +156,10 @@ const Header = (props) => {
             </form> */}
           </div>
 
-            {/* Market Status Widget (Centered over Content) */}
-            <div 
-                className="d-none d-md-flex justify-content-center align-items-center position-absolute top-50 translate-middle-y"
-                style={{ zIndex: 10, left: '45%', transform: 'translateX(-50%)' }} 
-            >
+
+
+            {/* Market Status Widget (Relatively Positioned in Flex Flow) */}
+            <div className="d-flex justify-content-center align-items-center">
                 <style>
                     {`
                         @keyframes pulse-green {
@@ -175,30 +175,36 @@ const Header = (props) => {
                     `}
                 </style>
                 <div 
-                    className="d-flex align-items-center shadow-sm rounded-pill px-3 py-2 bg-white" 
+                    className="d-flex align-items-center rounded-pill px-2 px-md-3 py-1 bg-white" 
                     style={{ border: '1px solid #f1f5f7' }}
                 >
                     
                     {/* Market Status Section */}
-                    <div className="d-flex align-items-center me-3 pe-3 border-end" style={{ height: '28px' }}>
+                    <div className="d-flex align-items-center me-1 me-md-2 pe-1 pe-md-2" style={{ height: '28px' }}>
                         <div 
-                            className={`rounded-circle me-2 ${isMarketOpen ? 'bg-success' : 'bg-danger'}`} 
+                            className={`rounded-circle me-1 me-md-2 ${isMarketOpen ? 'bg-success' : 'bg-danger'}`} 
                             style={{ 
-                                width: '10px', 
-                                height: '10px', 
+                                width: '8px', 
+                                height: '8px', 
                                 animation: isMarketOpen ? 'pulse-green 2s infinite' : 'none'
                              }}
                         ></div>
                         <div className="d-flex flex-column">
                             <span className={`font-size-12 fw-bold ${isMarketOpen ? 'text-success' : 'text-danger'} line-height-1`}>
-                                {isMarketOpen ? 'MARKET OPEN' : 'MARKET CLOSED'}
+                                <span className="d-none d-lg-inline">{isMarketOpen ? 'MARKET OPEN' : 'MARKET CLOSED'}</span>
+                                <span className="d-inline d-lg-none font-size-10" style={{whiteSpace: 'nowrap'}}>{isMarketOpen ? 'MARKET OPEN' : 'MARKET CLOSED'}</span>
                             </span>
-                            {isMarketOpen && <small className="text-muted font-size-10">Live Updates</small>}
+                             {isMarketOpen && <small className="text-muted font-size-10 d-none d-sm-block">Live Updates</small>}
+                             
+                             {/* Mobile Time Display (Below Status) */}
+                             <span className="d-inline d-lg-none text-muted font-size-10" style={{whiteSpace: 'nowrap', textAlign: 'center'}}>
+                                {currentTime.toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: true })}
+                             </span>
                         </div>
                     </div>
 
-                    {/* Time Section */}
-                    <div className="d-flex flex-column justify-content-center text-end ps-1">
+                    {/* Time Section - Desktop Only (Sidebar style) */}
+                    <div className="d-none d-lg-flex flex-column justify-content-center text-end ps-3 border-start ms-3">
                         <div className="line-height-1 mb-1">
                              <span className="font-size-16 fw-bolder text-dark font-family-secondary" style={{minWidth: '110px'}}>
                                 {currentTime.toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: true })}
@@ -213,7 +219,7 @@ const Header = (props) => {
                 </div>
             </div>
 
-          <div className="d-flex">
+          <div className="d-flex align-items-center justify-content-end" style={{ flex: 1 }}>
             {/* <div className="dropdown d-inline-block d-lg-none ms-2">
               <button
                 onClick={() => {
@@ -245,7 +251,7 @@ const Header = (props) => {
                       <div className="input-group-append">
                                     <Link className="dropdown-item" to="/riskreward-calculator">
                                         <i className="mdi mdi-target font-size-16 align-middle me-1"></i>{" "}
-                                        Risk Reward Calculator
+                                        RiskReward Calculator
                                     </Link>
                   </div>
                 </form>

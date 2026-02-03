@@ -2,7 +2,7 @@
 export const PRICING_PLANS = ["Free", "Monthly", "Yearly"];
 export const PricingData = [
         {
-            title: "Free",
+            title: "FREE",
             caption: "Precision planning for every trader",
             icon: "bx bx-rocket",
             price: "0",
@@ -17,8 +17,8 @@ export const PricingData = [
         },
 
         {
-            title: "Professional",
-            caption: "Advanced tools for active traders",
+            title: "MONTHLY",
+            caption: "For Active Traders",
             icon: "bx bx-trending-up",
             price: "99",
             planId: "MONTHLY99",
@@ -28,11 +28,10 @@ export const PricingData = [
                 { id: "1", features: "Unlimited Calculations" },
                 { id: "2", features: "Custom Risk Configurations" },
                 { id: "3", features: "Secure Cloud Backups" },
-                { id: "4", features: "Priority Email Support" },
             ],
         },
         {
-            title: "Expert",
+            title: "YEARLY",
             caption: "Maximum efficiency and best value",
             icon: "bx bx-diamond",
             price: "1199",
@@ -42,10 +41,9 @@ export const PricingData = [
             actualPrice: 599,
             pricingPlan: PRICING_PLANS[2],
             isChild: [
-                { id: "1", features: "All Professional Features" },
-                { id: "2", features: "50% Annual Cost Savings" },
-                { id: "3", features: "Advanced Support Access" },
-                { id: "4", features: "Priority Feature Access" },
+                { id: "1", features: "50% Annual Cost Savings" },
+                { id: "2", features: "Priority Email Support" },
+                { id: "3", features: "Early Access to New Features" },
             ],
         },  
     ];
