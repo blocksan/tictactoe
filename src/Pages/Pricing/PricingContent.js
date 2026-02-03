@@ -256,6 +256,9 @@ function PricingContent(props) {
                                             {item.pricingPlan === PRICING_PLANS[0] ? '/ Lifetime' : `/ ${item.pricingPlan}`}
                                         </span>
                                     </h2>
+                                    {item.pricingPlan !== PRICING_PLANS[0] && (
+                                        <div className="text-muted font-size-12 mt-1">Inclusive of GST</div>
+                                    )}
                                 </div>
 
                                 <div className="flex-grow-1">

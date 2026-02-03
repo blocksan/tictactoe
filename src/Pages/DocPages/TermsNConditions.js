@@ -14,7 +14,7 @@ function TermsNConditions() {
                   
                   <div className="doc-content">
                     <p>
-                      By accessing or using the services provided by <a href='http://trrader.in'>Trrader.in</a>, you agree to abide by these Terms and Conditions.
+                      By accessing or using the services provided by <a href='http://trrader.in'>Trrader.in</a> (owned and operated by <strong>Blocksan Tech Solutions</strong>), you agree to abide by these Terms and Conditions.
                       <br />Please read them carefully before using our services.
                     </p>
                     
@@ -68,7 +68,7 @@ function TermsNConditions() {
                       8.1 When you subscribe to our Risk Management tool, you agree to pay the fees associated with your selected subscription plan as outlined on our website or in a separate agreement.
                     </p>
                     <p>
-                      8.2 Payments may be made through the payment methods we offer, and you authorize us to charge your chosen payment method for all applicable fees.
+                      8.2 Payments are processed through our partner payment gateways. All payments for our services will be received under the name <strong>Blocksan Tech Solutions</strong>. You authorize us to charge your chosen payment method for all applicable fees.
                     </p>
                     <p>
                       8.3 We reserve the right to change our subscription fees at any time. We will provide you with advance notice of any fee changes.
@@ -100,7 +100,7 @@ function TermsNConditions() {
 
                     <h3>12. Taxes</h3>
                     <p>
-                      12.1 You are responsible for any taxes or government-imposed charges associated with your use of our services.
+                      12.1 You are responsible for any taxes or government-imposed charges associated with your use of our services, including but not limited to <strong>GST (Goods and Services Tax)</strong> as applicable under Indian law.
                     </p>
 
                     <h3>13. Cookies Policy</h3>

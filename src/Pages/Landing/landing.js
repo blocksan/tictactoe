@@ -784,7 +784,7 @@ account can actually survive.</p>
                             </Col>
                         </Row>
                         <div className="pt-5 mt-5 border-top border-white border-opacity-5 text-center text-medium-contrast small">
-                            <p className="mb-0">&copy; {new Date().getFullYear()} Trrader. All rights reserved. Built by Trrader, for Trrader.</p>
+                            <p className="mb-0">&copy; {new Date().getFullYear()} Blocksan Tech Solutions. All rights reserved. Built by Trrader, for Trrader.</p>
                         </div>
                     </Container>
                 </footer>

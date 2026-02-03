@@ -12,6 +12,7 @@ function Faq() {
     const [col7, setcol7] = useState(false);
     const [col8, setcol8] = useState(false);
     const [col9, setcol9] = useState(false);
+    const [col10, setcol10] = useState(false);
 
     const t_col1 = () => { disableAllCols(); setcol1(!col1); }
     const t_col2 = () => { disableAllCols(); setcol2(!col2); };
@@ -22,11 +23,13 @@ function Faq() {
     const t_col7 = () => { disableAllCols(); setcol7(!col7); };
     const t_col8 = () => { disableAllCols(); setcol8(!col8); };
     const t_col9 = () => { disableAllCols(); setcol9(!col9); };
+    const t_col10 = () => { disableAllCols(); setcol10(!col10); };
 
     const disableAllCols = () => {
         setcol1(false); setcol2(false); setcol3(false);
         setcol4(false); setcol5(false); setcol6(false);
         setcol7(false); setcol8(false); setcol9(false);
+        setcol10(false);
     }
 
     return (
@@ -212,6 +215,25 @@ function Faq() {
                                             <Collapse isOpen={col9} className="accordion-collapse">
                                                 <div className="accordion-body">
                                                     You can reach our support team by writing at trraderin@gmail.com.
+                                                </div>
+                                            </Collapse>
+                                        </div>
+
+                                        {/* FAQ Item 10 */}
+                                        <div className="accordion-item">
+                                            <h2 className="accordion-header" id="headingFlushTen">
+                                                <button
+                                                    className={classnames("accordion-button", "fw-medium", { collapsed: !col10 })}
+                                                    type="button"
+                                                    onClick={t_col10}
+                                                    style={{ cursor: "pointer" }}
+                                                >
+                                                    Whom will I be paying for the subscription and is GST included?
+                                                </button>
+                                            </h2>
+                                            <Collapse isOpen={col10} className="accordion-collapse">
+                                                <div className="accordion-body">
+                                                    All payments for <a href="https://trrader.in">Trrader.in</a> subscriptions are received by our parent entity, <strong>Blocksan Tech Solutions</strong>. The prices displayed on our pricing page are inclusive of <strong>GST (Goods and Services Tax)</strong> as per applicable laws.
                                                 </div>
                                             </Collapse>
                                         </div>

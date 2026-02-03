@@ -14,7 +14,7 @@ function PrivacyPolicy() {
 
                   <div className="doc-content">
                     <p>
-                      At <strong>Trrader.in</strong>, we take the privacy of our users very seriously. This privacy policy explains how we collect, use, and protect the personal information of users.
+                      At <strong>Trrader.in</strong> (a product of <strong>Blocksan Tech Solutions</strong>), we take the privacy of our users very seriously. This privacy policy explains how we collect, use, and protect the personal information of users.
                     </p>
                     
                      <div className="alert alert-warning border-0 bg-opacity-10 text-dark p-3 rounded-3 mb-4" style={{ backgroundColor: '#fff3cd' }}>
