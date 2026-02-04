@@ -24,8 +24,8 @@ import "./landing.css";
 // Import Images
 import logoVoiled from "../../assets/images/OnlyLogoVoiled.png";
 import productOverview from "../../assets/images/product-overview.png";
-import riskcalculator from "../../assets/images/riskcalculator.png";
 import riskcalculatorresult from "../../assets/images/riskcalculatorresult.png";
+import riskcalculator from "../../assets/images/riskcalupdated.png";
 import tradingdesktops from "../../assets/images/tradingdesktopscompressed.png";
 
 // Import Components
