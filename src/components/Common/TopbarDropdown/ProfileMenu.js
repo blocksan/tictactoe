@@ -1,10 +1,10 @@
 import PropTypes from 'prop-types';
 import React, { useEffect, useState } from "react";
 import {
-    Dropdown,
-    DropdownItem,
-    DropdownMenu,
-    DropdownToggle,
+  Dropdown,
+  DropdownItem,
+  DropdownMenu,
+  DropdownToggle,
 } from "reactstrap";
 
 //i18n
@@ -13,6 +13,7 @@ import { withTranslation } from "react-i18next";
 import { connect } from "react-redux";
 import { Link } from "react-router-dom";
 import optimizedPremium from "../../../assets/images/TrraderPremium2.png";
+import { MAX_FREE_CALCULATIONS } from '../../../constants/common';
 import withRouter from "../withRouter";
 
 // users
@@ -55,7 +56,7 @@ const ProfileMenu = props => {
                     padding: '2px 8px',
                     marginLeft: '5px',
                     fontSize: '0.8rem'
-                }}>{Math.max(0, 10 - (Object.values(props.user.freeTrialConfig || {}).reduce((a,b)=>a+b, 0)))}</span>
+                }}>{Math.max(0, MAX_FREE_CALCULATIONS - (Object.values(props.user.freeTrialConfig || {}).reduce((a,b)=>a+b, 0)))}</span>
             </span>
         )}
 

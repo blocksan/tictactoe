@@ -62,3 +62,5 @@ const envHolidays = process.env.REACT_APP_MARKET_HOLIDAYS
     : [];
 
 export const TRADING_HOLIDAYS = envHolidays.length > 0 ? envHolidays : defaultHolidays;
+
+export const MAX_FREE_CALCULATIONS = 20;

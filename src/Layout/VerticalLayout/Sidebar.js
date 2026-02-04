@@ -212,7 +212,7 @@ const Sidebar = (props) => {
                   <h6 className="mb-0 text-white font-size-13 fw-semibold">Free Edition</h6>
                 </div>
                 <p className="text-white text-opacity-50 small mb-3" style={{ fontSize: "0.75rem", lineHeight: "1.4" }}>
-                  Unlock unlimited professional tools and cloud backups.
+                  Unlock unlimited calculations and get access to premium features.
                 </p>
                 <Link to={"/pricing"}>
                   <Button className="btn btn-primary btn-sm w-100 fw-bold upgrade-sidebar-btn border-0 shadow-sm">

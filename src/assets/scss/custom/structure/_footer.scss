@@ -4,12 +4,13 @@
 
 .footer {
     bottom: 0;
-    padding: 20px calc(#{$grid-gutter-width} / 2);
+    padding: 15px calc(#{$grid-gutter-width} / 2);
     position: absolute;
     right: 0;
     color: $footer-color;
     left: $sidebar-width;
-    height: $footer-height;
+    min-height: $footer-height;
+    height: auto;
     box-shadow: $box-shadow;
     background-color: $footer-bg;
 }
@@ -17,6 +18,15 @@
 @media (max-width: 992px) {
     .footer {
         left: 0;
+    }
+}
+
+@media (max-width: 768px) {
+    .footer {
+        position: relative;
+        height: auto;
+        padding: 20px 15px;
+        text-align: center;
     }
 }
 

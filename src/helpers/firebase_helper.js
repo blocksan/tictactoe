@@ -2,7 +2,7 @@ import { getAnalytics, logEvent } from "firebase/analytics";
 import { initializeApp } from "firebase/app";
 import { getAuth } from 'firebase/auth';
 import { addDoc, collection, doc, getDocs, getFirestore, query, setDoc, updateDoc, where } from "firebase/firestore";
-import { PRICING_PLANS } from "../constants/common";
+import { MAX_FREE_CALCULATIONS, PRICING_PLANS } from "../constants/common";
 import {
   DRAWDOWN_CALCULATOR_COLLECTION,
   RISK_REWARD_CALCULATOR_COLLECTION,
@@ -700,7 +700,7 @@ class FirebaseAuthBackend {
       // Calculate total count across all categories
       const totalCount = Object.values(freeTrialConfig).reduce((sum, val) => sum + val, 0);
       
-      if (totalCount >= 10) {
+      if (totalCount >= MAX_FREE_CALCULATIONS) {
           return { allowed: false, count: totalCount, isPremium: false };
       }
       

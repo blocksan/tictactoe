@@ -288,10 +288,11 @@ function PricingContent(props) {
                                         </button>
                                     ) : (
                                         <button 
-                                            onClick={() => handleSubscription(item.pricingPlan)}
-                                            className="btn btn-primary w-100 fw-bold py-2 shadow-sm premium-cta-btn"
+                                            className="btn btn-primary w-100 fw-bold py-2 shadow-sm premium-cta-btn disabled"
+                                            disabled
+                                            style={{ cursor: "not-allowed", opacity: 0.7 }}
                                         >
-                                            Upgrade Now
+                                            Coming Soon
                                         </button>
                                     )}
                                 </div>
