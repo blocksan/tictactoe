@@ -114,11 +114,11 @@ const Sidebar = (props) => {
   }, []);
   useEffect(() => {
     if (props.user) {
-        setLoggedInUser(JSON.parse(JSON.stringify(props.user)))
+      setLoggedInUser(JSON.parse(JSON.stringify(props.user)))
     } else {
-        setLoggedInUser(null)
+      setLoggedInUser(null)
     }
-}, [props.user])
+  }, [props.user])
   useEffect(() => {
     activeMenu();
   }, [activeMenu]);
@@ -203,8 +203,8 @@ const Sidebar = (props) => {
                 </React.Fragment>
               ))}
             </ul>
-            {loggedInUser && !loggedInUser.isPremiumUser && 
-             <div className="sidebar-upgrade-card mx-3 my-4 p-3 rounded-3 shadow-sm">
+            {loggedInUser && !loggedInUser.isPremiumUser &&
+              <div className="sidebar-upgrade-card mx-3 my-4 p-3 rounded-3 shadow-sm">
                 <div className="d-flex align-items-center mb-2">
                   <div className="upgrade-icon-bg me-2">
                     <i className="bx bxs-crown text-warning"></i>
@@ -214,11 +214,13 @@ const Sidebar = (props) => {
                 <p className="text-white text-opacity-50 small mb-3" style={{ fontSize: "0.75rem", lineHeight: "1.4" }}>
                   Unlock unlimited calculations and get access to premium features.
                 </p>
-                <Link to={"/pricing"}>
-                  <Button className="btn btn-primary btn-sm w-100 fw-bold upgrade-sidebar-btn border-0 shadow-sm">
-                    Upgrade Now
-                  </Button>
-                </Link>
+                <Button
+                  className="btn btn-primary btn-sm w-100 fw-bold upgrade-sidebar-btn border-0 shadow-sm disabled"
+                  disabled
+                  style={{ cursor: "not-allowed", opacity: 0.8 }}
+                >
+                  Coming Soon
+                </Button>
               </div>
             }
           </div>

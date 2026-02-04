@@ -12,12 +12,12 @@ import Sidebar from './Sidebar';
 import { useDispatch, useSelector } from "react-redux";
 
 import {
-    changeLayout,
-    changeLayoutWidth,
-    changeSidebarTheme,
-    changeSidebarType,
-    changeTopbarTheme,
-    showRightSidebarAction
+  changeLayout,
+  changeLayoutWidth,
+  changeSidebarTheme,
+  changeSidebarType,
+  changeTopbarTheme,
+  showRightSidebarAction
 } from "../../store/actions";
 
 const Layout = props => {
@@ -40,10 +40,11 @@ const Layout = props => {
   const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
 
   const toggleMenuCallback = () => {
+    const currentIsMobile = window.innerWidth <= 992;
     if (leftSideBarType === "default") {
-      dispatch(changeSidebarType("condensed", isMobile));
-    } else if (leftSideBarType === "condensed") {
-      dispatch(changeSidebarType("default", isMobile));
+      dispatch(changeSidebarType("condensed", currentIsMobile));
+    } else {
+      dispatch(changeSidebarType("default", currentIsMobile));
     }
   };
 
@@ -90,7 +91,8 @@ const Layout = props => {
 
   useEffect(() => {
     if (leftSideBarType) {
-      dispatch(changeSidebarType(leftSideBarType));
+      const currentIsMobile = window.innerWidth <= 992;
+      dispatch(changeSidebarType(leftSideBarType, currentIsMobile));
     }
   }, [leftSideBarType, dispatch]);
 

@@ -27,32 +27,32 @@ const Header = (props) => {
   const [isMarketOpen, setIsMarketOpen] = useState(false);
 
   useEffect(() => {
-      const timer = setInterval(() => {
-          const now = new Date();
-          setCurrentTime(now);
-          
-          // Check Market Status (Mon-Fri, 9:15 - 15:30)
-          const day = now.getDay(); // 0 is Sunday, 6 is Saturday
-          const hour = now.getHours();
-          const minute = now.getMinutes();
-          const totalMinutes = hour * 60 + minute;
-          
-          // Format today as YYYY-MM-DD for holiday check
-          const year = now.getFullYear();
-          const month = String(now.getMonth() + 1).padStart(2, '0');
-          const date = String(now.getDate()).padStart(2, '0');
-          const todayStr = `${year}-${month}-${date}`;
-          
-          const isWeekend = day === 0 || day === 6;
-          const isHoliday = TRADING_HOLIDAYS.includes(todayStr);
-              const isTradingHours = totalMinutes >= (9 * 60 + 15) && totalMinutes < (15 * 60 + 30);
-          
-          const marketOpen = !isWeekend && !isHoliday && isTradingHours;
-                            
-          setIsMarketOpen(marketOpen);
-      }, 1000);
-      
-      return () => clearInterval(timer);
+    const timer = setInterval(() => {
+      const now = new Date();
+      setCurrentTime(now);
+
+      // Check Market Status (Mon-Fri, 9:15 - 15:30)
+      const day = now.getDay(); // 0 is Sunday, 6 is Saturday
+      const hour = now.getHours();
+      const minute = now.getMinutes();
+      const totalMinutes = hour * 60 + minute;
+
+      // Format today as YYYY-MM-DD for holiday check
+      const year = now.getFullYear();
+      const month = String(now.getMonth() + 1).padStart(2, '0');
+      const date = String(now.getDate()).padStart(2, '0');
+      const todayStr = `${year}-${month}-${date}`;
+
+      const isWeekend = day === 0 || day === 6;
+      const isHoliday = TRADING_HOLIDAYS.includes(todayStr);
+      const isTradingHours = totalMinutes >= (9 * 60 + 15) && totalMinutes < (15 * 60 + 30);
+
+      const marketOpen = !isWeekend && !isHoliday && isTradingHours;
+
+      setIsMarketOpen(marketOpen);
+    }, 1000);
+
+    return () => clearInterval(timer);
   }, []);
 
   function toggleFullscreen() {
@@ -84,22 +84,23 @@ const Header = (props) => {
 
   useEffect(() => {
     function handleResize() {
-        if(window.innerWidth < 998) {
-            setShowHamburgerMenu(true);
-        }else{
-            setShowHamburgerMenu(false);
-        }
+      if (window.innerWidth <= 992) {
+        setShowHamburgerMenu(true);
+      } else {
+        setShowHamburgerMenu(false);
+      }
     }
     window.addEventListener('resize', handleResize);
     return () => window.removeEventListener('resize', handleResize);
-}, []);
+  }, []);
   function tToggle() {
     var body = document.body;
-    if (window.screen.width <= 998) {
+    if (window.innerWidth <= 992) {
       body.classList.toggle("sidebar-enable");
     } else {
-      // body.classList.toggle("vertical-collpsed");
-      body.classList.toggle("sidebar-enable");
+      if (props.toggleMenuCallback) {
+        props.toggleMenuCallback();
+      }
     }
   }
 
@@ -110,15 +111,15 @@ const Header = (props) => {
           <div className="d-flex align-items-center" style={{ flex: 1 }}>
             <div className="navbar-brand-box text-left">
               <Link to="/drawdown-calculator" className="logo logo-dark text-left" style={{
-                color:"black"
-              
+                color: "black"
+
               }}>
                 <span className="logo-sm">
                   <img src={logoVoiled} alt="logo-sm-dark" width={40} />
                 </span>
                 <span className="logo-lg">
                   <img src={logoVoiled} alt="logo-dark" width={40} />
-                  <strong style={{color:"black"}}>Trrader.in</strong>
+                  <strong style={{ color: "black" }}>Trrader.in</strong>
                 </span>
               </Link>
 
@@ -127,8 +128,8 @@ const Header = (props) => {
                   <img src={logoVoiled} alt="logo-sm-light" width={40} />
                 </span>
                 <span className="logo-lg text-left">
-                  <img src={logoVoiled} alt="logo-light" width={40}  />
-                  <strong style={{color:"white"}}>Trrader.in</strong>
+                  <img src={logoVoiled} alt="logo-light" width={40} />
+                  <strong style={{ color: "white" }}>Trrader.in</strong>
                 </span>
               </Link>
             </div>
@@ -141,7 +142,7 @@ const Header = (props) => {
                 tToggle();
               }}
             >
-             <i className="ri-menu-2-line align-middle text-dark"></i>
+              <i className="ri-menu-2-line align-middle text-dark"></i>
             </button>
 
             {/* <form className="app-search d-none d-lg-block">
@@ -158,10 +159,10 @@ const Header = (props) => {
 
 
 
-            {/* Market Status Widget (Relatively Positioned in Flex Flow) */}
-            <div className="d-flex justify-content-center align-items-center">
-                <style>
-                    {`
+          {/* Market Status Widget (Relatively Positioned in Flex Flow) */}
+          <div className="d-flex justify-content-center align-items-center">
+            <style>
+              {`
                         @keyframes pulse-green {
                             0% { box-shadow: 0 0 0 0 rgba(52, 195, 143, 0.7); }
                             70% { box-shadow: 0 0 0 6px rgba(52, 195, 143, 0); }
@@ -173,51 +174,51 @@ const Header = (props) => {
                             100% { box-shadow: 0 0 0 0 rgba(244, 106, 106, 0); }
                         }
                     `}
-                </style>
-                <div 
-                    className="d-flex align-items-center rounded-pill px-2 px-md-3 py-1 bg-white" 
-                    style={{ border: '1px solid #f1f5f7' }}
-                >
-                    
-                    {/* Market Status Section */}
-                    <div className="d-flex align-items-center me-1 me-md-2 pe-1 pe-md-2" style={{ height: '28px' }}>
-                        <div 
-                            className={`rounded-circle me-1 me-md-2 ${isMarketOpen ? 'bg-success' : 'bg-danger'}`} 
-                            style={{ 
-                                width: '8px', 
-                                height: '8px', 
-                                animation: isMarketOpen ? 'pulse-green 2s infinite' : 'none'
-                             }}
-                        ></div>
-                        <div className="d-flex flex-column">
-                            <span className={`font-size-12 fw-bold ${isMarketOpen ? 'text-success' : 'text-danger'} line-height-1`}>
-                                <span className="d-none d-lg-inline">{isMarketOpen ? 'MARKET OPEN' : 'MARKET CLOSED'}</span>
-                                <span className="d-inline d-lg-none font-size-10" style={{whiteSpace: 'nowrap'}}>{isMarketOpen ? 'MARKET OPEN' : 'MARKET CLOSED'}</span>
-                            </span>
-                             {isMarketOpen && <small className="text-muted font-size-10 d-none d-sm-block">Live Updates</small>}
-                             
-                             {/* Mobile Time Display (Below Status) */}
-                             <span className="d-inline d-lg-none text-muted font-size-10" style={{whiteSpace: 'nowrap', textAlign: 'center'}}>
-                                {currentTime.toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: true })}
-                             </span>
-                        </div>
-                    </div>
+            </style>
+            <div
+              className="d-flex align-items-center rounded-pill px-2 px-md-3 py-1 bg-white"
+              style={{ border: '1px solid #f1f5f7' }}
+            >
 
-                    {/* Time Section - Desktop Only (Sidebar style) */}
-                    <div className="d-none d-lg-flex flex-column justify-content-center text-end ps-3 border-start ms-3">
-                        <div className="line-height-1 mb-1">
-                             <span className="font-size-16 fw-bolder text-dark font-family-secondary" style={{minWidth: '110px'}}>
-                                {currentTime.toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: true })}
-                            </span>
-                        </div>
-                        <div className="line-height-1">
-                             <span className="font-size-11 text-muted fw-semibold">
-                                {currentTime.toLocaleDateString('en-IN', { day: 'numeric', month: 'short', weekday: 'long' })}
-                            </span>
-                        </div>
-                    </div>
+              {/* Market Status Section */}
+              <div className="d-flex align-items-center me-1 me-md-2 pe-1 pe-md-2" style={{ height: '28px' }}>
+                <div
+                  className={`rounded-circle me-1 me-md-2 ${isMarketOpen ? 'bg-success' : 'bg-danger'}`}
+                  style={{
+                    width: '8px',
+                    height: '8px',
+                    animation: isMarketOpen ? 'pulse-green 2s infinite' : 'none'
+                  }}
+                ></div>
+                <div className="d-flex flex-column">
+                  <span className={`font-size-12 fw-bold ${isMarketOpen ? 'text-success' : 'text-danger'} line-height-1`}>
+                    <span className="d-none d-lg-inline">{isMarketOpen ? 'MARKET OPEN' : 'MARKET CLOSED'}</span>
+                    <span className="d-inline d-lg-none font-size-10" style={{ whiteSpace: 'nowrap' }}>{isMarketOpen ? 'MARKET OPEN' : 'MARKET CLOSED'}</span>
+                  </span>
+                  {isMarketOpen && <small className="text-muted font-size-10 d-none d-sm-block">Live Updates</small>}
+
+                  {/* Mobile Time Display (Below Status) */}
+                  <span className="d-inline d-lg-none text-muted font-size-10" style={{ whiteSpace: 'nowrap', textAlign: 'center' }}>
+                    {currentTime.toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: true })}
+                  </span>
                 </div>
+              </div>
+
+              {/* Time Section - Desktop Only (Sidebar style) */}
+              <div className="d-none d-lg-flex flex-column justify-content-center text-end ps-3 border-start ms-3">
+                <div className="line-height-1 mb-1">
+                  <span className="font-size-16 fw-bolder text-dark font-family-secondary" style={{ minWidth: '110px' }}>
+                    {currentTime.toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: true })}
+                  </span>
+                </div>
+                <div className="line-height-1">
+                  <span className="font-size-11 text-muted fw-semibold">
+                    {currentTime.toLocaleDateString('en-IN', { day: 'numeric', month: 'short', weekday: 'long' })}
+                  </span>
+                </div>
+              </div>
             </div>
+          </div>
 
           <div className="d-flex align-items-center justify-content-end" style={{ flex: 1 }}>
             {/* <div className="dropdown d-inline-block d-lg-none ms-2">
@@ -276,7 +277,7 @@ const Header = (props) => {
               </button>
             </div>
 
-            
+
             {props.user && <ProfileMenu />}
 
             {/* <div

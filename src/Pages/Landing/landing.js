@@ -75,7 +75,7 @@ const Landing = (props) => {
     const [scrolled, setScrolled] = useState(false);
     const [selectedImage, setSelectedImage] = useState(null);
     const [isOpen, setIsOpen] = useState(false);
-    
+
     const toggle = () => setIsOpen(!isOpen);
 
     const firebaseApp = getFirebaseApp();
@@ -130,7 +130,7 @@ const Landing = (props) => {
     return (
         <React.Fragment>
             <div className="landing-page" style={{ backgroundColor: "#0f111a", overflowX: "hidden", minHeight: "100vh", color: "#fff", fontFamily: "'Inter', sans-serif" }}>
-                
+
                 {/* Navbar */}
                 <Navbar
                     expand="lg"
@@ -141,7 +141,7 @@ const Landing = (props) => {
                     <Container className="d-flex flex-wrap align-items-center justify-content-between">
                         {/* Mobile Header: Brand + Toggler */}
                         <div className="d-flex d-lg-none align-items-center justify-content-between w-100">
-                             <NavbarBrand href="/" className="d-flex align-items-center gap-3 m-0">
+                            <NavbarBrand href="/" className="d-flex align-items-center gap-3 m-0">
                                 <div className="bg-white bg-opacity-10 rounded-3 p-1 d-flex align-items-center justify-content-center" style={{ width: "48px", height: "48px" }}>
                                     <img src={logoVoiled} alt="Trrader" style={{ height: "36px", filter: "brightness(1.1)" }} />
                                 </div>
@@ -182,22 +182,22 @@ const Landing = (props) => {
                 <section className="position-relative pt-5 pb-5 d-flex align-items-center hero-section" style={{ minHeight: "100vh" }}>
                     {/* Background Gradients */}
                     <div className="position-absolute top-0 start-0 w-100 h-100 overflow-hidden" style={{ zIndex: 0 }}>
-                         {/* Enhanced Colorful Gradients */}
-                        <div className="position-absolute top-0 start-50 translate-middle pointer-events-none gradient-blob" 
-                             style={{ 
-                                 width: "1000px", 
-                                 height: "1000px", 
-                                 background: "radial-gradient(circle, rgba(99, 102, 241, 0.25) 0%, rgba(15, 17, 26, 0) 70%)", 
-                                 filter: "blur(80px)",
-                                 top: "-200px"
-                             }}></div>
-                        <div className="position-absolute bottom-0 end-0 translate-middle-x pointer-events-none gradient-blob" 
-                             style={{ 
-                                 width: "800px", 
-                                 height: "800px", 
-                                 background: "radial-gradient(circle, rgba(168, 85, 247, 0.15) 0%, rgba(15, 17, 26, 0) 70%)", 
-                                 filter: "blur(100px)" 
-                             }}></div>
+                        {/* Enhanced Colorful Gradients */}
+                        <div className="position-absolute top-0 start-50 translate-middle pointer-events-none gradient-blob"
+                            style={{
+                                width: "1000px",
+                                height: "1000px",
+                                background: "radial-gradient(circle, rgba(99, 102, 241, 0.25) 0%, rgba(15, 17, 26, 0) 70%)",
+                                filter: "blur(80px)",
+                                top: "-200px"
+                            }}></div>
+                        <div className="position-absolute bottom-0 end-0 translate-middle-x pointer-events-none gradient-blob"
+                            style={{
+                                width: "800px",
+                                height: "800px",
+                                background: "radial-gradient(circle, rgba(168, 85, 247, 0.15) 0%, rgba(15, 17, 26, 0) 70%)",
+                                filter: "blur(100px)"
+                            }}></div>
                     </div>
 
                     <Container className="pt-5 position-relative z-1 mt-5">
@@ -208,47 +208,60 @@ const Landing = (props) => {
                                         <span className="badge bg-gradient-primary rounded-pill animate-pulse" style={{ background: "linear-gradient(to right, #4f46e5, #9333ea)", fontSize: "0.7rem", padding: "0.35em 0.8em" }}>BETA</span>
                                         <span className="text-medium-contrast small fw-medium">The New Standard in Risk Intelligence</span>
                                     </div> */}
-                                    
+
                                     <h1 className="display-4 fw-black text-high-contrast mb-4 lh-tight tracking-tight hero-title" style={{ fontSize: "2.5rem", fontWeight: "800", textShadow: "0 0 40px rgba(79, 70, 229, 0.2)" }}>
-                                         Before You Trade <br />
+                                        Before You Trade <br />
                                         <span className="gradient-text" style={{ fontSize: "3.2rem", background: "linear-gradient(to right, #60a5fa, #a78bfa, #f472b6)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>
                                             Protect Your Capital.
                                         </span>
                                     </h1>
-                                    
 
-                                    
+
+
                                     <p className="lead text-medium-contrast mb-5 w-75 mx-auto mx-lg-0" style={{ fontSize: "1.15rem", lineHeight: "1.7" }}>
-                                        Trrader helps traders decide how much to risk before entering a trade.
-Understand capital exposure, simulate drawdowns, and set position sizes your
-account can actually survive.</p>
-                                    
+                                        Trrader helps <strong>Traders</strong> to
+                                        <p style={{ paddingLeft: "1rem" }}>
+                                            <li>
+                                                decide how much <span style={{ fontWeight: "bold", background: "linear-gradient(to right, #60a5fa, #a78bfa, #f472b6)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>to risk</span>  take before entering a trade
+                                            </li>
+                                            <li>
+                                                understand your <span style={{ fontWeight: "bold", background: "linear-gradient(to right, #60a5fa, #a78bfa, #f472b6)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>capital exposure</span> clearly
+                                            </li>
+                                            <li>
+                                                simulate <span style={{ fontWeight: "bold", background: "linear-gradient(to right, #60a5fa, #a78bfa, #f472b6)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>drawdowns</span> before they happen
+                                            </li>
+                                            <li>
+                                                set <span style={{ fontWeight: "bold", background: "linear-gradient(to right, #60a5fa, #a78bfa, #f472b6)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>position sizes</span> your account can actually survive
+                                            </li>
+                                        </p>
+                                    </p>
+
                                     <div className="d-flex align-items-center justify-content-center justify-content-lg-start gap-4">
                                         <div onClick={signInWithGoogle} className="cursor-pointer hover-transform" style={{ transition: "transform 0.2s" }}>
                                             <GoogleButton />
                                         </div>
                                         <div className="d-flex align-items-center gap-2 text-medium-contrast small">
-                                           <div className="rounded-circle bg-success bg-opacity-25 p-1 d-flex align-items-center justify-content-center" style={{ width: "24px", height: "24px" }}>
+                                            <div className="rounded-circle bg-success bg-opacity-25 p-1 d-flex align-items-center justify-content-center" style={{ width: "24px", height: "24px" }}>
                                                 <i className="mdi mdi-check text-success" style={{ fontSize: "14px" }}></i>
-                                           </div>
-                                           <span>No credit card required</span>
+                                            </div>
+                                            <span>No credit card required</span>
                                         </div>
                                     </div>
                                 </AnimatedSection>
                             </Col>
-                            
+
                             <Col lg={6}>
                                 <AnimatedSection delay="delay-200">
                                     <div className="position-relative text-center perspective-container">
                                         <div className="position-relative z-2 hero-image-container" style={{ transition: "transform 0.3s ease" }}>
                                             <CapitalShield width="100%" height="auto" className="img-fluid position-relative" style={{ maxHeight: "600px", filter: "drop-shadow(0 0 40px rgba(79, 70, 229, 0.2))" }} />
                                         </div>
-                                        <div className="position-absolute top-50 start-50 translate-middle z-0 rounded-circle" 
-                                            style={{ 
-                                                width: "60%", 
-                                                height: "60%", 
-                                                background: "radial-gradient(circle, rgba(99, 102, 241, 0.2) 0%, rgba(15, 17, 26, 0) 70%)", 
-                                                filter: "blur(60px)" 
+                                        <div className="position-absolute top-50 start-50 translate-middle z-0 rounded-circle"
+                                            style={{
+                                                width: "60%",
+                                                height: "60%",
+                                                background: "radial-gradient(circle, rgba(99, 102, 241, 0.2) 0%, rgba(15, 17, 26, 0) 70%)",
+                                                filter: "blur(60px)"
                                             }}></div>
                                     </div>
                                 </AnimatedSection>
@@ -263,58 +276,58 @@ account can actually survive.</p>
                         <AnimatedSection className="text-center mb-5">
                             <h2 className="fw-bold display-6 text-white mb-4">Why 90% of Traders Fail <span className="text-secondary opacity-50 fst-italic h4">(It’s Not the Strategy)</span></h2>
                             <p className="lead text-secondary max-width-800 mx-auto">
-                                Most traders enter the market with a setup but without a survival plan. They focus entirely on <em>entry signals</em> while ignoring the mathematical reality of ruin. 
+                                Most traders enter the market with a setup but without a survival plan. They focus entirely on <em>entry signals</em> while ignoring the mathematical reality of ruin.
                             </p>
                         </AnimatedSection>
 
                         <Row className="g-4 justify-content-center">
                             <Col md={4} className="d-flex">
                                 <AnimatedSection delay="delay-100" className="w-100">
-                                <div className="p-4 rounded-3 h-100 position-relative overflow-hidden d-flex flex-column transition-all hover-border-danger" 
-                                     style={{ background: "#11141c", border: "1px solid rgba(255,255,255,0.08)", borderTop: "4px solid #ef4444" }}>
-                                    
-                                    <h3 className="fw-bold text-white mb-1">5% Risk</h3>
-                                    <h6 className="text-danger mb-3 text-uppercase small letter-spacing-1 fw-bold">Gambler's Ruin</h6>
-                                    <p className="text-secondary mb-4 border-bottom border-white border-opacity-10 pb-3 flex-grow-1">A losing streak of 5 trades reduces capital by <strong className="text-white">~23%</strong>.</p>
-                                    <div className="d-flex align-items-center gap-2 text-secondary small">
-                                        <i className="mdi mdi-alert-circle text-danger"></i>
-                                        <span>Need <strong className="text-danger">30% gain</strong> to break even.</span>
+                                    <div className="p-4 rounded-3 h-100 position-relative overflow-hidden d-flex flex-column transition-all hover-border-danger"
+                                        style={{ background: "#11141c", border: "1px solid rgba(255,255,255,0.08)", borderTop: "4px solid #ef4444" }}>
+
+                                        <h3 className="fw-bold text-white mb-1">5% Risk</h3>
+                                        <h6 className="text-danger mb-3 text-uppercase small letter-spacing-1 fw-bold">Gambler's Ruin</h6>
+                                        <p className="text-secondary mb-4 border-bottom border-white border-opacity-10 pb-3 flex-grow-1">A losing streak of 5 trades reduces capital by <strong className="text-white">~23%</strong>.</p>
+                                        <div className="d-flex align-items-center gap-2 text-secondary small">
+                                            <i className="mdi mdi-alert-circle text-danger"></i>
+                                            <span>Need <strong className="text-danger">30% gain</strong> to break even.</span>
+                                        </div>
                                     </div>
-                                </div>
                                 </AnimatedSection>
                             </Col>
                             <Col md={4} className="d-flex">
                                 <AnimatedSection delay="delay-200" className="w-100">
-                                <div className="p-4 rounded-3 h-100 position-relative overflow-hidden d-flex flex-column transition-all hover-border-warning"
-                                     style={{ background: "#11141c", border: "1px solid rgba(255,255,255,0.08)", borderTop: "4px solid #f59e0b" }}>
-                                    
-                                    <h3 className="fw-bold text-white mb-1">2% Risk</h3>
-                                    <h6 className="text-warning mb-3 text-uppercase small letter-spacing-1 fw-bold">Aggressive</h6>
-                                    <p className="text-secondary mb-4 border-bottom border-white border-opacity-10 pb-3 flex-grow-1">A losing streak of 5 trades reduces capital by <strong className="text-white">~9.6%</strong>.</p>
-                                    <div className="d-flex align-items-center gap-2 text-secondary small">
-                                        <i className="mdi mdi-alert text-warning"></i>
-                                        <span>Need <strong className="text-warning">11% gain</strong> to break even.</span>
+                                    <div className="p-4 rounded-3 h-100 position-relative overflow-hidden d-flex flex-column transition-all hover-border-warning"
+                                        style={{ background: "#11141c", border: "1px solid rgba(255,255,255,0.08)", borderTop: "4px solid #f59e0b" }}>
+
+                                        <h3 className="fw-bold text-white mb-1">2% Risk</h3>
+                                        <h6 className="text-warning mb-3 text-uppercase small letter-spacing-1 fw-bold">Aggressive</h6>
+                                        <p className="text-secondary mb-4 border-bottom border-white border-opacity-10 pb-3 flex-grow-1">A losing streak of 5 trades reduces capital by <strong className="text-white">~9.6%</strong>.</p>
+                                        <div className="d-flex align-items-center gap-2 text-secondary small">
+                                            <i className="mdi mdi-alert text-warning"></i>
+                                            <span>Need <strong className="text-warning">11% gain</strong> to break even.</span>
+                                        </div>
                                     </div>
-                                </div>
                                 </AnimatedSection>
                             </Col>
                             <Col md={4} className="d-flex">
                                 <AnimatedSection delay="delay-300" className="w-100">
-                                <div className="p-4 rounded-3 h-100 position-relative overflow-hidden d-flex flex-column transition-all hover-border-success"
-                                     style={{ background: "#11141c", border: "1px solid rgba(255,255,255,0.08)", borderTop: "4px solid #10b981" }}>
-                                    
-                                    <h3 className="fw-bold text-white mb-1">1% Risk</h3>
-                                    <h6 className="text-success mb-3 text-uppercase small letter-spacing-1 fw-bold">Professional</h6>
-                                    <p className="text-secondary mb-4 border-bottom border-white border-opacity-10 pb-3 flex-grow-1">A losing streak of 5 trades reduces capital by only <strong className="text-white">~4.9%</strong>.</p>
-                                    <div className="d-flex align-items-center gap-2 text-secondary small">
-                                        <i className="mdi mdi-check-circle text-success"></i>
-                                        <span>Need only <strong className="text-success">5.1% gain</strong> to break even.</span>
+                                    <div className="p-4 rounded-3 h-100 position-relative overflow-hidden d-flex flex-column transition-all hover-border-success"
+                                        style={{ background: "#11141c", border: "1px solid rgba(255,255,255,0.08)", borderTop: "4px solid #10b981" }}>
+
+                                        <h3 className="fw-bold text-white mb-1">1% Risk</h3>
+                                        <h6 className="text-success mb-3 text-uppercase small letter-spacing-1 fw-bold">Professional</h6>
+                                        <p className="text-secondary mb-4 border-bottom border-white border-opacity-10 pb-3 flex-grow-1">A losing streak of 5 trades reduces capital by only <strong className="text-white">~4.9%</strong>.</p>
+                                        <div className="d-flex align-items-center gap-2 text-secondary small">
+                                            <i className="mdi mdi-check-circle text-success"></i>
+                                            <span>Need only <strong className="text-success">5.1% gain</strong> to break even.</span>
+                                        </div>
                                     </div>
-                                </div>
                                 </AnimatedSection>
                             </Col>
                         </Row>
-                        
+
                         <div className="text-center mt-5">
                             <p className="text-secondary small font-monospace text-uppercase letter-spacing-2">Trrader.in Risk Architecture</p>
                         </div>
@@ -331,26 +344,26 @@ account can actually survive.</p>
                                 Stop calculating risk on napkins. Integrate a standardized, mathematical approach to every single trade you take.
                             </p>
                         </AnimatedSection>
-                        
+
                         <Row className="g-4">
                             {[
-                                { 
-                                    icon: "mdi-bullseye-arrow", 
-                                    title: "Define Parameters", 
+                                {
+                                    icon: "mdi-bullseye-arrow",
+                                    title: "Define Parameters",
                                     desc: "Input your total trading capital, maximum risk tolerance percentage (e.g., 1% or 2%), and trade-specific stop-loss levels.",
                                     step: "01",
                                     iconColor: "#3b82f6"
                                 },
-                                { 
-                                    icon: "mdi-calculator-variant", 
-                                    title: "Automated Calculation", 
+                                {
+                                    icon: "mdi-calculator-variant",
+                                    title: "Automated Calculation",
                                     desc: "The system instantly computes the maximum permissible lot size. It factors in instrument lot sizes (NIFTY, BANKNIFTY) to ensure compliance with your risk rules.",
                                     step: "02",
                                     iconColor: "#8b5cf6"
                                 },
-                                { 
-                                    icon: "mdi-chart-timeline-variant", 
-                                    title: "Execution", 
+                                {
+                                    icon: "mdi-chart-timeline-variant",
+                                    title: "Execution",
                                     desc: "Enter the market knowing your downside is mathematically capped. If the numbers don't align, the system flags the trade as unsafe.",
                                     step: "03",
                                     iconColor: "#10b981"
@@ -358,11 +371,11 @@ account can actually survive.</p>
                             ].map((item, index) => (
                                 <Col lg={4} key={index} className="d-flex">
                                     <AnimatedSection delay={`delay-${index * 100 + 100}`} className="w-100">
-                                        <div className="card h-100 step-card p-4 border-0 position-relative overflow-hidden d-flex flex-column" 
-                                             style={{ background: "#161b22", border: "1px solid rgba(255,255,255,0.05)" }}>
+                                        <div className="card h-100 step-card p-4 border-0 position-relative overflow-hidden d-flex flex-column"
+                                            style={{ background: "#161b22", border: "1px solid rgba(255,255,255,0.05)" }}>
                                             <div className="step-number" style={{ color: "rgba(255,255,255,0.03)" }}>{item.step}</div>
-                                            <div className="d-inline-flex align-items-center justify-content-center p-3 rounded-circle mb-4 position-relative z-1 shadow-sm" 
-                                                 style={{ background: "rgba(255,255,255,0.05)", border: `1px solid ${item.iconColor}`, width: "64px", height: "64px" }}>
+                                            <div className="d-inline-flex align-items-center justify-content-center p-3 rounded-circle mb-4 position-relative z-1 shadow-sm"
+                                                style={{ background: "rgba(255,255,255,0.05)", border: `1px solid ${item.iconColor}`, width: "64px", height: "64px" }}>
                                                 <i className={`mdi ${item.icon} fs-2`} style={{ color: item.iconColor }}></i>
                                             </div>
                                             <h4 className="fw-bold text-white mb-3 position-relative z-1">{item.title}</h4>
@@ -380,126 +393,126 @@ account can actually survive.</p>
                     <Container>
                         {/* Feature 1 */}
                         <AnimatedSection delay="delay-100">
-                        <div className="card card-vibrant mb-5 rounded-4">
-                            <Row className="g-0 align-items-center">
-                                <Col lg={6} className="p-4 p-lg-5">
-                                    <div className="icon-box d-inline-flex align-items-center justify-content-center p-3 rounded-3 mb-4" style={{ background: "rgba(59, 130, 246, 0.1)" }}>
-                                        <i className="mdi mdi-shield-lock-outline text-primary fs-3"></i>
-                                    </div>
-                                    <h3 className="fw-bold mb-3 text-high-contrast">Dynamic Position Sizing</h3>
-                                    <p className="text-medium-contrast mb-4 lh-lg">
-                                        Stop guessing lot sizes. Our engine calculates the exact quantity to trade based on your stop-loss width and total account equity. Whether the volatility is high or low, your monetary risk remains constant.
-                                    </p>
-                                    <ul className="list-unstyled text-medium-contrast mb-0 d-flex flex-column gap-3">
-                                        <li className="d-flex align-items-center gap-3">
-                                            <i className="mdi mdi-check-circle text-primary fs-5"></i> 
-                                            <span><strong>Asset Agnostic:</strong> Works seamlessly for NIFTY, BANKNIFTY, and Indian Stocks.</span>
-                                        </li>
-                                        <li className="d-flex align-items-center gap-3">
-                                            <i className="mdi mdi-check-circle text-primary fs-5"></i> 
-                                            <span><strong>Volatility Adjustment:</strong> Accounts for ATR and spread variations automatically.</span>
-                                        </li>
-                                    </ul>
-                                </Col>
-                                <Col lg={6} className="bg-dark bg-opacity-50 h-100 position-relative overflow-hidden">
-                                    <div className="position-absolute top-0 end-0 w-100 h-100" style={{ background: "linear-gradient(45deg, transparent 40%, rgba(59, 130, 246, 0.1) 100%)" }}></div>
-                                    <div className="p-4 h-100 d-flex align-items-center justify-content-center" style={{ minHeight: "400px" }}>
-                                        <div className="position-relative group-hover-zoom">
-                                            <img 
-                                                src={riskcalculator} 
-                                                alt="Drawdown Calculator" 
-                                                className="img-fluid rounded-3 shadow-lg transform-rotate-left animate-float" 
-                                                style={{ transform: "perspective(1000px) rotateY(-5deg) scale(0.95)", transition: "transform 0.3s", boxShadow: "0 25px 50px -12px rgba(0, 0, 0, 0.5)", cursor: "zoom-in" }} 
-                                                onClick={() => setSelectedImage(riskcalculator)}
-                                            />
-                                            <div className="position-absolute top-50 start-50 translate-middle opacity-0 hover-opacity-100 transition-opacity pointer-events-none">
-                                                <div className="bg-black bg-opacity-50 rounded-circle p-3">
-                                                    <i className="mdi mdi-magnify-plus-outline text-white fs-2"></i>
+                            <div className="card card-vibrant mb-5 rounded-4">
+                                <Row className="g-0 align-items-center">
+                                    <Col lg={6} className="p-4 p-lg-5">
+                                        <div className="icon-box d-inline-flex align-items-center justify-content-center p-3 rounded-3 mb-4" style={{ background: "rgba(59, 130, 246, 0.1)" }}>
+                                            <i className="mdi mdi-shield-lock-outline text-primary fs-3"></i>
+                                        </div>
+                                        <h3 className="fw-bold mb-3 text-high-contrast">Dynamic Position Sizing</h3>
+                                        <p className="text-medium-contrast mb-4 lh-lg">
+                                            Stop guessing lot sizes. Our engine calculates the exact quantity to trade based on your stop-loss width and total account equity. Whether the volatility is high or low, your monetary risk remains constant.
+                                        </p>
+                                        <ul className="list-unstyled text-medium-contrast mb-0 d-flex flex-column gap-3">
+                                            <li className="d-flex align-items-center gap-3">
+                                                <i className="mdi mdi-check-circle text-primary fs-5"></i>
+                                                <span><strong>Asset Agnostic:</strong> Works seamlessly for NIFTY, BANKNIFTY, and Indian Stocks.</span>
+                                            </li>
+                                            <li className="d-flex align-items-center gap-3">
+                                                <i className="mdi mdi-check-circle text-primary fs-5"></i>
+                                                <span><strong>Volatility Adjustment:</strong> Accounts for ATR and spread variations automatically.</span>
+                                            </li>
+                                        </ul>
+                                    </Col>
+                                    <Col lg={6} className="bg-dark bg-opacity-50 h-100 position-relative overflow-hidden">
+                                        <div className="position-absolute top-0 end-0 w-100 h-100" style={{ background: "linear-gradient(45deg, transparent 40%, rgba(59, 130, 246, 0.1) 100%)" }}></div>
+                                        <div className="p-4 h-100 d-flex align-items-center justify-content-center" style={{ minHeight: "400px" }}>
+                                            <div className="position-relative group-hover-zoom">
+                                                <img
+                                                    src={riskcalculator}
+                                                    alt="Drawdown Calculator"
+                                                    className="img-fluid rounded-3 shadow-lg transform-rotate-left animate-float"
+                                                    style={{ transform: "perspective(1000px) rotateY(-5deg) scale(0.95)", transition: "transform 0.3s", boxShadow: "0 25px 50px -12px rgba(0, 0, 0, 0.5)", cursor: "zoom-in" }}
+                                                    onClick={() => setSelectedImage(riskcalculator)}
+                                                />
+                                                <div className="position-absolute top-50 start-50 translate-middle opacity-0 hover-opacity-100 transition-opacity pointer-events-none">
+                                                    <div className="bg-black bg-opacity-50 rounded-circle p-3">
+                                                        <i className="mdi mdi-magnify-plus-outline text-white fs-2"></i>
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
-                                    </div>
-                                </Col>
-                            </Row>
-                        </div>
+                                    </Col>
+                                </Row>
+                            </div>
                         </AnimatedSection>
 
                         {/* Feature 2 (Reversed) */}
                         <AnimatedSection delay="delay-200">
-                        <div className="card card-vibrant rounded-4">
-                            <Row className="g-0 align-items-center flex-row-reverse">
-                                <Col lg={6} className="p-4 p-lg-5">
-                                    <div className="icon-box d-inline-flex align-items-center justify-content-center p-3 rounded-3 mb-4" style={{ background: "rgba(16, 185, 129, 0.1)" }}>
-                                        <i className="mdi mdi-chart-areaspline text-success fs-3"></i>
-                                    </div>
-                                    <h3 className="fw-bold mb-3 text-high-contrast">Drawdown Simulation</h3>
-                                    <p className="text-medium-contrast mb-4 lh-lg">
-                                        Visualize the worst-case scenarios before they happen. Input your win rates and risk-reward ratios to simulate capital erosion during losing streaks.
-                                    </p>
-                                    <ul className="list-unstyled text-medium-contrast mb-0 d-flex flex-column gap-3">
-                                        <li className="d-flex align-items-center gap-3">
-                                            <i className="mdi mdi-check-circle text-success fs-5"></i> 
-                                            <span><strong>Survival Metrics:</strong> Calculations based on Monte Carlo simulation principles.</span>
-                                        </li>
-                                        <li className="d-flex align-items-center gap-3">
-                                            <i className="mdi mdi-check-circle text-success fs-5"></i> 
-                                            <span><strong>Recovery Modeling:</strong> See exactly what ROI is needed to recover from a 20% drawdown.</span>
-                                        </li>
-                                    </ul>
-                                </Col>
-                                <Col lg={6} className="bg-dark bg-opacity-50 h-100 position-relative overflow-hidden">
-                                     <div className="position-absolute top-0 start-0 w-100 h-100" style={{ background: "linear-gradient(-45deg, transparent 40%, rgba(16, 185, 129, 0.1) 100%)" }}></div>
-                                    <div className="p-4 h-100 d-flex align-items-center justify-content-center" style={{ minHeight: "400px" }}>
-                                        <div className="position-relative group-hover-zoom">
-                                            <img 
-                                                src={riskcalculatorresult} 
-                                                alt="Risk Analysis" 
-                                                className="img-fluid rounded-3 shadow-lg animate-float-inverse" 
-                                                style={{ transform: "perspective(1000px) rotateY(5deg) scale(0.95)", transition: "transform 0.3s", boxShadow: "0 25px 50px -12px rgba(0, 0, 0, 0.5)", cursor: "zoom-in" }} 
-                                                onClick={() => setSelectedImage(riskcalculatorresult)}
-                                            />
+                            <div className="card card-vibrant rounded-4">
+                                <Row className="g-0 align-items-center flex-row-reverse">
+                                    <Col lg={6} className="p-4 p-lg-5">
+                                        <div className="icon-box d-inline-flex align-items-center justify-content-center p-3 rounded-3 mb-4" style={{ background: "rgba(16, 185, 129, 0.1)" }}>
+                                            <i className="mdi mdi-chart-areaspline text-success fs-3"></i>
                                         </div>
-                                    </div>
-                                </Col>
-                            </Row>
-                        </div>
+                                        <h3 className="fw-bold mb-3 text-high-contrast">Drawdown Simulation</h3>
+                                        <p className="text-medium-contrast mb-4 lh-lg">
+                                            Visualize the worst-case scenarios before they happen. Input your win rates and risk-reward ratios to simulate capital erosion during losing streaks.
+                                        </p>
+                                        <ul className="list-unstyled text-medium-contrast mb-0 d-flex flex-column gap-3">
+                                            <li className="d-flex align-items-center gap-3">
+                                                <i className="mdi mdi-check-circle text-success fs-5"></i>
+                                                <span><strong>Survival Metrics:</strong> Calculations based on Monte Carlo simulation principles.</span>
+                                            </li>
+                                            <li className="d-flex align-items-center gap-3">
+                                                <i className="mdi mdi-check-circle text-success fs-5"></i>
+                                                <span><strong>Recovery Modeling:</strong> See exactly what ROI is needed to recover from a 20% drawdown.</span>
+                                            </li>
+                                        </ul>
+                                    </Col>
+                                    <Col lg={6} className="bg-dark bg-opacity-50 h-100 position-relative overflow-hidden">
+                                        <div className="position-absolute top-0 start-0 w-100 h-100" style={{ background: "linear-gradient(-45deg, transparent 40%, rgba(16, 185, 129, 0.1) 100%)" }}></div>
+                                        <div className="p-4 h-100 d-flex align-items-center justify-content-center" style={{ minHeight: "400px" }}>
+                                            <div className="position-relative group-hover-zoom">
+                                                <img
+                                                    src={riskcalculatorresult}
+                                                    alt="Risk Analysis"
+                                                    className="img-fluid rounded-3 shadow-lg animate-float-inverse"
+                                                    style={{ transform: "perspective(1000px) rotateY(5deg) scale(0.95)", transition: "transform 0.3s", boxShadow: "0 25px 50px -12px rgba(0, 0, 0, 0.5)", cursor: "zoom-in" }}
+                                                    onClick={() => setSelectedImage(riskcalculatorresult)}
+                                                />
+                                            </div>
+                                        </div>
+                                    </Col>
+                                </Row>
+                            </div>
                         </AnimatedSection>
 
 
                         {/* Feature 3 */}
                         <AnimatedSection delay="delay-300">
-                        <div className="card mb-0 rounded-4" style={{ background: "#11141c", border: "1px solid rgba(255,255,255,0.08)", marginTop: "60px" }}>
-                            <Row className="g-0 align-items-center">
-                                <Col lg={6} className="p-4 p-lg-5">
-                                    <div className="icon-box d-inline-flex align-items-center justify-content-center p-3 rounded-3 mb-4" style={{ background: "rgba(245, 158, 11, 0.1)" }}>
-                                        <i className="mdi mdi-scale-balance text-warning fs-3"></i>
-                                    </div>
-                                    <h3 className="fw-bold mb-3 text-white">Capital Allocation Logic</h3>
-                                    <p className="text-secondary mb-4 lh-lg">
-                                        Define your maximum daily loss limits. Trrader acts as a pre-trade checks and balances system, preventing you from over-leveraging on high-conviction days.
-                                    </p>
-                                    <ul className="list-unstyled text-secondary mb-0 d-flex flex-column gap-3">
-                                        <li className="d-flex align-items-center gap-3">
-                                            <i className="mdi mdi-check-circle text-warning fs-5"></i> 
-                                            <span><strong>Discipline Enforcement:</strong> Hard stops on daily risk limits.</span>
-                                        </li>
-                                        <li className="d-flex align-items-center gap-3">
-                                            <i className="mdi mdi-check-circle text-warning fs-5"></i> 
-                                            <span><strong>Objective Sizing:</strong> Removes emotions from the moment of execution.</span>
-                                        </li>
-                                    </ul>
-                                </Col>
-                                <Col lg={6} className="bg-dark bg-opacity-50 h-100 position-relative overflow-hidden">
-                                     {/* Use a different image or reuse desktop one */}
-                                    <div className="position-absolute top-0 end-0 w-100 h-100" style={{ background: "linear-gradient(45deg, transparent 40%, rgba(245, 158, 11, 0.05) 100%)" }}></div>
-                                    <div className="p-4 h-100 d-flex align-items-center justify-content-center" style={{ minHeight: "400px" }}>
-                                        <div className="position-relative">
-                                            <AllocationLogic width="100%" height="auto" className="img-fluid" style={{ maxHeight: "500px", filter: "drop-shadow(0 25px 50px rgba(0, 0, 0, 0.5))" }} />
+                            <div className="card mb-0 rounded-4" style={{ background: "#11141c", border: "1px solid rgba(255,255,255,0.08)", marginTop: "60px" }}>
+                                <Row className="g-0 align-items-center">
+                                    <Col lg={6} className="p-4 p-lg-5">
+                                        <div className="icon-box d-inline-flex align-items-center justify-content-center p-3 rounded-3 mb-4" style={{ background: "rgba(245, 158, 11, 0.1)" }}>
+                                            <i className="mdi mdi-scale-balance text-warning fs-3"></i>
                                         </div>
-                                    </div>
-                                </Col>
-                            </Row>
-                        </div>
+                                        <h3 className="fw-bold mb-3 text-white">Capital Allocation Logic</h3>
+                                        <p className="text-secondary mb-4 lh-lg">
+                                            Define your maximum daily loss limits. Trrader acts as a pre-trade checks and balances system, preventing you from over-leveraging on high-conviction days.
+                                        </p>
+                                        <ul className="list-unstyled text-secondary mb-0 d-flex flex-column gap-3">
+                                            <li className="d-flex align-items-center gap-3">
+                                                <i className="mdi mdi-check-circle text-warning fs-5"></i>
+                                                <span><strong>Discipline Enforcement:</strong> Hard stops on daily risk limits.</span>
+                                            </li>
+                                            <li className="d-flex align-items-center gap-3">
+                                                <i className="mdi mdi-check-circle text-warning fs-5"></i>
+                                                <span><strong>Objective Sizing:</strong> Removes emotions from the moment of execution.</span>
+                                            </li>
+                                        </ul>
+                                    </Col>
+                                    <Col lg={6} className="bg-dark bg-opacity-50 h-100 position-relative overflow-hidden">
+                                        {/* Use a different image or reuse desktop one */}
+                                        <div className="position-absolute top-0 end-0 w-100 h-100" style={{ background: "linear-gradient(45deg, transparent 40%, rgba(245, 158, 11, 0.05) 100%)" }}></div>
+                                        <div className="p-4 h-100 d-flex align-items-center justify-content-center" style={{ minHeight: "400px" }}>
+                                            <div className="position-relative">
+                                                <AllocationLogic width="100%" height="auto" className="img-fluid" style={{ maxHeight: "500px", filter: "drop-shadow(0 25px 50px rgba(0, 0, 0, 0.5))" }} />
+                                            </div>
+                                        </div>
+                                    </Col>
+                                </Row>
+                            </div>
                         </AnimatedSection>
                     </Container>
                 </section>
@@ -513,46 +526,46 @@ account can actually survive.</p>
                         <Row className="g-4 justify-content-center">
                             <Col md={5} className="d-flex">
                                 <AnimatedSection delay="delay-100" className="w-100">
-                                <div className="card h-100 p-4 p-lg-5 rounded-3 border-0 position-relative overflow-hidden d-flex flex-column" 
-                                     style={{ background: "#11141c", borderLeft: "4px solid #10b981", boxShadow: "0 10px 30px -15px rgba(0,0,0,0.5)" }}>
-                                    <h3 className="fw-bold text-white mb-4"><i className="mdi mdi-check-decagram text-success me-2"></i>This is for you if:</h3>
-                                    <ul className="list-unstyled d-flex flex-column gap-3 text-secondary fs-5 flex-grow-1">
-                                        <li className="d-flex align-items-center gap-3">
-                                            <i className="mdi mdi-check-circle text-success fs-5"></i>
-                                            <span>You view trading as a business of probability.</span>
-                                        </li>
-                                        <li className="d-flex align-items-center gap-3">
-                                            <i className="mdi mdi-check-circle text-success fs-5"></i>
-                                            <span>You have capital between ₹50k and ₹5L.</span>
-                                        </li>
-                                        <li className="d-flex align-items-center gap-3">
-                                            <i className="mdi mdi-check-circle text-success fs-5"></i>
-                                            <span>You are tired of uncontrolled drawdowns.</span>
-                                        </li>
-                                    </ul>
-                                </div>
+                                    <div className="card h-100 p-4 p-lg-5 rounded-3 border-0 position-relative overflow-hidden d-flex flex-column"
+                                        style={{ background: "#11141c", borderLeft: "4px solid #10b981", boxShadow: "0 10px 30px -15px rgba(0,0,0,0.5)" }}>
+                                        <h3 className="fw-bold text-white mb-4"><i className="mdi mdi-check-decagram text-success me-2"></i>This is for you if:</h3>
+                                        <ul className="list-unstyled d-flex flex-column gap-3 text-secondary fs-5 flex-grow-1">
+                                            <li className="d-flex align-items-center gap-3">
+                                                <i className="mdi mdi-check-circle text-success fs-5"></i>
+                                                <span>You view trading as a business of probability.</span>
+                                            </li>
+                                            <li className="d-flex align-items-center gap-3">
+                                                <i className="mdi mdi-check-circle text-success fs-5"></i>
+                                                <span>You have capital between ₹50k and ₹5L.</span>
+                                            </li>
+                                            <li className="d-flex align-items-center gap-3">
+                                                <i className="mdi mdi-check-circle text-success fs-5"></i>
+                                                <span>You are tired of uncontrolled drawdowns.</span>
+                                            </li>
+                                        </ul>
+                                    </div>
                                 </AnimatedSection>
                             </Col>
                             <Col md={5} className="d-flex">
                                 <AnimatedSection delay="delay-200" className="w-100">
-                                <div className="card h-100 p-4 p-lg-5 rounded-3 border-0 position-relative overflow-hidden d-flex flex-column"
-                                     style={{ background: "#11141c", borderLeft: "4px solid #ef4444", boxShadow: "0 10px 30px -15px rgba(0,0,0,0.5)" }}>
-                                    <h3 className="fw-bold text-white mb-4"><i className="mdi mdi-close-octagon text-danger me-2"></i>This is NOT for you if:</h3>
-                                    <ul className="list-unstyled d-flex flex-column gap-3 text-secondary fs-5 flex-grow-1">
-                                        <li className="d-flex align-items-center gap-3">
-                                            <i className="mdi mdi-close-circle text-danger fs-5"></i>
-                                            <span>You are looking for "hot tips" or buy/sell signals.</span>
-                                        </li>
-                                        <li className="d-flex align-items-center gap-3">
-                                            <i className="mdi mdi-close-circle text-danger fs-5"></i>
-                                            <span>You want to double your money in a month.</span>
-                                        </li>
-                                        <li className="d-flex align-items-center gap-3">
-                                            <i className="mdi mdi-close-circle text-danger fs-5"></i>
-                                            <span>You believe risk management is "boring."</span>
-                                        </li>
-                                    </ul>
-                                </div>
+                                    <div className="card h-100 p-4 p-lg-5 rounded-3 border-0 position-relative overflow-hidden d-flex flex-column"
+                                        style={{ background: "#11141c", borderLeft: "4px solid #ef4444", boxShadow: "0 10px 30px -15px rgba(0,0,0,0.5)" }}>
+                                        <h3 className="fw-bold text-white mb-4"><i className="mdi mdi-close-octagon text-danger me-2"></i>This is NOT for you if:</h3>
+                                        <ul className="list-unstyled d-flex flex-column gap-3 text-secondary fs-5 flex-grow-1">
+                                            <li className="d-flex align-items-center gap-3">
+                                                <i className="mdi mdi-close-circle text-danger fs-5"></i>
+                                                <span>You are looking for "hot tips" or buy/sell signals.</span>
+                                            </li>
+                                            <li className="d-flex align-items-center gap-3">
+                                                <i className="mdi mdi-close-circle text-danger fs-5"></i>
+                                                <span>You want to double your money in a month.</span>
+                                            </li>
+                                            <li className="d-flex align-items-center gap-3">
+                                                <i className="mdi mdi-close-circle text-danger fs-5"></i>
+                                                <span>You believe risk management is "boring."</span>
+                                            </li>
+                                        </ul>
+                                    </div>
                                 </AnimatedSection>
                             </Col>
                         </Row>
@@ -611,7 +624,7 @@ account can actually survive.</p>
                         <AnimatedSection className="text-center mb-5">
                             <h2 className="fw-bold display-6 text-white">Frequently Asked Questions</h2>
                         </AnimatedSection>
-                        
+
                         <AnimatedSection delay="delay-100">
                             <div className="landing-accordion dark-accordion">
                                 <UncontrolledAccordion defaultOpen="1">
@@ -655,7 +668,7 @@ account can actually survive.</p>
 
                 {/* Dashboard Showcase - Full Width */}
                 <section className="py-5 my-5 position-relative overflow-hidden" style={{ background: "#0b0d12" }}>
-                     {/* Background Glow */}
+                    {/* Background Glow */}
                     <div className="position-absolute w-100 h-100 top-0 start-0" style={{ background: "radial-gradient(circle at center, rgba(71,71,161,0.1) 0%, rgba(11,13,18,0) 70%)" }}></div>
                     <Container className="position-relative z-1">
                         <AnimatedSection className="text-center max-width-800 mx-auto mb-5">
@@ -664,17 +677,17 @@ account can actually survive.</p>
                                 Stop switching between spreadhseets and charts. Manage your entire risk profile from a single, intuitive dashboard.
                             </p>
                         </AnimatedSection>
-                        
+
                         <AnimatedSection delay="delay-200" className="position-relative p-2 rounded-4 mx-auto" style={{ maxWidth: "1100px", background: "linear-gradient(to bottom, rgba(255,255,255,0.05), rgba(255,255,255,0.01))", backdropFilter: "blur(20px)", border: "1px solid rgba(255,255,255,0.05)" }}>
-                             <div className="position-relative group-hover-zoom">
-                                <img 
-                                    src={productOverview} 
-                                    className="img-fluid rounded-3 shadow-lg w-100" 
-                                    alt="Dashboard" 
+                            <div className="position-relative group-hover-zoom">
+                                <img
+                                    src={productOverview}
+                                    className="img-fluid rounded-3 shadow-lg w-100"
+                                    alt="Dashboard"
                                     style={{ cursor: "zoom-in" }}
                                     onClick={() => setSelectedImage(productOverview)}
                                 />
-                             </div>
+                            </div>
                         </AnimatedSection>
                     </Container>
                 </section>
@@ -683,29 +696,29 @@ account can actually survive.</p>
                 <section className="py-5 position-relative overflow-hidden" style={{ background: "#0f111a" }}>
                     <Container>
                         <AnimatedSection>
-                        <div className="p-4 p-lg-5 rounded-4 position-relative overflow-hidden" 
-                             style={{ 
-                                 background: "linear-gradient(135deg, #1f2937 0%, #111827 100%)", 
-                                 border: "1px solid rgba(255,255,255,0.1)",
-                                 boxShadow: "0 20px 40px -10px rgba(0,0,0,0.5)"
-                             }}>
-                            <Row className="align-items-center">
-                                <Col lg={7}>
-                                    <span className="text-primary fw-bold text-uppercase letter-spacing-2 mb-2 d-block small">The Disciplined Mindset</span>
-                                    <h2 className="display-6 fw-bold mb-4 font-serif fst-italic text-white">"The goal of a successful trader is to make the best trades. Money is secondary."</h2>
-                                    <div className="d-flex align-items-center gap-3">
-                                        <div className="bg-primary text-white rounded-circle d-flex align-items-center justify-content-center fw-bold shadow-sm" style={{ width: "48px", height: "48px" }}>A</div>
-                                        <div>
-                                            <h5 className="mb-0 fw-bold text-white">Alexander Elder</h5>
-                                            <small className="text-white opacity-50">Trading for a Living</small>
+                            <div className="p-4 p-lg-5 rounded-4 position-relative overflow-hidden"
+                                style={{
+                                    background: "linear-gradient(135deg, #1f2937 0%, #111827 100%)",
+                                    border: "1px solid rgba(255,255,255,0.1)",
+                                    boxShadow: "0 20px 40px -10px rgba(0,0,0,0.5)"
+                                }}>
+                                <Row className="align-items-center">
+                                    <Col lg={7}>
+                                        <span className="text-primary fw-bold text-uppercase letter-spacing-2 mb-2 d-block small">The Disciplined Mindset</span>
+                                        <h2 className="display-6 fw-bold mb-4 font-serif fst-italic text-white">"The goal of a successful trader is to make the best trades. Money is secondary."</h2>
+                                        <div className="d-flex align-items-center gap-3">
+                                            <div className="bg-primary text-white rounded-circle d-flex align-items-center justify-content-center fw-bold shadow-sm" style={{ width: "48px", height: "48px" }}>A</div>
+                                            <div>
+                                                <h5 className="mb-0 fw-bold text-white">Alexander Elder</h5>
+                                                <small className="text-white opacity-50">Trading for a Living</small>
+                                            </div>
                                         </div>
-                                    </div>
-                                </Col>
-                                <Col lg={5} className="text-center mt-4 mt-lg-0">
-                                    <img src={tradingdesktops} className="img-fluid rounded-3 shadow-lg opacity-75 hover-opacity-100 transition-opacity" alt="Trading setup" style={{ transform: "rotate(3deg) scale(1.05)", border: "1px solid rgba(255,255,255,0.1)" }} />
-                                </Col>
-                            </Row>
-                        </div>
+                                    </Col>
+                                    <Col lg={5} className="text-center mt-4 mt-lg-0">
+                                        <img src={tradingdesktops} className="img-fluid rounded-3 shadow-lg opacity-75 hover-opacity-100 transition-opacity" alt="Trading setup" style={{ transform: "rotate(3deg) scale(1.05)", border: "1px solid rgba(255,255,255,0.1)" }} />
+                                    </Col>
+                                </Row>
+                            </div>
                         </AnimatedSection>
                     </Container>
                 </section>
@@ -714,26 +727,26 @@ account can actually survive.</p>
                 <section className="py-5 position-relative">
                     <Container>
                         <AnimatedSection>
-                        <div className="p-4 p-lg-5 rounded-5 text-center position-relative overflow-hidden"  
-                             style={{ 
-                                 background: "linear-gradient(135deg, #4f46e5 0%, #3b82f6 100%)",
-                                 boxShadow: "0 20px 60px -15px rgba(59, 130, 246, 0.5)"
-                             }}>
-                            <div className="position-relative z-1 py-4">
-                                <h2 className="display-5 fw-bold text-white mb-3">Ready to trade like a professional?</h2>
-                                <p className="text-white opacity-90 fs-5 mb-5 max-width-600 mx-auto">Join thousands of traders who have stopped gambling and started managing risk with precision.</p>
-                                <div onClick={signInWithGoogle} className="d-inline-block cursor-pointer bg-white text-primary fw-bold px-5 py-3 rounded-pill shadow-lg hover-scale" style={{ transition: "transform 0.2s", cursor: "pointer" }}>
-                                    <div className="d-flex align-items-center gap-2">
-                                        <img src="https://www.google.com/favicon.ico" alt="G" width="20" />
-                                        <span>Get Started with Google</span>
+                            <div className="p-4 p-lg-5 rounded-5 text-center position-relative overflow-hidden"
+                                style={{
+                                    background: "linear-gradient(135deg, #4f46e5 0%, #3b82f6 100%)",
+                                    boxShadow: "0 20px 60px -15px rgba(59, 130, 246, 0.5)"
+                                }}>
+                                <div className="position-relative z-1 py-4">
+                                    <h2 className="display-5 fw-bold text-white mb-3">Ready to trade like a professional?</h2>
+                                    <p className="text-white opacity-90 fs-5 mb-5 max-width-600 mx-auto">Join thousands of traders who have stopped gambling and started managing risk with precision.</p>
+                                    <div onClick={signInWithGoogle} className="d-inline-block cursor-pointer bg-white text-primary fw-bold px-5 py-3 rounded-pill shadow-lg hover-scale" style={{ transition: "transform 0.2s", cursor: "pointer" }}>
+                                        <div className="d-flex align-items-center gap-2">
+                                            <img src="https://www.google.com/favicon.ico" alt="G" width="20" />
+                                            <span>Get Started with Google</span>
+                                        </div>
                                     </div>
                                 </div>
+
+                                {/* Decorative Circles */}
+                                <div className="position-absolute top-0 start-0 translate-middle rounded-circle bg-white animate-pulse" style={{ width: "300px", height: "300px", opacity: "0.1" }}></div>
+                                <div className="position-absolute bottom-0 end-0 translate-middle rounded-circle bg-white animate-pulse" style={{ width: "400px", height: "400px", opacity: "0.1" }}></div>
                             </div>
-                            
-                            {/* Decorative Circles */}
-                            <div className="position-absolute top-0 start-0 translate-middle rounded-circle bg-white animate-pulse" style={{ width: "300px", height: "300px", opacity: "0.1" }}></div>
-                            <div className="position-absolute bottom-0 end-0 translate-middle rounded-circle bg-white animate-pulse" style={{ width: "400px", height: "400px", opacity: "0.1" }}></div>
-                        </div>
                         </AnimatedSection>
                     </Container>
                 </section>
@@ -748,7 +761,7 @@ account can actually survive.</p>
                                     <h5 className="text-high-contrast m-0 fw-bold">Trrader.in</h5>
                                 </div>
                                 <h6 className="text-high-contrast fw-bold mb-3">Important Disclosure</h6>
-                                <p className="text-medium-contrast small lh-lg mb-4" style={{fontSize: "0.8rem", opacity: 0.7}}>
+                                <p className="text-medium-contrast small lh-lg mb-4" style={{ fontSize: "0.8rem", opacity: 0.7 }}>
                                     Trrader.in is a software tool for calculation and risk modelling only. We are not a SEBI registered investment advisor. We do not provide trading tips, stock recommendations, or financial advice. All projections are based on mathematical models and hypothetical scenarios. Trading in Future & Options (F&O) involves high risk and can lead to the loss of your entire capital. Users are responsible for their own trading decisions.
                                 </p>
                                 <div className="d-flex gap-3 social-links">
@@ -774,7 +787,7 @@ account can actually survive.</p>
                                     <li><Link to="/faq" className="text-decoration-none text-medium-contrast hover-text-white">FAQ</Link></li>
                                 </ul> */}
                             </Col>
-                             <Col lg={4}>
+                            <Col lg={4}>
                                 <h6 className="text-high-contrast fw-bold mb-4">Legal</h6>
                                 <ul className="list-unstyled d-flex flex-column gap-3 text-medium-contrast small">
                                     <li><Link to="/termsandconditions" className="text-decoration-none text-medium-contrast hover-text-white">Terms of Conditons</Link></li>
@@ -788,20 +801,20 @@ account can actually survive.</p>
                         </div>
                     </Container>
                 </footer>
-                
+
                 {/* Image Zoom Modal */}
                 {selectedImage && (
-                    <div 
-                        className="position-fixed top-0 start-0 w-100 h-100 d-flex align-items-center justify-content-center p-4 animate-fade-in-up" 
+                    <div
+                        className="position-fixed top-0 start-0 w-100 h-100 d-flex align-items-center justify-content-center p-4 animate-fade-in-up"
                         style={{ zIndex: 9999, background: "rgba(11, 14, 23, 0.95)", backdropFilter: "blur(20px)" }}
                         onClick={() => setSelectedImage(null)}
                     >
                         <div className="position-relative" style={{ maxWidth: "90%", maxHeight: "90%" }}>
-                            <img 
-                                src={selectedImage} 
-                                alt="Zoomed Feature" 
-                                className="img-fluid rounded-4 shadow-lg border border-white border-opacity-10" 
-                                style={{ maxHeight: "90vh", userSelect: "none", boxShadow: "0 0 100px rgba(79, 70, 229, 0.3)" }} 
+                            <img
+                                src={selectedImage}
+                                alt="Zoomed Feature"
+                                className="img-fluid rounded-4 shadow-lg border border-white border-opacity-10"
+                                style={{ maxHeight: "90vh", userSelect: "none", boxShadow: "0 0 100px rgba(79, 70, 229, 0.3)" }}
                             />
                             <div className="position-absolute top-0 end-0 m-3 text-white cursor-pointer p-2 bg-dark bg-opacity-75 rounded-circle d-flex align-items-center justify-content-center hover-scale transition-all border border-white border-opacity-10" style={{ width: "40px", height: "40px" }}>
                                 <i className="mdi mdi-close fs-4"></i>
