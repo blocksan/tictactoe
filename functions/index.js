@@ -81,12 +81,12 @@ exports.createPaymentOrder = functions.https.onCall(async (data, context) => {
         order_id: orderId,
         customer_details: {
             customer_id: customerData.uid || "guest_" + Date.now(),
-            customer_phone: customerData.phone || "9999999999",
+            customer_phone: customerData.phone || "",
             customer_email: customerData.email || "test@test.com"
         },
         order_meta: {
             // Note: return_url handling might need adjustment depending on frontend routing
-            return_url: "http://localhost:3000/pricing?order_id={order_id}" // Default to localhost, needs dynamic update
+            return_url: window.location.origin + "/pricing?order_id={order_id}" // Default to localhost, needs dynamic update
         }
     };
 

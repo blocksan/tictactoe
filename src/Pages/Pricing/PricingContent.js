@@ -162,7 +162,7 @@ function PricingContent(props) {
             const userDetails = {
                 uid: props.user.uid,
                 email: props.user.email,
-                phone: props.user.phone
+                phone: props.user.phone || props.user.phoneNumber || ""
             };
             console.log("[Pricing] Creating payment intent for plan:", selectedPlan.planId, "with details:", userDetails);
 
