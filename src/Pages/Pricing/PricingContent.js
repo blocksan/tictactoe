@@ -13,10 +13,10 @@ import { PRICING_PLANS, PricingData, TOAST_DELAY } from '../../constants/common'
 import { createPaymentIntent, fetchPaymentStatus } from '../../helpers/cashfree_helper';
 
 function PricingContent(props) {
-    
+
 
     const [loading, setLoading] = React.useState(false);
-    
+
     // Check for Return URL (Payment Callback)
     React.useEffect(() => {
         const queryParams = new URLSearchParams(window.location.search);
@@ -25,7 +25,7 @@ function PricingContent(props) {
         if (orderId) {
             handlePaymentCallback(orderId);
         }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     const handlePaymentCallback = async (orderId) => {
@@ -41,42 +41,42 @@ function PricingContent(props) {
             // STRICT CHECK: Only 'PAID' means money received. 'ACTIVE' means order is still open/pending.
             const pendingPlan = JSON.parse(localStorage.getItem("pending_subscription_plan"));
             if (statusRes.status === "success" && statusRes.payment_status === "PAID") {
-                
+
                 // UPDATE LOG TO SUCCESS
-                await firebaseBackend.updatePaymentStatus(orderId, "SUCCESS", { 
+                await firebaseBackend.updatePaymentStatus(orderId, "SUCCESS", {
                     paymentId: statusRes.data.cf_payment_id || "N/A",  // Capture CF Payment ID if available
                     response: statusRes.data
                 });
 
                 // Analytics: Payment Success
-                firebaseBackend.logEvent("payment_success", { 
+                firebaseBackend.logEvent("payment_success", {
                     plan: pendingPlan ? pendingPlan.pricingPlan : "UNKNOWN",
                     amount: statusRes.data.order_amount,
                     order_id: orderId
                 });
 
                 if (pendingPlan) {
-                     await saveSuccessfulSubscription(statusRes, pendingPlan);
-                     localStorage.removeItem("pending_subscription_plan");
+                    await saveSuccessfulSubscription(statusRes, pendingPlan);
+                    localStorage.removeItem("pending_subscription_plan");
                 } else {
                     toast.error("Payment received! However, plan details were not found. Please contact support.");
                 }
             } else if (statusRes.status === "success" && statusRes.payment_status === "ACTIVE") {
-                 console.warn("Payment Status is ACTIVE (Pending/Abandoned)");
-                 // UPDATE LOG TO PENDING/CANCELLED
-                 await firebaseBackend.updatePaymentStatus(orderId, "PENDING", { response: statusRes.data });
-                 
-                 toast.warn("Payment process was cancelled or is still pending. If you deduced money, please contact support.");
+                console.warn("Payment Status is ACTIVE (Pending/Abandoned)");
+                // UPDATE LOG TO PENDING/CANCELLED
+                await firebaseBackend.updatePaymentStatus(orderId, "PENDING", { response: statusRes.data });
+
+                toast.warn("Payment process was cancelled or is still pending. If you deduced money, please contact support.");
             } else {
                 // UPDATE LOG TO FAILED
-                await firebaseBackend.updatePaymentStatus(orderId, "FAILED", { 
+                await firebaseBackend.updatePaymentStatus(orderId, "FAILED", {
                     response: statusRes.data || statusRes.error
                 });
-                
+
                 // Analytics: Payment Failed
-                firebaseBackend.logEvent("payment_failed", { 
-                    plan: pendingPlan ? pendingPlan.pricingPlan : "UNKNOWN", 
-                    reason: statusRes.payment_status 
+                firebaseBackend.logEvent("payment_failed", {
+                    plan: pendingPlan ? pendingPlan.pricingPlan : "UNKNOWN",
+                    reason: statusRes.payment_status
                 });
 
                 toast.error("Payment failed or cancelled. Status: " + statusRes.payment_status);
@@ -91,7 +91,7 @@ function PricingContent(props) {
     const saveSuccessfulSubscription = async (paymentStatus, selectedPlan) => {
         const firebaseBackend = getFirebaseBackend();
         const saveResult = await firebaseBackend.saveSubscription({
-            id: paymentStatus.order_id, 
+            id: paymentStatus.order_id,
             order_id: paymentStatus.order_id,
             amount: selectedPlan.yearly ? selectedPlan.discountedPrice : selectedPlan.price,
             currency: "INR",
@@ -105,21 +105,21 @@ function PricingContent(props) {
             var animationEnd = Date.now() + duration;
             var defaults = { startVelocity: 30, spread: 360, ticks: 60, zIndex: 9999 }; // High z-index to be on top of everything
 
-            var randomInRange = function(min, max) {
-              return Math.random() * (max - min) + min;
+            var randomInRange = function (min, max) {
+                return Math.random() * (max - min) + min;
             };
 
-            var interval = setInterval(function() {
-              var timeLeft = animationEnd - Date.now();
+            var interval = setInterval(function () {
+                var timeLeft = animationEnd - Date.now();
 
-              if (timeLeft <= 0) {
-                return clearInterval(interval);
-              }
+                if (timeLeft <= 0) {
+                    return clearInterval(interval);
+                }
 
-              var particleCount = 50 * (timeLeft / duration);
-              // since particles fall down, start a bit higher than random
-              confetti(Object.assign({}, defaults, { particleCount, origin: { x: randomInRange(0.1, 0.3), y: Math.random() - 0.2 } }));
-              confetti(Object.assign({}, defaults, { particleCount, origin: { x: randomInRange(0.7, 0.9), y: Math.random() - 0.2 } }));
+                var particleCount = 50 * (timeLeft / duration);
+                // since particles fall down, start a bit higher than random
+                confetti(Object.assign({}, defaults, { particleCount, origin: { x: randomInRange(0.1, 0.3), y: Math.random() - 0.2 } }));
+                confetti(Object.assign({}, defaults, { particleCount, origin: { x: randomInRange(0.7, 0.9), y: Math.random() - 0.2 } }));
             }, 250);
 
             toast.success("Subscription successful! You are now a Premium member.");
@@ -138,22 +138,22 @@ function PricingContent(props) {
             if (!checkIfUserIsLoggedIn()) {
                 return;
             }
-            
+
             const selectedPlan = PricingData.find(p => p.pricingPlan === pricingPlan);
             if (!selectedPlan) return;
 
             setLoading(true);
             const firebaseBackend = getFirebaseBackend();
-            
+
             // Analytics: Upgrade Clicked
-            firebaseBackend.logEvent("upgrade_clicked", { 
-                source: "pricing_page", 
-                current_plan: props.user.planId || "FREE" 
+            firebaseBackend.logEvent("upgrade_clicked", {
+                source: "pricing_page",
+                current_plan: props.user.planId || "FREE"
             });
-            
+
             // 1. Create Payment Intent (Order)
             const amount = selectedPlan.yearly ? selectedPlan.discountedPrice : selectedPlan.price;
-            
+
             // Pass user details for Cashfree
             const userDetails = {
                 uid: props.user.uid,
@@ -165,7 +165,7 @@ function PricingContent(props) {
             if (paymentIntent.status === "success") {
                 // Store plan details for post-payment verification
                 localStorage.setItem("pending_subscription_plan", JSON.stringify(selectedPlan));
-                
+
                 // LOG INITIATION
                 const firebaseBackend = getFirebaseBackend();
                 await firebaseBackend.logPaymentInitiation({
@@ -177,22 +177,22 @@ function PricingContent(props) {
                 }, props.user);
 
                 // Analytics: Payment Started
-                firebaseBackend.logEvent("payment_started", { 
-                    plan: selectedPlan.pricingPlan, 
-                    amount: amount 
+                firebaseBackend.logEvent("payment_started", {
+                    plan: selectedPlan.pricingPlan,
+                    amount: amount
                 });
 
                 // 2. Initiate Payment (Redirects or opens simple checkout)
                 // We need to import doPayment from helper
                 const { doPayment } = require('../../helpers/cashfree_helper'); // Lazy import if not top-level
                 await doPayment(paymentIntent.payment_session_id);
-                
+
                 // Code execution might stop here if redirecting
             } else {
                 toast.error("Failed to initiate payment: " + paymentIntent.error);
                 setLoading(false);
             }
-            
+
         } catch (err) {
             console.error(err);
             toast.error("Something went wrong: " + err.message);
@@ -212,12 +212,12 @@ function PricingContent(props) {
     return (
         <>
             <Row className="justify-content-center">
-            {loading && <div class="full-page-loading"></div>}
+                {loading && <div class="full-page-loading"></div>}
                 <Col lg={7}>
                     <div className="text-center mb-5">
                         <h2 className="fw-black mb-3 text-dark" style={{ fontSize: "3.5rem", fontWeight: "800", letterSpacing: "-0.05em", lineHeight: "1.2" }}> Built By Trrader, For Trrader</h2>
                         <p className="text-muted font-size-17 px-lg-5">
-                            Scale your trading strategy with institutional-grade risk management tools. 
+                            Scale your trading strategy with institutional-grade risk management tools.
                         </p>
                     </div>
                 </Col>
@@ -232,7 +232,7 @@ function PricingContent(props) {
                                         <span className="badge rounded-pill bg-danger shadow-sm">50% OFF</span>
                                     </div>
                                 )}
-                                
+
                                 <div className="text-center mb-4">
                                     <div className="pricing-icon-bg mb-3">
                                         <i className={`${item.icon} font-size-24 text-primary`}></i>
@@ -287,12 +287,11 @@ function PricingContent(props) {
                                             <i className="bx bx-check-circle me-1"></i> Included in Yearly
                                         </button>
                                     ) : (
-                                        <button 
-                                            className="btn btn-primary w-100 fw-bold py-2 shadow-sm premium-cta-btn disabled"
-                                            disabled
-                                            style={{ cursor: "not-allowed", opacity: 0.7 }}
+                                        <button
+                                            className="btn btn-primary w-100 fw-bold py-2 shadow-sm premium-cta-btn"
+                                            onClick={() => handleSubscription(item.planId)}
                                         >
-                                            Coming Soon
+                                            Upgrade Now
                                         </button>
                                     )}
                                 </div>

@@ -214,13 +214,11 @@ const Sidebar = (props) => {
                 <p className="text-white text-opacity-50 small mb-3" style={{ fontSize: "0.75rem", lineHeight: "1.4" }}>
                   Unlock unlimited calculations and get access to premium features.
                 </p>
-                <Button
-                  className="btn btn-primary btn-sm w-100 fw-bold upgrade-sidebar-btn border-0 shadow-sm disabled"
-                  disabled
-                  style={{ cursor: "not-allowed", opacity: 0.8 }}
-                >
-                  Coming Soon
-                </Button>
+                <Link to={"/pricing"}>
+                  <Button className="btn btn-primary btn-sm w-100 fw-bold upgrade-sidebar-btn border-0 shadow-sm">
+                    Upgrade Now
+                  </Button>
+                </Link>
               </div>
             }
           </div>
