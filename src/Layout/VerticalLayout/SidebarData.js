@@ -29,7 +29,7 @@ const SidebarData = [
     {
         label: "F&O Calculator",
         isMainMenu: true,
-        
+
     },
     {
         label: "Drawdown Calculator",
@@ -51,7 +51,7 @@ const SidebarData = [
         label: "Pricing",
         url: "/pricing",
         isHasArrow: true,
-        icon:"bx bx-rupee"
+        icon: "bx bx-rupee"
     },
     // {
     //     label: "Capital Calculator",
@@ -63,7 +63,6 @@ const SidebarData = [
     //     label: "Settings",
     //     isMainMenu: true,
     // }
-    ,
     // {
     //     label: "Referral Link",
     //     icon: "mdi mdi-link-variant",

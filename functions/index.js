@@ -22,7 +22,7 @@ const getCashfreeConfig = () => {
         appId = process.env.CASHFREE_SANDBOX_APP_ID;
         secretKey = process.env.CASHFREE_SANDBOX_SECRET_KEY;
     }
-    
+
     // Fallback for simple setup
     if (!appId) appId = process.env.CASHFREE_APP_ID;
     if (!secretKey) secretKey = process.env.CASHFREE_SECRET_KEY;
@@ -31,8 +31,8 @@ const getCashfreeConfig = () => {
 };
 
 const getBaseUrl = (env) => {
-    return env === "production" 
-        ? "https://api.cashfree.com/pg" 
+    return env === "production"
+        ? "https://api.cashfree.com/pg"
         : "https://sandbox.cashfree.com/pg";
 };
 
@@ -81,7 +81,7 @@ exports.createPaymentOrder = functions.https.onCall(async (data, context) => {
         order_id: orderId,
         customer_details: {
             customer_id: customerData.uid || "guest_" + Date.now(),
-            customer_phone: customerData.phone || "9999999999", 
+            customer_phone: customerData.phone || "9999999999",
             customer_email: customerData.email || "test@test.com"
         },
         order_meta: {
@@ -108,8 +108,15 @@ exports.createPaymentOrder = functions.https.onCall(async (data, context) => {
         };
 
     } catch (error) {
-        console.error("Cashfree Create Order Error:", error.response?.data || error.message);
-        throw new functions.https.HttpsError('internal', 'Unable to create payment order', error.response?.data);
+        const errorData = error.response?.data || {};
+        console.error("Cashfree Create Order Error:", errorData);
+
+        // Pass more detail back to the frontend to debug
+        throw new functions.https.HttpsError(
+            'internal',
+            `Cashfree Error: ${errorData.message || error.message}`,
+            errorData
+        );
     }
 });
 
@@ -149,7 +156,7 @@ exports.verifyPaymentStatus = functions.https.onCall(async (data, context) => {
             // Check for pending
             const pendingPayment = payments.find(p => p.payment_status === "PENDING");
             if (pendingPayment) {
-                 return {
+                return {
                     status: "success",
                     payment_status: "ACTIVE",
                     data: pendingPayment
@@ -162,7 +169,7 @@ exports.verifyPaymentStatus = functions.https.onCall(async (data, context) => {
                 data: payments[0]
             };
         } else {
-             return { status: "success", payment_status: "ACTIVE", data: { message: "No payment attempts found" } };
+            return { status: "success", payment_status: "ACTIVE", data: { message: "No payment attempts found" } };
         }
 
     } catch (error) {

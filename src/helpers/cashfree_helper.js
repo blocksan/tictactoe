@@ -4,8 +4,10 @@ import { getFirebaseApp } from "./firebase_helper";
 
 let cashfree;
 export const initializeCashfree = async () => {
+    const mode = process.env.REACT_APP_CASHFREE_ENV || "sandbox";
+    console.log("[Cashfree] Initializing in mode:", mode);
     cashfree = await load({
-        mode: process.env.REACT_APP_CASHFREE_ENV || "sandbox"
+        mode: mode
     });
 };
 
@@ -13,7 +15,7 @@ export const createPaymentIntent = async (planId, currency = "INR", customerData
     try {
         const functions = getFunctions(getFirebaseApp());
         const createPaymentOrder = httpsCallable(functions, 'createPaymentOrder');
-        
+
         const returnUrl = window.location.origin + "/pricing?order_id={order_id}";
 
         const result = await createPaymentOrder({
@@ -23,8 +25,10 @@ export const createPaymentIntent = async (planId, currency = "INR", customerData
             returnUrl
         });
 
+        console.log("[Cashfree] Payment Order Result:", result);
+
         const data = result.data;
-        
+
         if (data.status === "success") {
             return {
                 status: "success",
@@ -33,7 +37,7 @@ export const createPaymentIntent = async (planId, currency = "INR", customerData
                 data: data.data
             };
         } else {
-             return {
+            return {
                 status: "failed",
                 error: data.message || "Failed to create order"
             };
@@ -55,8 +59,8 @@ export const fetchPaymentStatus = async (orderId) => {
         return data;
 
     } catch (error) {
-         console.error("Cashfree Fetch Status Error (Backend):", error);
-         return { status: "failed", error: error.message };
+        console.error("Cashfree Fetch Status Error (Backend):", error);
+        return { status: "failed", error: error.message };
     }
 }
 

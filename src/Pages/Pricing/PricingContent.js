@@ -136,11 +136,16 @@ function PricingContent(props) {
     const handleSubscription = async (pricingPlan) => {
         try {
             if (!checkIfUserIsLoggedIn()) {
+                console.warn("[Pricing] Subscription blocked: User not logged in");
                 return;
             }
 
-            const selectedPlan = PricingData.find(p => p.pricingPlan === pricingPlan);
-            if (!selectedPlan) return;
+            const selectedPlan = PricingData.find(p => p.planId === pricingPlan || p.pricingPlan === pricingPlan);
+            if (!selectedPlan) {
+                console.error("[Pricing] Plan not found for ID/Name:", pricingPlan);
+                return;
+            }
+            console.log("[Pricing] Selected Plan details:", selectedPlan);
 
             setLoading(true);
             const firebaseBackend = getFirebaseBackend();
@@ -154,14 +159,16 @@ function PricingContent(props) {
             // 1. Create Payment Intent (Order)
             const amount = selectedPlan.yearly ? selectedPlan.discountedPrice : selectedPlan.price;
 
-            // Pass user details for Cashfree
             const userDetails = {
                 uid: props.user.uid,
                 email: props.user.email,
-                phone: props.user.phone // Ensure phone is available or handle fallback in helper
+                phone: props.user.phone
             };
+            console.log("[Pricing] Creating payment intent for plan:", selectedPlan.planId, "with details:", userDetails);
 
             const paymentIntent = await createPaymentIntent(selectedPlan.planId, "INR", userDetails);
+            console.log("[Pricing] createPaymentIntent response:", paymentIntent);
+
             if (paymentIntent.status === "success") {
                 // Store plan details for post-payment verification
                 localStorage.setItem("pending_subscription_plan", JSON.stringify(selectedPlan));
@@ -185,6 +192,7 @@ function PricingContent(props) {
                 // 2. Initiate Payment (Redirects or opens simple checkout)
                 // We need to import doPayment from helper
                 const { doPayment } = require('../../helpers/cashfree_helper'); // Lazy import if not top-level
+                console.log("[Pricing] Initiating Cashfree checkout with session ID:", paymentIntent.payment_session_id);
                 await doPayment(paymentIntent.payment_session_id);
 
                 // Code execution might stop here if redirecting
