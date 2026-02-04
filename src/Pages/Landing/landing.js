@@ -90,6 +90,7 @@ const Landing = (props) => {
                 name: user.displayName,
                 email: user.email,
                 picture: user.photoURL,
+                uid: user.uid
             };
 
             // Analytics: Login Success
@@ -118,6 +119,7 @@ const Landing = (props) => {
                     name: user.displayName,
                     email: user.email,
                     picture: user.photoURL,
+                    uid: user.uid
                 };
                 dispatch(socialLogin(postData, props.router.navigate, "google"));
             }

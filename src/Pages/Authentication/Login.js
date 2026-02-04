@@ -65,6 +65,7 @@ const Login = props => {
         email: res.profileObj.email,
         token: res.tokenObj.access_token,
         idToken: res.tokenId,
+        uid: res.profileObj.googleId,
       };
       dispatch(socialLogin(postData, props.router.navigate, type));
     } else if (type === "facebook" && res) {
@@ -155,12 +156,12 @@ const Login = props => {
                             )}
                             onSuccess={googleResponse}
                             onFailure={(error) => {
-                              console.log('error in google login',error)
-                             }}
+                              console.log('error in google login', error)
+                            }}
                           />
                         </Col>
                       </Row>
-                      
+
                     </div>
                   </div>
                 </CardBody>
