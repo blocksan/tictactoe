@@ -16,7 +16,13 @@ export const createPaymentIntent = async (planId, currency = "INR", customerData
         const functions = getFunctions(getFirebaseApp());
         const createPaymentOrder = httpsCallable(functions, 'createPaymentOrder');
 
-        const returnUrl = window.location.origin + "/pricing?order_id={order_id}";
+        // Cashfree requires HTTPS for the return URL. 
+        // If you are on localhost, you must run your server on HTTPS (e.g., HTTPS=true npm start)
+        let origin = window.location.origin;
+        if (origin.includes("localhost")) {
+            origin = origin.replace("http://", "https://");
+        }
+        const returnUrl = `${origin}/pricing?order_id={order_id}`;
 
         const result = await createPaymentOrder({
             planId,
@@ -68,9 +74,13 @@ export const doPayment = async (paymentSessionId) => {
     if (!cashfree) {
         await initializeCashfree();
     }
+    let origin = window.location.origin;
+    if (origin.includes("localhost")) {
+        origin = origin.replace("http://", "https://");
+    }
     return cashfree.checkout({
         paymentSessionId: paymentSessionId,
-        returnUrl: window.location.origin + "/pricing?order_id={order_id}"
+        returnUrl: `${origin}/pricing?order_id={order_id}`
     });
 };
 
